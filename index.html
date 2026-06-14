@@ -679,37 +679,28 @@
       <button class="sync-btn" onclick="syncTab('diving')">↑ Sync</button>
     </div>
 
-    <div class="card">
-      <div class="card-label">Dive Shop</div>
-      <div class="field-group">
-        <div><label>Shop name</label><input type="text" placeholder="TBD — research needed"></div>
-        <div><label>Location</label><input type="text" placeholder="Ishigaki city / Kabira Bay"></div>
-      </div>
-      <div class="field-group">
-        <div><label>Phone / LINE</label><input type="text"></div>
-        <div><label>Website</label><input type="text"></div>
-      </div>
-      <div class="field-group single">
-        <div><label>Notes</label><textarea placeholder="Referral student acceptance, gear rental included, schedule flexibility..."></textarea></div>
-      </div>
-    </div>
+    <!-- Dive shops list -->
+    <div class="card-label" style="margin-bottom:10px">Dive Shops</div>
+    <div id="dive-shops-list"></div>
+    <button class="add-row-btn" onclick="addDiveShop()" style="margin-bottom:24px">+ Add dive shop</button>
 
+    <!-- OWD cert tracker -->
     <div class="card">
       <div class="card-label">OWD Certification — Referral Completion</div>
       <div class="field-group three">
-        <div><label>Confined water session 1</label><input type="date"></div>
-        <div><label>Confined water session 2</label><input type="date"></div>
-        <div><label>Open water dive 1</label><input type="date"></div>
+        <div><label>Confined water session 1</label><input type="date" id="owd-cw1"></div>
+        <div><label>Confined water session 2</label><input type="date" id="owd-cw2"></div>
+        <div><label>Open water dive 1</label><input type="date" id="owd-ow1"></div>
       </div>
       <div class="field-group three">
-        <div><label>Open water dive 2</label><input type="date"></div>
-        <div><label>Open water dive 3</label><input type="date"></div>
-        <div><label>Open water dive 4</label><input type="date"></div>
+        <div><label>Open water dive 2</label><input type="date" id="owd-ow2"></div>
+        <div><label>Open water dive 3</label><input type="date" id="owd-ow3"></div>
+        <div><label>Open water dive 4</label><input type="date" id="owd-ow4"></div>
       </div>
       <div class="field-group">
-        <div><label>Total cost (JPY)</label><input type="number" placeholder="Incl. gear rental"></div>
+        <div><label>Total cost (JPY)</label><input type="number" id="owd-cost" placeholder="Incl. gear rental"></div>
         <div><label>Status</label>
-          <select>
+          <select id="owd-status">
             <option>To book</option>
             <option>Inquired</option>
             <option>Booked</option>
@@ -719,27 +710,10 @@
       </div>
     </div>
 
+    <!-- Fun dives / snorkel -->
     <div class="card">
       <div class="card-label">Fun Dives / Snorkel Spots</div>
-      <div id="dive-sites">
-        <div style="margin-bottom:12px">
-          <div class="field-group three">
-            <div><label>Site name</label><input type="text" placeholder="e.g. Manta Scramble"></div>
-            <div><label>Date</label><input type="date"></div>
-            <div><label>Type</label>
-              <select>
-                <option>Fun dive</option>
-                <option>Snorkel</option>
-                <option>Shore dive</option>
-                <option>Boat dive</option>
-              </select>
-            </div>
-          </div>
-          <div class="field-group single">
-            <div><label>Notes</label><input type="text" placeholder="Visibility, current, highlights..."></div>
-          </div>
-        </div>
-      </div>
+      <div id="dive-sites"></div>
       <button class="add-row-btn" onclick="addDiveSite()">+ Add site</button>
     </div>
   </div>
@@ -751,30 +725,12 @@
       <button class="sync-btn" onclick="syncTab('smile')">↑ Sync</button>
     </div>
 
-    <div class="card">
-      <div class="card-label">Clinic Details</div>
-      <div class="field-group">
-        <div><label>Clinic name</label><input type="text" placeholder="e.g. Taiwan clinic"></div>
-        <div><label>Location / district</label><input type="text" placeholder="Taipei district"></div>
-      </div>
-      <div class="field-group">
-        <div><label>Contact</label><input type="text"></div>
-        <div><label>Website</label><input type="text"></div>
-      </div>
-      <div class="field-group">
-        <div><label>Total cost (NTD)</label><input type="number" placeholder="0"></div>
-        <div><label>Status</label>
-          <select>
-            <option>Researching</option>
-            <option>Inquired</option>
-            <option>Consultation booked</option>
-            <option>Procedure confirmed</option>
-            <option>Complete ✓</option>
-          </select>
-        </div>
-      </div>
-    </div>
+    <!-- Clinics list -->
+    <div class="card-label" style="margin-bottom:10px">Clinics</div>
+    <div id="smile-clinics-list"></div>
+    <button class="add-row-btn" onclick="addSmileClinic()" style="margin-bottom:24px">+ Add clinic</button>
 
+    <!-- Procedure timeline -->
     <div class="card">
       <div class="card-label">Procedure Timeline</div>
       <div class="procedure-step">
@@ -812,8 +768,8 @@
     </div>
 
     <div class="card">
-      <div class="card-label">Notes & Questions for Clinic</div>
-      <textarea placeholder="Prescription, astigmatism details, dive restriction timeline post-op, flying clearance, aftercare drops..."></textarea>
+      <div class="card-label">General Notes & Questions</div>
+      <textarea id="smile-general-notes" placeholder="Prescription, astigmatism details, dive restriction timeline post-op, flying clearance, aftercare drops..."></textarea>
     </div>
   </div>
 
@@ -1124,7 +1080,261 @@ function addDiveSite() {
       <div><label>Type</label><select><option>Fun dive</option><option>Snorkel</option><option>Shore dive</option><option>Boat dive</option></select></div>
     </div>
     <div class="field-group single"><div><label>Notes</label><input type="text" placeholder="Visibility, current, highlights..."></div></div>`;
-  list.insertBefore(div, list.querySelector('.add-row-btn'));
+  list.appendChild(div);
+}
+
+// ── DIVE SHOPS ──
+let diveShops = JSON.parse(localStorage.getItem('ishi_dive_shops') || '[]');
+
+function saveDiveShops() {
+  localStorage.setItem('ishi_dive_shops', JSON.stringify(diveShops));
+}
+
+function renderDiveShops() {
+  const container = document.getElementById('dive-shops-list');
+  if (!diveShops.length) {
+    container.innerHTML = '<p style="color:#3A5A6A;font-size:12px;font-family:var(--mono);margin-bottom:12px">No shops added yet.</p>';
+    return;
+  }
+  container.innerHTML = diveShops.map((shop, si) => `
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="card-label" style="margin-bottom:0">${shop.name || 'Unnamed shop'}</div>
+        <span style="font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:2px;background:${statusBg(shop.status)};color:${statusColor(shop.status)}">${shop.status || 'Researching'}</span>
+      </div>
+      <div class="field-group three">
+        <div><label>Shop name</label><input type="text" value="${esc(shop.name)}" placeholder="Shop name" oninput="updateDiveShop(${si},'name',this.value)"></div>
+        <div><label>Location / area</label><input type="text" value="${esc(shop.location)}" placeholder="Ishigaki city, Kabira..." oninput="updateDiveShop(${si},'location',this.value)"></div>
+        <div><label>Status</label>
+          <select onchange="updateDiveShop(${si},'status',this.value)">
+            ${['Researching','Contacted — awaiting reply','Replied','Booked','Ruled out'].map(o=>`<option${o===shop.status?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="field-group three">
+        <div><label>Phone / LINE</label><input type="text" value="${esc(shop.phone)}" oninput="updateDiveShop(${si},'phone',this.value)"></div>
+        <div><label>Email</label><input type="text" value="${esc(shop.email)}" oninput="updateDiveShop(${si},'email',this.value)"></div>
+        <div><label>Website</label><input type="text" value="${esc(shop.website)}" oninput="updateDiveShop(${si},'website',this.value)"></div>
+      </div>
+      <div class="field-group three">
+        <div><label>OWD referral price (JPY)</label><input type="text" value="${esc(shop.price)}" placeholder="¥ or ask" oninput="updateDiveShop(${si},'price',this.value)"></div>
+        <div><label>Gear included?</label>
+          <select onchange="updateDiveShop(${si},'gear',this.value)">
+            ${['Unknown','Yes','Rental extra','No'].map(o=>`<option${o===shop.gear?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div><label>English speaker?</label>
+          <select onchange="updateDiveShop(${si},'english',this.value)">
+            ${['Unknown','Yes','Limited','No'].map(o=>`<option${o===shop.english?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="field-group single">
+        <div><label>Notes</label><textarea oninput="updateDiveShop(${si},'notes',this.value)" placeholder="Schedule flexibility, group size, vibe, referral accepted...">${esc(shop.notes)}</textarea></div>
+      </div>
+
+      <!-- Contact log for this shop -->
+      <div style="margin-top:16px;border-top:1px solid #2A3A4A;padding-top:14px">
+        <div class="card-label" style="margin-bottom:10px">Contact Log</div>
+        ${(shop.contacts||[]).map((c,ci)=>`
+          <div class="log-entry" style="margin-bottom:12px">
+            <div class="log-entry-date">${c.date||'—'} · ${c.direction}</div>
+            <div style="font-size:13px;line-height:1.6;color:var(--sand);white-space:pre-wrap">${esc(c.body)}</div>
+            <button onclick="deleteDiveContact(${si},${ci})" style="background:transparent;border:none;color:#E07B5A;font-family:var(--mono);font-size:9px;cursor:pointer;margin-top:4px">remove</button>
+          </div>`).join('')}
+        <div style="background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px">
+          <div class="field-group three">
+            <div><label>Date</label><input type="date" id="dive-log-date-${si}"></div>
+            <div><label>Direction</label>
+              <select id="dive-log-dir-${si}">
+                <option>Sent — email</option>
+                <option>Sent — phone</option>
+                <option>Received — reply</option>
+                <option>Received — phone</option>
+                <option>Note to self</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end">
+              <button class="add-row-btn" style="border-style:solid;border-color:var(--ocean);color:var(--reef);margin-top:0" onclick="addDiveContact(${si})">+ Add entry</button>
+            </div>
+          </div>
+          <div class="field-group single">
+            <div><label>Message / notes</label><textarea id="dive-log-body-${si}" placeholder="What did you ask, what did they say..."></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="removeDiveShop(${si})" style="background:transparent;border:1px solid #E07B5A;color:#E07B5A;font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:3px;cursor:pointer;margin-top:12px">Remove shop</button>
+    </div>`).join('');
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function statusBg(s) { return s==='Booked'?'rgba(10,191,163,0.15)':s==='Replied'?'rgba(26,107,138,0.3)':s==='Ruled out'?'#2A3A4A':'#2A3A4A'; }
+function statusColor(s) { return s==='Booked'?'#0ABFA3':s==='Replied'?'#7ACFE4':s==='Contacted — awaiting reply'?'#E07B5A':'#5A7A8A'; }
+
+function addDiveShop() {
+  diveShops.push({ name:'', location:'', status:'Researching', phone:'', email:'', website:'', price:'', gear:'Unknown', english:'Unknown', notes:'', contacts:[] });
+  saveDiveShops();
+  renderDiveShops();
+}
+
+function updateDiveShop(si, field, value) {
+  diveShops[si][field] = value;
+  saveDiveShops();
+  // re-render just the label/status badge without full re-render
+  const cards = document.querySelectorAll('#dive-shops-list .card');
+  if (cards[si]) {
+    const lbl = cards[si].querySelector('.card-label');
+    const badge = cards[si].querySelector('span[style]');
+    if (lbl) lbl.textContent = diveShops[si].name || 'Unnamed shop';
+    if (badge) { badge.textContent = diveShops[si].status||'Researching'; badge.style.background = statusBg(diveShops[si].status); badge.style.color = statusColor(diveShops[si].status); }
+  }
+}
+
+function addDiveContact(si) {
+  const date = document.getElementById(`dive-log-date-${si}`).value;
+  const direction = document.getElementById(`dive-log-dir-${si}`).value;
+  const body = document.getElementById(`dive-log-body-${si}`).value.trim();
+  if (!body) return;
+  if (!diveShops[si].contacts) diveShops[si].contacts = [];
+  diveShops[si].contacts.unshift({ date, direction, body });
+  saveDiveShops();
+  renderDiveShops();
+}
+
+function deleteDiveContact(si, ci) {
+  diveShops[si].contacts.splice(ci, 1);
+  saveDiveShops();
+  renderDiveShops();
+}
+
+function removeDiveShop(si) {
+  if (!confirm('Remove this dive shop?')) return;
+  diveShops.splice(si, 1);
+  saveDiveShops();
+  renderDiveShops();
+}
+
+// ── SMILE CLINICS ──
+let smileClinics = JSON.parse(localStorage.getItem('ishi_smile_clinics') || '[]');
+
+function saveSmileClinics() {
+  localStorage.setItem('ishi_smile_clinics', JSON.stringify(smileClinics));
+}
+
+function renderSmileClinics() {
+  const container = document.getElementById('smile-clinics-list');
+  if (!smileClinics.length) {
+    container.innerHTML = '<p style="color:#3A5A6A;font-size:12px;font-family:var(--mono);margin-bottom:12px">No clinics added yet.</p>';
+    return;
+  }
+  container.innerHTML = smileClinics.map((clinic, ci) => `
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="card-label" style="margin-bottom:0">${clinic.name || 'Unnamed clinic'}</div>
+        <span style="font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:2px;background:${statusBg(clinic.status)};color:${statusColor(clinic.status)}">${clinic.status || 'Researching'}</span>
+      </div>
+      <div class="field-group three">
+        <div><label>Clinic name</label><input type="text" value="${esc(clinic.name)}" placeholder="Clinic name" oninput="updateSmileClinic(${ci},'name',this.value)"></div>
+        <div><label>District / area</label><input type="text" value="${esc(clinic.area)}" placeholder="Da'an, Zhongzheng..." oninput="updateSmileClinic(${ci},'area',this.value)"></div>
+        <div><label>Status</label>
+          <select onchange="updateSmileClinic(${ci},'status',this.value)">
+            ${['Researching','Contacted — awaiting reply','Replied','Consultation booked','Procedure confirmed','Complete ✓','Ruled out'].map(o=>`<option${o===clinic.status?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="field-group three">
+        <div><label>Phone</label><input type="text" value="${esc(clinic.phone)}" oninput="updateSmileClinic(${ci},'phone',this.value)"></div>
+        <div><label>Email</label><input type="text" value="${esc(clinic.email)}" oninput="updateSmileClinic(${ci},'email',this.value)"></div>
+        <div><label>Website</label><input type="text" value="${esc(clinic.website)}" oninput="updateSmileClinic(${ci},'website',this.value)"></div>
+      </div>
+      <div class="field-group">
+        <div><label>Quoted price (NTD)</label><input type="text" value="${esc(clinic.price)}" placeholder="both eyes" oninput="updateSmileClinic(${ci},'price',this.value)"></div>
+        <div><label>English service?</label>
+          <select onchange="updateSmileClinic(${ci},'english',this.value)">
+            ${['Unknown','Yes','Limited','No'].map(o=>`<option${o===clinic.english?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="field-group single">
+        <div><label>Notes</label><textarea oninput="updateSmileClinic(${ci},'notes',this.value)" placeholder="Pre-op requirements, post-op restrictions, flying clearance timeline...">${esc(clinic.notes)}</textarea></div>
+      </div>
+
+      <!-- Contact log for this clinic -->
+      <div style="margin-top:16px;border-top:1px solid #2A3A4A;padding-top:14px">
+        <div class="card-label" style="margin-bottom:10px">Contact Log</div>
+        ${(clinic.contacts||[]).map((c,cti)=>`
+          <div class="log-entry" style="margin-bottom:12px">
+            <div class="log-entry-date">${c.date||'—'} · ${c.direction}</div>
+            <div style="font-size:13px;line-height:1.6;color:var(--sand);white-space:pre-wrap">${esc(c.body)}</div>
+            <button onclick="deleteSmileContact(${ci},${cti})" style="background:transparent;border:none;color:#E07B5A;font-family:var(--mono);font-size:9px;cursor:pointer;margin-top:4px">remove</button>
+          </div>`).join('')}
+        <div style="background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px">
+          <div class="field-group three">
+            <div><label>Date</label><input type="date" id="smile-log-date-${ci}"></div>
+            <div><label>Direction</label>
+              <select id="smile-log-dir-${ci}">
+                <option>Sent — email</option>
+                <option>Sent — phone</option>
+                <option>Received — reply</option>
+                <option>Received — phone</option>
+                <option>Note to self</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end">
+              <button class="add-row-btn" style="border-style:solid;border-color:var(--ocean);color:var(--reef);margin-top:0" onclick="addSmileContact(${ci})">+ Add entry</button>
+            </div>
+          </div>
+          <div class="field-group single">
+            <div><label>Message / notes</label><textarea id="smile-log-body-${ci}" placeholder="What did you ask, what did they say..."></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="removeSmileClinic(${ci})" style="background:transparent;border:1px solid #E07B5A;color:#E07B5A;font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:3px;cursor:pointer;margin-top:12px">Remove clinic</button>
+    </div>`).join('');
+}
+
+function addSmileClinic() {
+  smileClinics.push({ name:'', area:'', status:'Researching', phone:'', email:'', website:'', price:'', english:'Unknown', notes:'', contacts:[] });
+  saveSmileClinics();
+  renderSmileClinics();
+}
+
+function updateSmileClinic(ci, field, value) {
+  smileClinics[ci][field] = value;
+  saveSmileClinics();
+  const cards = document.querySelectorAll('#smile-clinics-list .card');
+  if (cards[ci]) {
+    const lbl = cards[ci].querySelector('.card-label');
+    const badge = cards[ci].querySelector('span[style]');
+    if (lbl) lbl.textContent = smileClinics[ci].name || 'Unnamed clinic';
+    if (badge) { badge.textContent = smileClinics[ci].status||'Researching'; badge.style.background = statusBg(smileClinics[ci].status); badge.style.color = statusColor(smileClinics[ci].status); }
+  }
+}
+
+function addSmileContact(ci) {
+  const date = document.getElementById(`smile-log-date-${ci}`).value;
+  const direction = document.getElementById(`smile-log-dir-${ci}`).value;
+  const body = document.getElementById(`smile-log-body-${ci}`).value.trim();
+  if (!body) return;
+  if (!smileClinics[ci].contacts) smileClinics[ci].contacts = [];
+  smileClinics[ci].contacts.unshift({ date, direction, body });
+  saveSmileClinics();
+  renderSmileClinics();
+}
+
+function deleteSmileContact(ci, cti) {
+  smileClinics[ci].contacts.splice(cti, 1);
+  saveSmileClinics();
+  renderSmileClinics();
+}
+
+function removeSmileClinic(ci) {
+  if (!confirm('Remove this clinic?')) return;
+  smileClinics.splice(ci, 1);
+  saveSmileClinics();
+  renderSmileClinics();
 }
 
 function addFood() {
@@ -1195,6 +1405,8 @@ function renderLog() {
 }
 
 renderLog();
+renderDiveShops();
+renderSmileClinics();
 </script>
 </body>
 </html>
