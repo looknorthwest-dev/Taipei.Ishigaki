@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ishigaki + Taipei Trip Planner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap');
+
+  :root {
+    --ocean:    #1A6B8A;
+    --reef:     #0ABFA3;
+    --sand:     #F5EDD8;
+    --dusk:     #2C3E50;
+    --coral:    #E07B5A;
+    --ink:      #1A1F2E;
+    --mist:     #EAF4F7;
+    --rule:     #D0E8EF;
+    --mono:     'IBM Plex Mono', monospace;
+    --sans:     'Sora', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--ink);
+    color: var(--sand);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    border-bottom: 1px solid #2E3A4A;
+    padding: 18px 24px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .trip-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--reef);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .trip-subtitle {
+    font-size: 12px;
+    color: #5A7A8A;
+    font-family: var(--mono);
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 14px 10px;
+    border: none;
+    background: transparent;
+    color: #4A6A7A;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab:hover { color: var(--sand); }
+  .tab.active {
+    color: var(--reef);
+    border-bottom-color: var(--reef);
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--reef);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .sync-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--ocean);
+    color: var(--reef);
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+  }
+  .sync-btn:hover { background: rgba(10,191,163,0.08); }
+  .sync-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── CARDS ── */
+  .card {
+    background: #1F2B38;
+    border: 1px solid #2A3A4A;
+    border-radius: 6px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+
+  .card-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ocean);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* ── FORM FIELDS ── */
+  .field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .field-group.single { grid-template-columns: 1fr; }
+  .field-group.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #5A7A8A;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    background: #141C26;
+    border: 1px solid #2A3A4A;
+    border-radius: 4px;
+    color: var(--sand);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--ocean);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  /* ── ADD ROW BUTTON ── */
+  .add-row-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px dashed #2A3A4A;
+    color: #4A6A7A;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    margin-top: 4px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .add-row-btn:hover {
+    border-color: var(--ocean);
+    color: var(--reef);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline-entry {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .tl-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--reef);
+    min-width: 90px;
+    padding-top: 9px;
+  }
+  .tl-fields { flex: 1; }
+
+  /* ── PHASE BADGE ── */
+  .phase-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+  .badge-transit { background: #2A3A4A; color: #8AABB8; }
+  .badge-ishigaki { background: rgba(10,191,163,0.12); color: var(--reef); }
+  .badge-taipei { background: rgba(224,123,90,0.12); color: var(--coral); }
+
+  /* ── STATUS PILL ── */
+  .status-pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    margin-left: 8px;
+  }
+  .pill-todo { background: #2A3A4A; color: #5A7A8A; }
+  .pill-booked { background: rgba(10,191,163,0.15); color: var(--reef); }
+  .pill-confirmed { background: rgba(26,107,138,0.3); color: #7ACFE4; }
+
+  /* ── DIVE LOG SPECIFIC ── */
+  .dive-number {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--reef);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+
+  /* ── SMILE TIMELINE ── */
+  .procedure-step {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #2A3A4A;
+  }
+  .procedure-step:last-child { border-bottom: none; }
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--coral);
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .step-content { flex: 1; }
+  .step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sand);
+    margin-bottom: 4px;
+  }
+  .step-note {
+    font-size: 12px;
+    color: #5A7A8A;
+    line-height: 1.5;
+  }
+
+  /* ── LOG ENTRIES ── */
+  .log-entry {
+    border-left: 2px solid #2A3A4A;
+    padding-left: 14px;
+    margin-bottom: 16px;
+  }
+  .log-entry-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--reef);
+    margin-bottom: 4px;
+  }
+
+  /* ── SYNC STATUS ── */
+  #sync-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #4A6A7A;
+    text-align: right;
+    padding: 6px 0 0;
+    height: 22px;
+  }
+  #sync-status.ok { color: var(--reef); }
+  #sync-status.err { color: var(--coral); }
+
+  /* ── CONFIG MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,15,22,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #1F2B38;
+    border: 1px solid #2A3A4A;
+    border-radius: 8px;
+    padding: 28px;
+    width: 90%;
+    max-width: 480px;
+  }
+  .modal h2 {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--reef);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .modal p {
+    font-size: 12px;
+    color: #5A7A8A;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .modal-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    background: var(--ocean);
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .btn-secondary {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid #2A3A4A;
+    color: #5A7A8A;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+
+  /* ── GEAR ICON ── */
+  .config-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #3A5A6A;
+    padding: 4px;
+    font-size: 14px;
+    transition: color 0.15s;
+  }
+  .config-btn:hover { color: var(--reef); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 540px) {
+    .field-group { grid-template-columns: 1fr; }
+    .field-group.three { grid-template-columns: 1fr; }
+    .header-top { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CONFIG MODAL -->
+<div class="modal-overlay" id="config-modal">
+  <div class="modal">
+    <h2>Google Sheets Config</h2>
+    <p>Enter your Google Apps Script Web App URL to enable syncing. The script should have read/write access to your sheet (ID: <code style="color:var(--reef);font-size:11px">1rfTvbs8S5sdeAcVjihK9jcLn-YXezamPiOVzQy15dvk</code>).</p>
+    <div>
+      <label>Apps Script Web App URL</label>
+      <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/..." />
+    </div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeConfig()">Cancel</button>
+      <button class="btn-primary" onclick="saveConfig()">Save</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="header-top">
+    <span class="trip-title">Ishigaki + Taipei — Oct 2026</span>
+    <span class="trip-subtitle">10d Ishigaki · 3–5d Taipei · SMILE</span>
+    <button class="config-btn" onclick="openConfig()" title="Configure sync">⚙</button>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="timeline">Timeline</button>
+    <button class="tab" data-tab="flights">Flights</button>
+    <button class="tab" data-tab="accom">Accom</button>
+    <button class="tab" data-tab="diving">Diving</button>
+    <button class="tab" data-tab="smile">SMILE</button>
+    <button class="tab" data-tab="food">Food</button>
+    <button class="tab" data-tab="places">Places</button>
+    <button class="tab" data-tab="transport">Transport</button>
+    <button class="tab" data-tab="log">Log</button>
+  </nav>
+</header>
+
+<main>
+  <div id="sync-status"></div>
+
+  <!-- ══ TIMELINE ══ -->
+  <div class="panel active" id="panel-timeline">
+    <div class="section-header">
+      <span class="section-title">Trip Timeline</span>
+      <button class="sync-btn" onclick="syncTab('timeline')">↑ Sync</button>
+    </div>
+
+    <span class="phase-badge badge-transit">Transit</span>
+    <div id="timeline-transit">
+      <div class="card">
+        <div class="timeline-entry">
+          <div class="tl-date" id="tl-depart-label">Depart</div>
+          <div class="tl-fields field-group">
+            <div>
+              <label>Date</label>
+              <input type="date" id="tl-depart-date">
+            </div>
+            <div>
+              <label>Note</label>
+              <input type="text" id="tl-depart-note" placeholder="PDX → TPE layover → ISG">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="phase-badge badge-ishigaki">Ishigaki</span>
+    <div id="timeline-ishigaki">
+      <div class="card">
+        <div class="timeline-entry">
+          <div class="tl-date">Arrive ISG</div>
+          <div class="tl-fields field-group">
+            <div>
+              <label>Date</label>
+              <input type="date" id="tl-isg-arrive">
+            </div>
+            <div>
+              <label>Note</label>
+              <input type="text" id="tl-isg-arrive-note" placeholder="Check in, settle">
+            </div>
+          </div>
+        </div>
+        <div class="timeline-entry">
+          <div class="tl-date">Depart ISG</div>
+          <div class="tl-fields field-group">
+            <div>
+              <label>Date</label>
+              <input type="date" id="tl-isg-depart">
+            </div>
+            <div>
+              <label>Note</label>
+              <input type="text" id="tl-isg-depart-note" placeholder="ISG → TPE">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="phase-badge badge-taipei">Taipei</span>
+    <div id="timeline-taipei">
+      <div class="card">
+        <div class="timeline-entry">
+          <div class="tl-date">Arrive TPE</div>
+          <div class="tl-fields field-group">
+            <div>
+              <label>Date</label>
+              <input type="date" id="tl-tpe-arrive">
+            </div>
+            <div>
+              <label>Note</label>
+              <input type="text" id="tl-tpe-arrive-note" placeholder="Check in, pre-op rest">
+            </div>
+          </div>
+        </div>
+        <div class="timeline-entry">
+          <div class="tl-date">SMILE Day</div>
+          <div class="tl-fields field-group">
+            <div>
+              <label>Date</label>
+              <input type="date" id="tl-smile-date">
+            </div>
+            <div>
+              <label>Note</label>
+              <input type="text" id="tl-smile-note" placeholder="Procedure + rest">
+            </div>
+          </div>
+        </div>
+        <div class="timeline-entry">
+          <div class="tl-date">Depart TPE</div>
+          <div class="tl-fields field-group">
+            <div>
+              <label>Date</label>
+              <input type="date" id="tl-home-date">
+            </div>
+            <div>
+              <label>Note</label>
+              <input type="text" id="tl-home-note" placeholder="TPE → PDX, home">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FLIGHTS ══ -->
+  <div class="panel" id="panel-flights">
+    <div class="section-header">
+      <span class="section-title">Flights</span>
+      <button class="sync-btn" onclick="syncTab('flights')">↑ Sync</button>
+    </div>
+    <div id="flights-list">
+      <div class="card" data-flight="1">
+        <div class="card-label">Flight 1 — Outbound</div>
+        <div class="field-group three">
+          <div><label>Route</label><input type="text" placeholder="PDX → TPE"></div>
+          <div><label>Date</label><input type="date"></div>
+          <div><label>Airline / Flight #</label><input type="text" placeholder="e.g. EVA BR012"></div>
+        </div>
+        <div class="field-group three">
+          <div><label>Departs</label><input type="text" placeholder="18:30"></div>
+          <div><label>Arrives</label><input type="text" placeholder="22:10+1"></div>
+          <div><label>Status</label>
+            <select>
+              <option>To book</option>
+              <option>Booked</option>
+              <option>Confirmed</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <div><label>Confirmation #</label><input type="text" placeholder="—"></div>
+          <div><label>Cost (USD)</label><input type="number" placeholder="0"></div>
+        </div>
+        <div class="field-group single">
+          <div><label>Notes</label><textarea placeholder="Luggage allowance, layover details..."></textarea></div>
+        </div>
+      </div>
+      <div class="card" data-flight="2">
+        <div class="card-label">Flight 2 — TPE → ISG (Tiger Air)</div>
+        <div class="field-group three">
+          <div><label>Route</label><input type="text" placeholder="TPE → ISG" value="TPE → ISG"></div>
+          <div><label>Date</label><input type="date"></div>
+          <div><label>Airline / Flight #</label><input type="text" placeholder="Tiger Air IT..." value="Tiger Air"></div>
+        </div>
+        <div class="field-group three">
+          <div><label>Departs</label><input type="text" placeholder="06:xx"></div>
+          <div><label>Arrives</label><input type="text" placeholder="07:xx"></div>
+          <div><label>Status</label>
+            <select>
+              <option>To book</option>
+              <option>Booked</option>
+              <option>Confirmed</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <div><label>Confirmation #</label><input type="text"></div>
+          <div><label>Cost (USD)</label><input type="number" placeholder="0"></div>
+        </div>
+        <div class="field-group single">
+          <div><label>Notes</label><textarea placeholder="Early morning — plan previous night at TPE area"></textarea></div>
+        </div>
+      </div>
+    </div>
+    <button class="add-row-btn" onclick="addFlight()">+ Add flight</button>
+  </div>
+
+  <!-- ══ ACCOMMODATION ══ -->
+  <div class="panel" id="panel-accom">
+    <div class="section-header">
+      <span class="section-title">Accommodation</span>
+      <button class="sync-btn" onclick="syncTab('accom')">↑ Sync</button>
+    </div>
+    <div id="accom-list">
+      <div class="card">
+        <div class="card-label">Ishigaki — ~10 nights</div>
+        <div class="field-group">
+          <div><label>Property name</label><input type="text" placeholder="Guesthouse / minshuku name"></div>
+          <div><label>Area / neighborhood</label><input type="text" placeholder="Ishigaki city center, Kabira, etc."></div>
+        </div>
+        <div class="field-group three">
+          <div><label>Check-in</label><input type="date"></div>
+          <div><label>Check-out</label><input type="date"></div>
+          <div><label>Total cost (JPY)</label><input type="number" placeholder="0"></div>
+        </div>
+        <div class="field-group">
+          <div><label>Booking platform</label><input type="text" placeholder="Direct / Booking / etc."></div>
+          <div><label>Confirmation #</label><input type="text"></div>
+        </div>
+        <div class="field-group single">
+          <div><label>Notes</label><textarea placeholder="Contact, access from port, parking, dive gear storage..."></textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Taipei — 3–5 nights (post-SMILE)</div>
+        <div class="field-group">
+          <div><label>Property name</label><input type="text" placeholder="Hotel / guesthouse name"></div>
+          <div><label>Area / neighborhood</label><input type="text" placeholder="Near clinic, Da'an, Zhongzheng..."></div>
+        </div>
+        <div class="field-group three">
+          <div><label>Check-in</label><input type="date"></div>
+          <div><label>Check-out</label><input type="date"></div>
+          <div><label>Total cost (USD)</label><input type="number" placeholder="0"></div>
+        </div>
+        <div class="field-group">
+          <div><label>Booking platform</label><input type="text"></div>
+          <div><label>Confirmation #</label><input type="text"></div>
+        </div>
+        <div class="field-group single">
+          <div><label>Notes</label><textarea placeholder="Post-op: blackout curtains, quiet, close to clinic for follow-up..."></textarea></div>
+        </div>
+      </div>
+    </div>
+    <button class="add-row-btn" onclick="addAccom()">+ Add accommodation</button>
+  </div>
+
+  <!-- ══ DIVING ══ -->
+  <div class="panel" id="panel-diving">
+    <div class="section-header">
+      <span class="section-title">Diving</span>
+      <button class="sync-btn" onclick="syncTab('diving')">↑ Sync</button>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Dive Shop</div>
+      <div class="field-group">
+        <div><label>Shop name</label><input type="text" placeholder="TBD — research needed"></div>
+        <div><label>Location</label><input type="text" placeholder="Ishigaki city / Kabira Bay"></div>
+      </div>
+      <div class="field-group">
+        <div><label>Phone / LINE</label><input type="text"></div>
+        <div><label>Website</label><input type="text"></div>
+      </div>
+      <div class="field-group single">
+        <div><label>Notes</label><textarea placeholder="Referral student acceptance, gear rental included, schedule flexibility..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">OWD Certification — Referral Completion</div>
+      <div class="field-group three">
+        <div><label>Confined water session 1</label><input type="date"></div>
+        <div><label>Confined water session 2</label><input type="date"></div>
+        <div><label>Open water dive 1</label><input type="date"></div>
+      </div>
+      <div class="field-group three">
+        <div><label>Open water dive 2</label><input type="date"></div>
+        <div><label>Open water dive 3</label><input type="date"></div>
+        <div><label>Open water dive 4</label><input type="date"></div>
+      </div>
+      <div class="field-group">
+        <div><label>Total cost (JPY)</label><input type="number" placeholder="Incl. gear rental"></div>
+        <div><label>Status</label>
+          <select>
+            <option>To book</option>
+            <option>Inquired</option>
+            <option>Booked</option>
+            <option>Certified ✓</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Fun Dives / Snorkel Spots</div>
+      <div id="dive-sites">
+        <div style="margin-bottom:12px">
+          <div class="field-group three">
+            <div><label>Site name</label><input type="text" placeholder="e.g. Manta Scramble"></div>
+            <div><label>Date</label><input type="date"></div>
+            <div><label>Type</label>
+              <select>
+                <option>Fun dive</option>
+                <option>Snorkel</option>
+                <option>Shore dive</option>
+                <option>Boat dive</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group single">
+            <div><label>Notes</label><input type="text" placeholder="Visibility, current, highlights..."></div>
+          </div>
+        </div>
+      </div>
+      <button class="add-row-btn" onclick="addDiveSite()">+ Add site</button>
+    </div>
+  </div>
+
+  <!-- ══ SMILE ══ -->
+  <div class="panel" id="panel-smile">
+    <div class="section-header">
+      <span class="section-title">SMILE Eye Procedure</span>
+      <button class="sync-btn" onclick="syncTab('smile')">↑ Sync</button>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Clinic Details</div>
+      <div class="field-group">
+        <div><label>Clinic name</label><input type="text" placeholder="e.g. Taiwan clinic"></div>
+        <div><label>Location / district</label><input type="text" placeholder="Taipei district"></div>
+      </div>
+      <div class="field-group">
+        <div><label>Contact</label><input type="text"></div>
+        <div><label>Website</label><input type="text"></div>
+      </div>
+      <div class="field-group">
+        <div><label>Total cost (NTD)</label><input type="number" placeholder="0"></div>
+        <div><label>Status</label>
+          <select>
+            <option>Researching</option>
+            <option>Inquired</option>
+            <option>Consultation booked</option>
+            <option>Procedure confirmed</option>
+            <option>Complete ✓</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Procedure Timeline</div>
+      <div class="procedure-step">
+        <div class="step-dot"></div>
+        <div class="step-content">
+          <div class="step-title">Pre-op consultation</div>
+          <div class="step-note">Eye measurements, candidacy check. Stop contacts ~2 weeks before.</div>
+          <div style="margin-top:8px"><input type="date" id="smile-consult-date"></div>
+        </div>
+      </div>
+      <div class="procedure-step">
+        <div class="step-dot"></div>
+        <div class="step-content">
+          <div class="step-title">Procedure day</div>
+          <div class="step-note">~30 min total. Arrange quiet rest accommodation same day. No driving.</div>
+          <div style="margin-top:8px"><input type="date" id="smile-procedure-date"></div>
+        </div>
+      </div>
+      <div class="procedure-step">
+        <div class="step-dot"></div>
+        <div class="step-content">
+          <div class="step-title">Day-after follow-up</div>
+          <div class="step-note">Vision check, prescription drops confirmed. Avoid screens, bright light.</div>
+          <div style="margin-top:8px"><input type="date" id="smile-followup-date"></div>
+        </div>
+      </div>
+      <div class="procedure-step">
+        <div class="step-dot"></div>
+        <div class="step-content">
+          <div class="step-title">Final check / clearance to fly</div>
+          <div class="step-note">Confirm OK to travel. Keep eye drops in carry-on.</div>
+          <div style="margin-top:8px"><input type="date" id="smile-clearance-date"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Notes & Questions for Clinic</div>
+      <textarea placeholder="Prescription, astigmatism details, dive restriction timeline post-op, flying clearance, aftercare drops..."></textarea>
+    </div>
+  </div>
+
+  <!-- ══ FOOD ══ -->
+  <div class="panel" id="panel-food">
+    <div class="section-header">
+      <span class="section-title">Food & Restaurants</span>
+      <button class="sync-btn" onclick="syncTab('food')">↑ Sync</button>
+    </div>
+    <div id="food-list">
+      <div class="card">
+        <div class="field-group three">
+          <div><label>Name</label><input type="text" placeholder="Restaurant / market name"></div>
+          <div><label>Location</label>
+            <select>
+              <option>Ishigaki</option>
+              <option>Taipei</option>
+              <option>TPE Airport area</option>
+            </select>
+          </div>
+          <div><label>Type</label>
+            <select>
+              <option>Seafood</option>
+              <option>Plant-based</option>
+              <option>Market</option>
+              <option>Izakaya</option>
+              <option>Ramen / noodles</option>
+              <option>Night market</option>
+              <option>Breakfast</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <div><label>Why / notes</label><input type="text" placeholder="Vegan-friendly, local fish, must-try dish..."></div>
+          <div><label>Status</label>
+            <select>
+              <option>Want to try</option>
+              <option>Visited ✓</option>
+              <option>Skip</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="add-row-btn" onclick="addFood()">+ Add place</button>
+  </div>
+
+  <!-- ══ PLACES ══ -->
+  <div class="panel" id="panel-places">
+    <div class="section-header">
+      <span class="section-title">Places & Sightseeing</span>
+      <button class="sync-btn" onclick="syncTab('places')">↑ Sync</button>
+    </div>
+    <div id="places-list">
+      <div class="card">
+        <div class="field-group three">
+          <div><label>Place name</label><input type="text" placeholder="Kabira Bay, Taketomi Island..."></div>
+          <div><label>Location</label>
+            <select>
+              <option>Ishigaki</option>
+              <option>Nearby island</option>
+              <option>Taipei</option>
+              <option>Taoyuan</option>
+            </select>
+          </div>
+          <div><label>Category</label>
+            <select>
+              <option>Nature / beach</option>
+              <option>Cultural site</option>
+              <option>Market</option>
+              <option>Temple / shrine</option>
+              <option>Night market</option>
+              <option>Viewpoint</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <div><label>Notes</label><input type="text" placeholder="Hours, cost, how to get there..."></div>
+          <div><label>Priority</label>
+            <select>
+              <option>Must do</option>
+              <option>Nice to have</option>
+              <option>If time permits</option>
+              <option>Done ✓</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="add-row-btn" onclick="addPlace()">+ Add place</button>
+  </div>
+
+  <!-- ══ TRANSPORT ══ -->
+  <div class="panel" id="panel-transport">
+    <div class="section-header">
+      <span class="section-title">Transport</span>
+      <button class="sync-btn" onclick="syncTab('transport')">↑ Sync</button>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Ishigaki — Getting Around</div>
+      <div class="field-group">
+        <div><label>Primary transport</label>
+          <select>
+            <option>Rental car</option>
+            <option>Rental scooter</option>
+            <option>Bus</option>
+            <option>Taxi / ride share</option>
+            <option>Bicycle</option>
+          </select>
+        </div>
+        <div><label>Rental company / booking</label><input type="text" placeholder="TBD"></div>
+      </div>
+      <div class="field-group single">
+        <div><label>Notes</label><textarea placeholder="Drive on left, international license required, ferry to Taketomi/Iriomote timetable..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Taipei / Taoyuan — Getting Around</div>
+      <div class="field-group single">
+        <div><label>Airport → city plan</label><textarea placeholder="Airport MRT to Taipei Main Station (~NTD 160, 36 min) or taxi (~NTD 1200-1500). Zhongli Night Market via MRT for layover dinner."></textarea></div>
+      </div>
+      <div class="field-group single">
+        <div><label>City transport</label><textarea placeholder="EasyCard for MRT, YouBike, taxi for clinic days post-SMILE. Avoid driving post-op."></textarea></div>
+      </div>
+    </div>
+
+    <div id="transport-extra-list"></div>
+    <button class="add-row-btn" onclick="addTransport()">+ Add transport note</button>
+  </div>
+
+  <!-- ══ LOG ══ -->
+  <div class="panel" id="panel-log">
+    <div class="section-header">
+      <span class="section-title">Trip Log</span>
+      <button class="sync-btn" onclick="syncTab('log')">↑ Sync</button>
+    </div>
+
+    <div class="card">
+      <div class="card-label">New Entry</div>
+      <div class="field-group">
+        <div><label>Date</label><input type="date" id="log-date"></div>
+        <div><label>Location</label>
+          <select id="log-location">
+            <option>Ishigaki</option>
+            <option>Taipei</option>
+            <option>Taoyuan</option>
+            <option>Transit</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group single">
+        <div><label>Entry</label><textarea id="log-text" rows="4" placeholder="What happened today..."></textarea></div>
+      </div>
+      <button class="add-row-btn" style="border-style:solid;border-color:var(--ocean);color:var(--reef)" onclick="addLogEntry()">+ Save entry</button>
+    </div>
+
+    <div id="log-entries"></div>
+  </div>
+
+</main>
+
+<script>
+// ── STATE ──
+const SHEET_ID = '1rfTvbs8S5sdeAcVjihK9jcLn-YXezamPiOVzQy15dvk';
+const SHEET_TABS = {
+  timeline:  'isg_timeline',
+  flights:   'isg_flights',
+  accom:     'isg_accom',
+  diving:    'isg_dive',
+  smile:     'isg_smile',
+  food:      'isg_food',
+  places:    'isg_places',
+  transport: 'isg_transport',
+  log:       'isg_log'
+};
+
+let scriptUrl = localStorage.getItem('ishi_script_url') || '';
+let logEntries = JSON.parse(localStorage.getItem('ishi_log') || '[]');
+
+// ── TABS ──
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── CONFIG ──
+function openConfig() {
+  document.getElementById('config-modal').classList.add('open');
+  document.getElementById('script-url-input').value = scriptUrl;
+}
+function closeConfig() {
+  document.getElementById('config-modal').classList.remove('open');
+}
+function saveConfig() {
+  scriptUrl = document.getElementById('script-url-input').value.trim();
+  localStorage.setItem('ishi_script_url', scriptUrl);
+  closeConfig();
+  setStatus('Config saved.', 'ok');
+}
+
+// ── STATUS ──
+function setStatus(msg, type) {
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.className = type || '';
+  setTimeout(() => { el.textContent = ''; el.className = ''; }, 4000);
+}
+
+// ── SYNC ──
+async function syncTab(tab) {
+  if (!scriptUrl) {
+    openConfig();
+    return;
+  }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '↑ Syncing…';
+  setStatus('Syncing ' + tab + '…');
+
+  // Collect all inputs from the active panel
+  const panel = document.getElementById('panel-' + tab);
+  const rows = [];
+  
+  if (tab === 'log') {
+    logEntries.forEach(e => rows.push([e.date, e.location, e.text]));
+  } else {
+    // Gather all labeled inputs
+    panel.querySelectorAll('input, select, textarea').forEach((el, i) => {
+      const label = el.previousElementSibling?.textContent || el.placeholder || ('field_' + i);
+      rows.push([label, el.value]);
+    });
+  }
+
+  try {
+    const resp = await fetch(scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheet: SHEET_TABS[tab], rows })
+    });
+    setStatus('Synced to sheet: ' + SHEET_TABS[tab], 'ok');
+  } catch(e) {
+    setStatus('Sync error — check script URL', 'err');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '↑ Sync';
+}
+
+// ── ADD ROWS ──
+function addFlight() {
+  const list = document.getElementById('flights-list');
+  const n = list.children.length + 1;
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-label">Flight ${n}</div>
+    <div class="field-group three">
+      <div><label>Route</label><input type="text" placeholder="XXX → YYY"></div>
+      <div><label>Date</label><input type="date"></div>
+      <div><label>Airline / Flight #</label><input type="text"></div>
+    </div>
+    <div class="field-group three">
+      <div><label>Departs</label><input type="text" placeholder="HH:MM"></div>
+      <div><label>Arrives</label><input type="text" placeholder="HH:MM"></div>
+      <div><label>Status</label><select><option>To book</option><option>Booked</option><option>Confirmed</option></select></div>
+    </div>
+    <div class="field-group">
+      <div><label>Confirmation #</label><input type="text"></div>
+      <div><label>Cost (USD)</label><input type="number" placeholder="0"></div>
+    </div>
+    <div class="field-group single"><div><label>Notes</label><textarea></textarea></div></div>`;
+  list.appendChild(card);
+}
+
+function addAccom() {
+  const list = document.getElementById('accom-list');
+  const n = list.children.length + 1;
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-label">Accommodation ${n}</div>
+    <div class="field-group"><div><label>Property name</label><input type="text"></div><div><label>Area</label><input type="text"></div></div>
+    <div class="field-group three"><div><label>Check-in</label><input type="date"></div><div><label>Check-out</label><input type="date"></div><div><label>Cost</label><input type="number" placeholder="0"></div></div>
+    <div class="field-group"><div><label>Booking platform</label><input type="text"></div><div><label>Confirmation #</label><input type="text"></div></div>
+    <div class="field-group single"><div><label>Notes</label><textarea></textarea></div></div>`;
+  list.appendChild(card);
+}
+
+function addDiveSite() {
+  const list = document.getElementById('dive-sites');
+  const div = document.createElement('div');
+  div.style.marginBottom = '12px';
+  div.innerHTML = `
+    <div class="field-group three">
+      <div><label>Site name</label><input type="text" placeholder="Site name"></div>
+      <div><label>Date</label><input type="date"></div>
+      <div><label>Type</label><select><option>Fun dive</option><option>Snorkel</option><option>Shore dive</option><option>Boat dive</option></select></div>
+    </div>
+    <div class="field-group single"><div><label>Notes</label><input type="text" placeholder="Visibility, current, highlights..."></div></div>`;
+  list.insertBefore(div, list.querySelector('.add-row-btn'));
+}
+
+function addFood() {
+  const list = document.getElementById('food-list');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="field-group three">
+      <div><label>Name</label><input type="text" placeholder="Restaurant / market name"></div>
+      <div><label>Location</label><select><option>Ishigaki</option><option>Taipei</option><option>TPE Airport area</option></select></div>
+      <div><label>Type</label><select><option>Seafood</option><option>Plant-based</option><option>Market</option><option>Izakaya</option><option>Ramen / noodles</option><option>Night market</option><option>Breakfast</option><option>Other</option></select></div>
+    </div>
+    <div class="field-group"><div><label>Why / notes</label><input type="text"></div><div><label>Status</label><select><option>Want to try</option><option>Visited ✓</option><option>Skip</option></select></div></div>`;
+  list.appendChild(card);
+}
+
+function addPlace() {
+  const list = document.getElementById('places-list');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="field-group three">
+      <div><label>Place name</label><input type="text"></div>
+      <div><label>Location</label><select><option>Ishigaki</option><option>Nearby island</option><option>Taipei</option><option>Taoyuan</option></select></div>
+      <div><label>Category</label><select><option>Nature / beach</option><option>Cultural site</option><option>Market</option><option>Temple / shrine</option><option>Night market</option><option>Viewpoint</option><option>Other</option></select></div>
+    </div>
+    <div class="field-group"><div><label>Notes</label><input type="text"></div><div><label>Priority</label><select><option>Must do</option><option>Nice to have</option><option>If time permits</option><option>Done ✓</option></select></div></div>`;
+  list.appendChild(card);
+}
+
+function addTransport() {
+  const list = document.getElementById('transport-extra-list');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="field-group"><div><label>Segment</label><input type="text" placeholder="e.g. Ferry to Taketomi"></div><div><label>Date</label><input type="date"></div></div>
+    <div class="field-group single"><div><label>Details</label><textarea placeholder="Cost, timetable, booking needed..."></textarea></div></div>`;
+  list.appendChild(card);
+}
+
+// ── LOG ──
+function addLogEntry() {
+  const date = document.getElementById('log-date').value;
+  const location = document.getElementById('log-location').value;
+  const text = document.getElementById('log-text').value.trim();
+  if (!text) return;
+
+  const entry = { date, location, text, id: Date.now() };
+  logEntries.unshift(entry);
+  localStorage.setItem('ishi_log', JSON.stringify(logEntries));
+  renderLog();
+
+  document.getElementById('log-text').value = '';
+  document.getElementById('log-date').value = '';
+}
+
+function renderLog() {
+  const container = document.getElementById('log-entries');
+  if (!logEntries.length) {
+    container.innerHTML = '<p style="color:#3A5A6A;font-size:12px;font-family:var(--mono);margin-top:12px">No entries yet.</p>';
+    return;
+  }
+  container.innerHTML = logEntries.map(e => `
+    <div class="log-entry">
+      <div class="log-entry-date">${e.date || '—'} · ${e.location}</div>
+      <div style="font-size:13px;line-height:1.6;color:var(--sand)">${e.text}</div>
+    </div>`).join('');
+}
+
+renderLog();
+</script>
+</body>
+</html>
