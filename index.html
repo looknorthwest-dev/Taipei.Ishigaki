@@ -7,62 +7,58 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap');
   :root {
-    --ocean:#1A6B8A; --reef:#0ABFA3; --sand:#F5EDD8; --coral:#E07B5A;
-    --ink:#1A1F2E; --mono:'IBM Plex Mono',monospace; --sans:'Sora',sans-serif;
+    --ocean:#1A6B8A;--reef:#0ABFA3;--sand:#F5EDD8;--coral:#E07B5A;
+    --ink:#1A1F2E;--mono:'IBM Plex Mono',monospace;--sans:'Sora',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--sans);background:var(--ink);color:var(--sand);min-height:100vh;}
   header{background:var(--ink);border-bottom:1px solid #2E3A4A;padding:18px 24px 0;position:sticky;top:0;z-index:100;}
   .header-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
   .trip-title{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--reef);letter-spacing:.12em;text-transform:uppercase;}
-  .trip-subtitle{font-size:12px;color:#5A7A8A;font-family:var(--mono);}
+  .trip-sub{font-size:12px;color:#5A7A8A;font-family:var(--mono);}
   .sync-dot{width:8px;height:8px;border-radius:50%;background:#3A5A6A;flex-shrink:0;margin-left:auto;}
-  .sync-dot.ok{background:var(--reef);}
-  .sync-dot.saving{background:#F0C040;}
-  .sync-dot.err{background:var(--coral);}
+  .sync-dot.ok{background:var(--reef);} .sync-dot.saving{background:#F0C040;} .sync-dot.err{background:var(--coral);}
   #sync-msg{font-family:var(--mono);font-size:10px;color:#5A7A8A;}
   .tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
   .tabs::-webkit-scrollbar{display:none;}
   .tab{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px 10px;border:none;background:transparent;color:#4A6A7A;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;}
-  .tab:hover{color:var(--sand);}
-  .tab.active{color:var(--reef);border-bottom-color:var(--reef);}
+  .tab:hover{color:var(--sand);} .tab.active{color:var(--reef);border-bottom-color:var(--reef);}
   main{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
   .panel{display:none;} .panel.active{display:block;}
-  .section-title{font-size:11px;font-family:var(--mono);font-weight:600;color:var(--reef);letter-spacing:.14em;text-transform:uppercase;margin-bottom:20px;}
+  .sec-title{font-size:11px;font-family:var(--mono);font-weight:600;color:var(--reef);letter-spacing:.14em;text-transform:uppercase;margin-bottom:20px;}
   .card{background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;padding:18px 20px;margin-bottom:12px;}
   .card-label{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ocean);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;}
-  .field-group{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-  .field-group.single{grid-template-columns:1fr;}
-  .field-group.three{grid-template-columns:1fr 1fr 1fr;}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .fg1{grid-template-columns:1fr;} .fg3{grid-template-columns:1fr 1fr 1fr;}
   label{display:block;font-family:var(--mono);font-size:10px;color:#5A7A8A;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
   input[type="text"],input[type="date"],input[type="number"],select,textarea{width:100%;background:#141C26;border:1px solid #2A3A4A;border-radius:4px;color:var(--sand);font-family:var(--sans);font-size:13px;padding:8px 10px;outline:none;transition:border-color .15s;}
   input:focus,select:focus,textarea:focus{border-color:var(--ocean);}
   textarea{resize:vertical;min-height:70px;}
-  .add-row-btn{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:transparent;border:1px dashed #2A3A4A;color:#4A6A7A;cursor:pointer;border-radius:4px;width:100%;margin-top:4px;transition:border-color .15s,color .15s;}
-  .add-row-btn:hover{border-color:var(--ocean);color:var(--reef);}
-  .phase-badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:12px;}
-  .badge-transit{background:#2A3A4A;color:#8AABB8;}
-  .badge-ishigaki{background:rgba(10,191,163,.12);color:var(--reef);}
-  .badge-taipei{background:rgba(224,123,90,.12);color:var(--coral);}
-  .tl-entry{display:flex;gap:16px;margin-bottom:10px;align-items:flex-start;}
-  .tl-label{font-family:var(--mono);font-size:11px;color:var(--reef);min-width:90px;padding-top:9px;}
-  .procedure-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #2A3A4A;}
-  .procedure-step:last-child{border-bottom:none;}
+  .add-btn{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:transparent;border:1px dashed #2A3A4A;color:#4A6A7A;cursor:pointer;border-radius:4px;width:100%;margin-top:4px;transition:border-color .15s,color .15s;}
+  .add-btn:hover{border-color:var(--ocean);color:var(--reef);}
+  .add-btn.solid{border-style:solid;border-color:var(--ocean);color:var(--reef);}
+  .rm-btn{background:transparent;border:1px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;cursor:pointer;margin-top:10px;}
+  .sbadge{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:2px;}
+  .phase{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:12px;}
+  .p-transit{background:#2A3A4A;color:#8AABB8;} .p-isg{background:rgba(10,191,163,.12);color:var(--reef);} .p-tpe{background:rgba(224,123,90,.12);color:var(--coral);}
+  .tl-row{display:flex;gap:16px;margin-bottom:10px;align-items:flex-start;}
+  .tl-lbl{font-family:var(--mono);font-size:11px;color:var(--reef);min-width:90px;padding-top:9px;}
+  .proc-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #2A3A4A;}
+  .proc-step:last-child{border-bottom:none;}
   .step-dot{width:8px;height:8px;border-radius:50%;background:var(--coral);margin-top:5px;flex-shrink:0;}
   .step-title{font-size:13px;font-weight:600;color:var(--sand);margin-bottom:4px;}
   .step-note{font-size:12px;color:#5A7A8A;line-height:1.5;}
   .log-entry{border-left:2px solid #2A3A4A;padding-left:14px;margin-bottom:16px;}
-  .log-entry-date{font-family:var(--mono);font-size:10px;color:var(--reef);margin-bottom:4px;}
-  .remove-btn{background:transparent;border:1px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;cursor:pointer;margin-top:10px;}
-  .status-badge{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:2px;}
-  @media(max-width:540px){.field-group,.field-group.three{grid-template-columns:1fr;}.header-top{gap:8px;}}
+  .log-date{font-family:var(--mono);font-size:10px;color:var(--reef);margin-bottom:4px;}
+  .contact-box{background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px;}
+  @media(max-width:540px){.fg,.fg3{grid-template-columns:1fr;}.header-top{gap:8px;}}
 </style>
 </head>
 <body>
 <header>
   <div class="header-top">
     <span class="trip-title">Ishigaki + Taipei — Oct 2026</span>
-    <span class="trip-subtitle">10d Ishigaki · 3–5d Taipei · SMILE</span>
+    <span class="trip-sub">10d Ishigaki · 3–5d Taipei · SMILE</span>
     <div class="sync-dot" id="sync-dot"></div>
     <span id="sync-msg">Loading...</span>
   </div>
@@ -82,552 +78,582 @@
 
 <!-- TIMELINE -->
 <div class="panel active" id="panel-timeline">
-  <div class="section-title">Trip Timeline</div>
-  <span class="phase-badge badge-transit">Transit</span>
+  <div class="sec-title">Trip Timeline</div>
+  <span class="phase p-transit">Transit</span>
   <div class="card">
-    <div class="tl-entry"><div class="tl-label">Depart</div><div style="flex:1" class="field-group"><div><label>Date</label><input type="date" id="tl-depart-date" oninput="kv('timeline','tl-depart-date',this.value)"></div><div><label>Note</label><input type="text" id="tl-depart-note" placeholder="PDX → TPE layover → ISG" oninput="kv('timeline','tl-depart-note',this.value)"></div></div></div>
+    <div class="tl-row"><div class="tl-lbl">Depart</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-depart-date" oninput="kvQ('timeline','tl-depart-date',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-depart-note" placeholder="PDX → TPE layover → ISG" oninput="kvQ('timeline','tl-depart-note',this.value)"></div>
+    </div></div>
   </div>
-  <span class="phase-badge badge-ishigaki">Ishigaki</span>
+  <span class="phase p-isg">Ishigaki</span>
   <div class="card">
-    <div class="tl-entry"><div class="tl-label">Arrive ISG</div><div style="flex:1" class="field-group"><div><label>Date</label><input type="date" id="tl-isg-arrive" oninput="kv('timeline','tl-isg-arrive',this.value)"></div><div><label>Note</label><input type="text" id="tl-isg-arrive-note" placeholder="Check in, settle" oninput="kv('timeline','tl-isg-arrive-note',this.value)"></div></div></div>
-    <div class="tl-entry"><div class="tl-label">Depart ISG</div><div style="flex:1" class="field-group"><div><label>Date</label><input type="date" id="tl-isg-depart" oninput="kv('timeline','tl-isg-depart',this.value)"></div><div><label>Note</label><input type="text" id="tl-isg-depart-note" placeholder="ISG → TPE" oninput="kv('timeline','tl-isg-depart-note',this.value)"></div></div></div>
+    <div class="tl-row"><div class="tl-lbl">Arrive ISG</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-isg-arrive" oninput="kvQ('timeline','tl-isg-arrive',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-isg-arrive-note" placeholder="Check in, settle" oninput="kvQ('timeline','tl-isg-arrive-note',this.value)"></div>
+    </div></div>
+    <div class="tl-row"><div class="tl-lbl">Depart ISG</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-isg-depart" oninput="kvQ('timeline','tl-isg-depart',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-isg-depart-note" placeholder="ISG → TPE" oninput="kvQ('timeline','tl-isg-depart-note',this.value)"></div>
+    </div></div>
   </div>
-  <span class="phase-badge badge-taipei">Taipei</span>
+  <span class="phase p-tpe">Taipei</span>
   <div class="card">
-    <div class="tl-entry"><div class="tl-label">Arrive TPE</div><div style="flex:1" class="field-group"><div><label>Date</label><input type="date" id="tl-tpe-arrive" oninput="kv('timeline','tl-tpe-arrive',this.value)"></div><div><label>Note</label><input type="text" id="tl-tpe-arrive-note" placeholder="Check in, pre-op rest" oninput="kv('timeline','tl-tpe-arrive-note',this.value)"></div></div></div>
-    <div class="tl-entry"><div class="tl-label">SMILE Day</div><div style="flex:1" class="field-group"><div><label>Date</label><input type="date" id="tl-smile-date" oninput="kv('timeline','tl-smile-date',this.value)"></div><div><label>Note</label><input type="text" id="tl-smile-note" placeholder="Procedure + rest" oninput="kv('timeline','tl-smile-note',this.value)"></div></div></div>
-    <div class="tl-entry"><div class="tl-label">Depart TPE</div><div style="flex:1" class="field-group"><div><label>Date</label><input type="date" id="tl-home-date" oninput="kv('timeline','tl-home-date',this.value)"></div><div><label>Note</label><input type="text" id="tl-home-note" placeholder="TPE → PDX, home" oninput="kv('timeline','tl-home-note',this.value)"></div></div></div>
+    <div class="tl-row"><div class="tl-lbl">Arrive TPE</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-tpe-arrive" oninput="kvQ('timeline','tl-tpe-arrive',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-tpe-arrive-note" placeholder="Check in, pre-op rest" oninput="kvQ('timeline','tl-tpe-arrive-note',this.value)"></div>
+    </div></div>
+    <div class="tl-row"><div class="tl-lbl">SMILE Day</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-smile-date" oninput="kvQ('timeline','tl-smile-date',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-smile-note" placeholder="Procedure + rest" oninput="kvQ('timeline','tl-smile-note',this.value)"></div>
+    </div></div>
+    <div class="tl-row"><div class="tl-lbl">Depart TPE</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-home-date" oninput="kvQ('timeline','tl-home-date',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-home-note" placeholder="TPE → PDX, home" oninput="kvQ('timeline','tl-home-note',this.value)"></div>
+    </div></div>
   </div>
 </div>
 
 <!-- FLIGHTS -->
 <div class="panel" id="panel-flights">
-  <div class="section-title">Flights</div>
+  <div class="sec-title">Flights</div>
   <div id="flights-list"></div>
-  <button class="add-row-btn" onclick="addFlight()">+ Add flight</button>
+  <button class="add-btn" onclick="addItem('flights')">+ Add flight</button>
 </div>
 
 <!-- ACCOM -->
 <div class="panel" id="panel-accom">
-  <div class="section-title">Accommodation</div>
+  <div class="sec-title">Accommodation</div>
   <div id="accom-list"></div>
-  <button class="add-row-btn" onclick="addAccom()">+ Add accommodation</button>
+  <button class="add-btn" onclick="addItem('accom')">+ Add accommodation</button>
 </div>
 
 <!-- DIVING -->
 <div class="panel" id="panel-diving">
-  <div class="section-title">Diving</div>
+  <div class="sec-title">Diving</div>
   <div class="card-label" style="margin-bottom:10px">Dive Shops</div>
-  <div id="dive-shops-list"></div>
-  <button class="add-row-btn" onclick="addDiveShop()" style="margin-bottom:24px">+ Add dive shop</button>
+  <div id="dive_shops-list"></div>
+  <button class="add-btn" onclick="addItem('dive_shops')" style="margin-bottom:24px">+ Add dive shop</button>
   <div class="card">
-    <div class="card-label">OWD Certification — Referral Completion</div>
-    <div class="field-group three">
-      <div><label>Confined water 1</label><input type="date" id="owd-cw1" oninput="kv('diving','owd-cw1',this.value)"></div>
-      <div><label>Confined water 2</label><input type="date" id="owd-cw2" oninput="kv('diving','owd-cw2',this.value)"></div>
-      <div><label>Open water dive 1</label><input type="date" id="owd-ow1" oninput="kv('diving','owd-ow1',this.value)"></div>
+    <div class="card-label">OWD Certification</div>
+    <div class="fg fg3">
+      <div><label>Confined water 1</label><input type="date" id="owd-cw1" oninput="kvQ('diving','owd-cw1',this.value)"></div>
+      <div><label>Confined water 2</label><input type="date" id="owd-cw2" oninput="kvQ('diving','owd-cw2',this.value)"></div>
+      <div><label>OW dive 1</label><input type="date" id="owd-ow1" oninput="kvQ('diving','owd-ow1',this.value)"></div>
     </div>
-    <div class="field-group three">
-      <div><label>Open water dive 2</label><input type="date" id="owd-ow2" oninput="kv('diving','owd-ow2',this.value)"></div>
-      <div><label>Open water dive 3</label><input type="date" id="owd-ow3" oninput="kv('diving','owd-ow3',this.value)"></div>
-      <div><label>Open water dive 4</label><input type="date" id="owd-ow4" oninput="kv('diving','owd-ow4',this.value)"></div>
+    <div class="fg fg3">
+      <div><label>OW dive 2</label><input type="date" id="owd-ow2" oninput="kvQ('diving','owd-ow2',this.value)"></div>
+      <div><label>OW dive 3</label><input type="date" id="owd-ow3" oninput="kvQ('diving','owd-ow3',this.value)"></div>
+      <div><label>OW dive 4</label><input type="date" id="owd-ow4" oninput="kvQ('diving','owd-ow4',this.value)"></div>
     </div>
-    <div class="field-group">
-      <div><label>Total cost (JPY)</label><input type="number" id="owd-cost" oninput="kv('diving','owd-cost',this.value)"></div>
-      <div><label>Status</label><select id="owd-status" onchange="kv('diving','owd-status',this.value)"><option>To book</option><option>Inquired</option><option>Booked</option><option>Certified ✓</option></select></div>
+    <div class="fg">
+      <div><label>Total cost (JPY)</label><input type="number" id="owd-cost" oninput="kvQ('diving','owd-cost',this.value)"></div>
+      <div><label>Status</label><select id="owd-status" onchange="kvQ('diving','owd-status',this.value)">
+        <option>To book</option><option>Inquired</option><option>Booked</option><option>Certified ✓</option>
+      </select></div>
     </div>
   </div>
   <div class="card">
     <div class="card-label">Fun Dives / Snorkel Spots</div>
-    <div id="dive-sites-list"></div>
-    <button class="add-row-btn" onclick="addDiveSite()">+ Add site</button>
+    <div id="dive_sites-list"></div>
+    <button class="add-btn" onclick="addItem('dive_sites')">+ Add site</button>
   </div>
 </div>
 
 <!-- SMILE -->
 <div class="panel" id="panel-smile">
-  <div class="section-title">SMILE Eye Procedure</div>
+  <div class="sec-title">SMILE Eye Procedure</div>
   <div class="card-label" style="margin-bottom:10px">Clinics</div>
-  <div id="smile-clinics-list"></div>
-  <button class="add-row-btn" onclick="addSmileClinic()" style="margin-bottom:24px">+ Add clinic</button>
+  <div id="smile_clinics-list"></div>
+  <button class="add-btn" onclick="addItem('smile_clinics')" style="margin-bottom:24px">+ Add clinic</button>
   <div class="card">
     <div class="card-label">Procedure Timeline</div>
-    <div class="procedure-step"><div class="step-dot"></div><div style="flex:1"><div class="step-title">Pre-op consultation</div><div class="step-note">Eye measurements, candidacy check. Stop contacts ~2 weeks before.</div><input type="date" id="smile-consult-date" style="margin-top:8px;width:auto" oninput="kv('smile','smile-consult-date',this.value)"></div></div>
-    <div class="procedure-step"><div class="step-dot"></div><div style="flex:1"><div class="step-title">Procedure day</div><div class="step-note">~30 min total. Arrange quiet rest same day. No driving.</div><input type="date" id="smile-procedure-date" style="margin-top:8px;width:auto" oninput="kv('smile','smile-procedure-date',this.value)"></div></div>
-    <div class="procedure-step"><div class="step-dot"></div><div style="flex:1"><div class="step-title">Day-after follow-up</div><div class="step-note">Vision check, drops confirmed. Avoid screens, bright light.</div><input type="date" id="smile-followup-date" style="margin-top:8px;width:auto" oninput="kv('smile','smile-followup-date',this.value)"></div></div>
-    <div class="procedure-step"><div class="step-dot"></div><div style="flex:1"><div class="step-title">Final check / clearance to fly</div><div class="step-note">Confirm OK to travel. Keep drops in carry-on.</div><input type="date" id="smile-clearance-date" style="margin-top:8px;width:auto" oninput="kv('smile','smile-clearance-date',this.value)"></div></div>
+    <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
+      <div class="step-title">Pre-op consultation</div>
+      <div class="step-note">Eye measurements, candidacy check. Stop contacts ~2 weeks before.</div>
+      <input type="date" id="smile-consult-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-consult-date',this.value)">
+    </div></div>
+    <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
+      <div class="step-title">Procedure day</div>
+      <div class="step-note">~30 min total. Arrange quiet rest same day. No driving.</div>
+      <input type="date" id="smile-procedure-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-procedure-date',this.value)">
+    </div></div>
+    <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
+      <div class="step-title">Day-after follow-up</div>
+      <div class="step-note">Vision check, drops confirmed. Avoid screens, bright light.</div>
+      <input type="date" id="smile-followup-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-followup-date',this.value)">
+    </div></div>
+    <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
+      <div class="step-title">Final check / clearance to fly</div>
+      <div class="step-note">Confirm OK to travel. Keep drops in carry-on.</div>
+      <input type="date" id="smile-clearance-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-clearance-date',this.value)">
+    </div></div>
   </div>
-  <div class="card"><div class="card-label">General Notes</div><textarea id="smile-general-notes" placeholder="Prescription, astigmatism, dive restrictions post-op, flying clearance..." oninput="kv('smile','smile-general-notes',this.value)"></textarea></div>
+  <div class="card">
+    <div class="card-label">General Notes</div>
+    <textarea id="smile-general-notes" placeholder="Prescription, astigmatism, dive restrictions post-op, flying clearance..." oninput="kvQ('smile','smile-general-notes',this.value)"></textarea>
+  </div>
 </div>
 
 <!-- FOOD -->
 <div class="panel" id="panel-food">
-  <div class="section-title">Food & Restaurants</div>
+  <div class="sec-title">Food & Restaurants</div>
   <div id="food-list"></div>
-  <button class="add-row-btn" onclick="addFood()">+ Add place</button>
+  <button class="add-btn" onclick="addItem('food')">+ Add place</button>
 </div>
 
 <!-- PLACES -->
 <div class="panel" id="panel-places">
-  <div class="section-title">Places & Sightseeing</div>
+  <div class="sec-title">Places & Sightseeing</div>
   <div id="places-list"></div>
-  <button class="add-row-btn" onclick="addPlace()">+ Add place</button>
+  <button class="add-btn" onclick="addItem('places')">+ Add place</button>
 </div>
 
 <!-- TRANSPORT -->
 <div class="panel" id="panel-transport">
-  <div class="section-title">Transport</div>
+  <div class="sec-title">Transport</div>
   <div class="card">
     <div class="card-label">Ishigaki — Getting Around</div>
-    <div class="field-group">
-      <div><label>Primary transport</label><select id="tr-isg-mode" onchange="kv('transport','tr-isg-mode',this.value)"><option>Rental car</option><option>Rental scooter</option><option>Bus</option><option>Taxi</option><option>Bicycle</option></select></div>
-      <div><label>Rental company / booking</label><input type="text" id="tr-isg-rental" placeholder="TBD" oninput="kv('transport','tr-isg-rental',this.value)"></div>
+    <div class="fg">
+      <div><label>Primary transport</label><select id="tr-isg-mode" onchange="kvQ('transport','tr-isg-mode',this.value)">
+        <option>Rental car</option><option>Rental scooter</option><option>Bus</option><option>Taxi</option><option>Bicycle</option>
+      </select></div>
+      <div><label>Rental company</label><input type="text" id="tr-isg-rental" placeholder="TBD" oninput="kvQ('transport','tr-isg-rental',this.value)"></div>
     </div>
-    <div class="field-group single"><div><label>Notes</label><textarea id="tr-isg-notes" placeholder="Drive on left, international license required, ferry to Taketomi/Iriomote timetable..." oninput="kv('transport','tr-isg-notes',this.value)"></textarea></div></div>
+    <div class="fg fg1"><div><label>Notes</label><textarea id="tr-isg-notes" placeholder="Drive on left, international license required, ferry timetable..." oninput="kvQ('transport','tr-isg-notes',this.value)"></textarea></div></div>
   </div>
   <div class="card">
     <div class="card-label">Taipei / Taoyuan — Getting Around</div>
-    <div class="field-group single"><div><label>Airport → city plan</label><textarea id="tr-tpe-airport" placeholder="Airport MRT to Taipei Main Station (~NTD 160, 36 min). Zhongli Night Market via MRT for layover dinner." oninput="kv('transport','tr-tpe-airport',this.value)"></textarea></div></div>
-    <div class="field-group single"><div><label>City transport</label><textarea id="tr-tpe-city" placeholder="EasyCard for MRT, YouBike, taxi for clinic days. Avoid driving post-SMILE." oninput="kv('transport','tr-tpe-city',this.value)"></textarea></div></div>
+    <div class="fg fg1"><div><label>Airport → city plan</label><textarea id="tr-tpe-airport" placeholder="Airport MRT ~NTD 160, 36 min. Zhongli Night Market via MRT for layover." oninput="kvQ('transport','tr-tpe-airport',this.value)"></textarea></div></div>
+    <div class="fg fg1"><div><label>City transport</label><textarea id="tr-tpe-city" placeholder="EasyCard for MRT, YouBike, taxi for clinic days. No driving post-SMILE." oninput="kvQ('transport','tr-tpe-city',this.value)"></textarea></div></div>
   </div>
-  <div id="transport-extra-list"></div>
-  <button class="add-row-btn" onclick="addTransport()">+ Add transport note</button>
+  <div id="transport_extra-list"></div>
+  <button class="add-btn" onclick="addItem('transport_extra')">+ Add transport note</button>
 </div>
 
 <!-- LOG -->
 <div class="panel" id="panel-log">
-  <div class="section-title">Trip Log</div>
+  <div class="sec-title">Trip Log</div>
   <div class="card">
     <div class="card-label">New Entry</div>
-    <div class="field-group">
+    <div class="fg">
       <div><label>Date</label><input type="date" id="log-date"></div>
-      <div><label>Location</label><select id="log-location"><option>Ishigaki</option><option>Taipei</option><option>Taoyuan</option><option>Transit</option><option>Other</option></select></div>
+      <div><label>Location</label><select id="log-location">
+        <option>Ishigaki</option><option>Taipei</option><option>Taoyuan</option><option>Transit</option><option>Other</option>
+      </select></div>
     </div>
-    <div class="field-group single"><div><label>Entry</label><textarea id="log-text" rows="4" placeholder="What happened today..."></textarea></div></div>
-    <button class="add-row-btn" style="border-style:solid;border-color:var(--ocean);color:var(--reef)" onclick="addLogEntry()">+ Save entry</button>
+    <div class="fg fg1"><div><label>Entry</label><textarea id="log-text" rows="4" placeholder="What happened today..."></textarea></div></div>
+    <button class="add-btn solid" onclick="addLogEntry()">+ Save entry</button>
   </div>
   <div id="log-entries"></div>
 </div>
 
 </main>
 <script>
-// ── SHEETS CONFIG ──────────────────────────────────────────────
-const SHEET_ID = '1rfTvbs8S5sdeAcVjihK9jcLn-YXezamPiOVzQy15dvk';
-const API_KEY  = 'AIzaSyCVPD9x65DJnjckSDbVEKSQXAEXO9kVzLI';
-const BASE     = 'https://sheets.googleapis.com/v4/spreadsheets';
+// ── CONFIG ────────────────────────────────────────────────────
+const SHEET_ID   = '1rfTvbs8S5sdeAcVjihK9jcLn-YXezamPiOVzQy15dvk';
+const API_KEY    = 'AIzaSyCVPD9x65DJnjckSDbVEKSQXAEXO9kVzLI';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0ICGAeioYM9adTyKDLeRWP-J4Mp82GYS416wolPUz2aBK9ZZba_itXFfAFo7qfDB_/exec';
+const BASE       = 'https://sheets.googleapis.com/v4/spreadsheets';
 
-// Sheet names
+// Sheet name map
 const SH = {
-  timeline:'isg_timeline', flights:'isg_flights', accom:'isg_accom',
-  diving:'isg_diving', smile:'isg_smile', food:'isg_food',
-  places:'isg_places', transport:'isg_transport', log:'isg_log',
-  dive_shops:'isg_dive_shops', smile_clinics:'isg_smile_clinics',
-  dive_sites:'isg_dive_sites'
+  timeline:'isg_timeline', diving:'isg_diving', smile:'isg_smile', transport:'isg_transport',
+  flights:'isg_flights', accom:'isg_accom', food:'isg_food', places:'isg_places',
+  log:'isg_log', dive_shops:'isg_dive_shops', smile_clinics:'isg_smile_clinics',
+  dive_sites:'isg_dive_sites', transport_extra:'isg_transport_extra'
 };
 
-// ── SYNC STATUS ────────────────────────────────────────────────
-function setSyncStatus(state, msg) {
+// ── SYNC STATUS ───────────────────────────────────────────────
+function setSS(state, msg) {
   document.getElementById('sync-dot').className = 'sync-dot ' + state;
   document.getElementById('sync-msg').textContent = msg;
 }
 
-// ── SHEET HELPERS ──────────────────────────────────────────────
-async function sheetGet(name) {
+// ── READ via API key ──────────────────────────────────────────
+async function sheetRead(name) {
   try {
     const r = await fetch(`${BASE}/${SHEET_ID}/values/${encodeURIComponent(name+'!A:Z')}?key=${API_KEY}`);
-    const j = await r.json();
-    return j.values || [];
+    return (await r.json()).values || [];
   } catch(e) { return []; }
 }
 
-async function sheetPut(name, values) {
-  const url = `${BASE}/${SHEET_ID}/values/${encodeURIComponent(name+'!A1')}?valueInputOption=RAW&key=${API_KEY}`;
-  await fetch(url, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({range:name+'!A1', majorDimension:'ROWS', values}) });
-}
-
-async function sheetAppendRow(name, row) {
-  const url = `${BASE}/${SHEET_ID}/values/${encodeURIComponent(name)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS&key=${API_KEY}`;
-  await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({majorDimension:'ROWS', values:[row]}) });
-}
-
-async function ensureSheet(name) {
-  const r = await fetch(`${BASE}/${SHEET_ID}?key=${API_KEY}`);
-  const meta = await r.json();
-  const existing = (meta.sheets||[]).map(s=>s.properties.title);
-  if (!existing.includes(name)) {
-    await fetch(`${BASE}/${SHEET_ID}:batchUpdate?key=${API_KEY}`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({requests:[{addSheet:{properties:{title:name}}}]})
+// ── WRITE via Apps Script ─────────────────────────────────────
+async function sheetWrite(sheetName, data) {
+  // data = { type:'kv', map:{key:val} } or { type:'json', value: any }
+  try {
+    await fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ sheet: sheetName, ...data })
     });
-  }
+  } catch(e) { /* no-cors fetch always "fails" in catch but still sends */ }
 }
 
-// ── KV STORE (key/value pairs in a sheet) ─────────────────────
-// Each row: [key, value]
-let kvCache = {}; // kvCache[sheetName] = {key:value}
-let saveTimers = {};
+// ── KV SHEETS (timeline, diving, smile, transport) ─────────────
+// Stored as rows of [key, value]
+let kvCache = {};
+let kvTimers = {};
 
-async function kvLoadAll(sheetName) {
-  const rows = await sheetGet(sheetName);
+async function kvLoad(sheetName) {
+  const rows = await sheetRead(sheetName);
   const map = {};
   rows.forEach(r => { if(r[0]) map[r[0]] = r[1]||''; });
   kvCache[sheetName] = map;
   return map;
 }
 
-function kv(sheetName, key, value) {
-  if (!kvCache[sheetName]) kvCache[sheetName] = {};
+function kvQ(sheetName, key, value) {
+  if(!kvCache[sheetName]) kvCache[sheetName] = {};
   kvCache[sheetName][key] = value;
-  setSyncStatus('saving','Saving...');
-  clearTimeout(saveTimers[sheetName]);
-  saveTimers[sheetName] = setTimeout(() => kvFlush(sheetName), 1200);
+  setSS('saving','Saving...');
+  clearTimeout(kvTimers[sheetName]);
+  kvTimers[sheetName] = setTimeout(() => kvFlush(sheetName), 1500);
 }
 
 async function kvFlush(sheetName) {
-  try {
-    const map = kvCache[sheetName] || {};
-    const values = Object.entries(map).map(([k,v]) => [k,v]);
-    if (!values.length) return;
-    await sheetPut(sheetName, values);
-    setSyncStatus('ok','Saved · '+new Date().toLocaleTimeString());
-  } catch(e) {
-    setSyncStatus('err','Save failed');
-  }
+  const map = kvCache[sheetName]||{};
+  await sheetWrite(sheetName, { type:'kv', map });
+  setSS('ok','Saved · '+new Date().toLocaleTimeString());
 }
 
 function fillKV(map) {
   Object.entries(map).forEach(([k,v]) => {
     const el = document.getElementById(k);
-    if (el) el.value = v;
+    if(el) el.value = v;
   });
 }
 
-// ── LIST STORE (JSON blob in cell A1) ─────────────────────────
-// Stores entire array as JSON in A1 of a dedicated sheet
+// ── LIST SHEETS (everything else) ─────────────────────────────
+// Stored as JSON string in A1
 async function listLoad(sheetName) {
-  const rows = await sheetGet(sheetName);
-  if (!rows.length || !rows[0][0]) return [];
+  const rows = await sheetRead(sheetName);
+  if(!rows.length || !rows[0][0]) return [];
   try { return JSON.parse(rows[0][0]); } catch(e) { return []; }
 }
 
-async function listSave(sheetName, arr) {
-  setSyncStatus('saving','Saving...');
-  try {
-    await sheetPut(sheetName, [[JSON.stringify(arr)]]);
-    setSyncStatus('ok','Saved · '+new Date().toLocaleTimeString());
-  } catch(e) {
-    setSyncStatus('err','Save failed');
-  }
+let listTimers = {};
+function listQ(sheetName, arr) {
+  setSS('saving','Saving...');
+  clearTimeout(listTimers[sheetName]);
+  listTimers[sheetName] = setTimeout(() => listFlush(sheetName, arr), 1500);
 }
 
+async function listFlush(sheetName, arr) {
+  await sheetWrite(sheetName, { type:'json', value: JSON.stringify(arr) });
+  setSS('ok','Saved · '+new Date().toLocaleTimeString());
+}
+
+// ── APPS SCRIPT (must handle both types) ─────────────────────
+// The Apps Script needs updating — see note at bottom of file
+
 // ── TABS ──────────────────────────────────────────────────────
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-'+t.dataset.tab).classList.add('active');
   });
 });
 
 // ── HELPERS ───────────────────────────────────────────────────
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function sbg(s){ return s==='Booked'||s==='Certified ✓'||s==='Complete ✓'?'rgba(10,191,163,.15)':s==='Replied'||s==='Confirmed'?'rgba(26,107,138,.3)':s&&s.includes('await')?'rgba(224,123,90,.15)':'#2A3A4A'; }
-function sfg(s){ return s==='Booked'||s==='Certified ✓'||s==='Complete ✓'?'#0ABFA3':s==='Replied'||s==='Confirmed'?'#7ACFE4':s&&s.includes('await')?'#E07B5A':'#5A7A8A'; }
+function sbg(s){ return s==='Booked'||s==='Complete ✓'||s==='Certified ✓'?'rgba(10,191,163,.15)':s==='Replied'||s==='Confirmed'?'rgba(26,107,138,.3)':s&&s.includes('await')?'rgba(224,123,90,.15)':'#2A3A4A'; }
+function sfg(s){ return s==='Booked'||s==='Complete ✓'||s==='Certified ✓'?'#0ABFA3':s==='Replied'||s==='Confirmed'?'#7ACFE4':s&&s.includes('await')?'#E07B5A':'#5A7A8A'; }
 
-// ── FLIGHTS ───────────────────────────────────────────────────
-let flights = [];
+// ── GENERIC LIST DATA ─────────────────────────────────────────
+const lists = { flights:[], accom:[], dive_shops:[], dive_sites:[], smile_clinics:[], food:[], places:[], transport_extra:[], log:[] };
+
+// ── ITEM TEMPLATES ────────────────────────────────────────────
+function defaultItem(type) {
+  const d = {
+    flights:     {route:'',date:'',airline:'',dep:'',arr:'',status:'To book',conf:'',cost:'',notes:''},
+    accom:       {name:'',area:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''},
+    dive_shops:  {name:'',location:'',status:'Researching',phone:'',email:'',website:'',price:'',gear:'Unknown',english:'Unknown',notes:'',contacts:[]},
+    dive_sites:  {name:'',date:'',type:'Fun dive',notes:''},
+    smile_clinics:{name:'',area:'',status:'Researching',phone:'',email:'',website:'',price:'',english:'Unknown',notes:'',contacts:[]},
+    food:        {name:'',loc:'Ishigaki',type:'Seafood',notes:'',status:'Want to try'},
+    places:      {name:'',loc:'Ishigaki',cat:'Nature / beach',notes:'',priority:'Must do'},
+    transport_extra:{segment:'',date:'',details:''},
+    log:         {date:'',location:'',text:''}
+  };
+  return {...d[type]};
+}
+
+// ── RENDER FUNCTIONS ──────────────────────────────────────────
+// Key principle: inputs only update data, never trigger re-render.
+// Re-render only happens on add/remove.
+
 function renderFlights() {
-  document.getElementById('flights-list').innerHTML = flights.map((f,i) => `
+  document.getElementById('flights-list').innerHTML = lists.flights.map((f,i) => `
     <div class="card">
       <div class="card-label">Flight ${i+1}${f.route?' — '+esc(f.route):''}</div>
-      <div class="field-group three">
-        <div><label>Route</label><input type="text" value="${esc(f.route)}" placeholder="PDX → TPE" oninput="flights[${i}].route=this.value;saveFlights()"></div>
-        <div><label>Date</label><input type="date" value="${esc(f.date)}" oninput="flights[${i}].date=this.value;saveFlights()"></div>
-        <div><label>Airline / Flight #</label><input type="text" value="${esc(f.airline)}" oninput="flights[${i}].airline=this.value;saveFlights()"></div>
+      <div class="fg fg3">
+        <div><label>Route</label><input type="text" value="${esc(f.route)}" placeholder="PDX → TPE" oninput="lists.flights[${i}].route=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Date</label><input type="date" value="${esc(f.date)}" oninput="lists.flights[${i}].date=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Airline / #</label><input type="text" value="${esc(f.airline)}" oninput="lists.flights[${i}].airline=this.value;listQ('flights',lists.flights)"></div>
       </div>
-      <div class="field-group three">
-        <div><label>Departs</label><input type="text" value="${esc(f.dep)}" placeholder="HH:MM" oninput="flights[${i}].dep=this.value;saveFlights()"></div>
-        <div><label>Arrives</label><input type="text" value="${esc(f.arr)}" placeholder="HH:MM" oninput="flights[${i}].arr=this.value;saveFlights()"></div>
-        <div><label>Status</label><select onchange="flights[${i}].status=this.value;saveFlights()">${['To book','Booked','Confirmed'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg fg3">
+        <div><label>Departs</label><input type="text" value="${esc(f.dep)}" placeholder="HH:MM" oninput="lists.flights[${i}].dep=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Arrives</label><input type="text" value="${esc(f.arr)}" placeholder="HH:MM" oninput="lists.flights[${i}].arr=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Status</label><select onchange="lists.flights[${i}].status=this.value;listQ('flights',lists.flights)">${['To book','Booked','Confirmed'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group">
-        <div><label>Confirmation #</label><input type="text" value="${esc(f.conf)}" oninput="flights[${i}].conf=this.value;saveFlights()"></div>
-        <div><label>Cost (USD)</label><input type="number" value="${esc(f.cost)}" oninput="flights[${i}].cost=this.value;saveFlights()"></div>
+      <div class="fg">
+        <div><label>Confirmation #</label><input type="text" value="${esc(f.conf)}" oninput="lists.flights[${i}].conf=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Cost (USD)</label><input type="number" value="${esc(f.cost)}" oninput="lists.flights[${i}].cost=this.value;listQ('flights',lists.flights)"></div>
       </div>
-      <div class="field-group single"><div><label>Notes</label><textarea oninput="flights[${i}].notes=this.value;saveFlights()">${esc(f.notes)}</textarea></div></div>
-      <button class="remove-btn" onclick="flights.splice(${i},1);saveFlights();renderFlights()">Remove</button>
-    </div>`).join('');
+      <div class="fg fg1"><div><label>Notes</label><textarea oninput="lists.flights[${i}].notes=this.value;listQ('flights',lists.flights)">${esc(f.notes)}</textarea></div></div>
+      <button class="rm-btn" onclick="removeItem('flights',${i})">Remove</button>
+    </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No flights added yet.</p>';
 }
-function addFlight(){ flights.push({route:'',date:'',airline:'',dep:'',arr:'',status:'To book',conf:'',cost:'',notes:''}); saveFlights(); renderFlights(); }
-async function saveFlights(){ await listSave(SH.flights, flights); renderFlights(); }
 
-// ── ACCOMMODATION ─────────────────────────────────────────────
-let accoms = [];
-function renderAccoms() {
-  document.getElementById('accom-list').innerHTML = accoms.map((a,i) => `
+function renderAccom() {
+  document.getElementById('accom-list').innerHTML = lists.accom.map((a,i) => `
     <div class="card">
       <div class="card-label">${esc(a.name)||'Accommodation '+(i+1)}</div>
-      <div class="field-group">
-        <div><label>Property name</label><input type="text" value="${esc(a.name)}" placeholder="Guesthouse name" oninput="accoms[${i}].name=this.value;saveAccoms()"></div>
-        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki city, Kabira..." oninput="accoms[${i}].area=this.value;saveAccoms()"></div>
+      <div class="fg">
+        <div><label>Property name</label><input type="text" value="${esc(a.name)}" placeholder="Guesthouse name" oninput="lists.accom[${i}].name=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki city, Kabira..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom)"></div>
       </div>
-      <div class="field-group three">
-        <div><label>Check-in</label><input type="date" value="${esc(a.checkin)}" oninput="accoms[${i}].checkin=this.value;saveAccoms()"></div>
-        <div><label>Check-out</label><input type="date" value="${esc(a.checkout)}" oninput="accoms[${i}].checkout=this.value;saveAccoms()"></div>
-        <div><label>Cost</label><input type="text" value="${esc(a.cost)}" placeholder="¥ or $" oninput="accoms[${i}].cost=this.value;saveAccoms()"></div>
+      <div class="fg fg3">
+        <div><label>Check-in</label><input type="date" value="${esc(a.checkin)}" oninput="lists.accom[${i}].checkin=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Check-out</label><input type="date" value="${esc(a.checkout)}" oninput="lists.accom[${i}].checkout=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Cost</label><input type="text" value="${esc(a.cost)}" placeholder="¥ or $" oninput="lists.accom[${i}].cost=this.value;listQ('accom',lists.accom)"></div>
       </div>
-      <div class="field-group">
-        <div><label>Booking platform</label><input type="text" value="${esc(a.platform)}" oninput="accoms[${i}].platform=this.value;saveAccoms()"></div>
-        <div><label>Confirmation #</label><input type="text" value="${esc(a.conf)}" oninput="accoms[${i}].conf=this.value;saveAccoms()"></div>
+      <div class="fg">
+        <div><label>Booking platform</label><input type="text" value="${esc(a.platform)}" oninput="lists.accom[${i}].platform=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Confirmation #</label><input type="text" value="${esc(a.conf)}" oninput="lists.accom[${i}].conf=this.value;listQ('accom',lists.accom)"></div>
       </div>
-      <div class="field-group single"><div><label>Notes</label><textarea oninput="accoms[${i}].notes=this.value;saveAccoms()">${esc(a.notes)}</textarea></div></div>
-      <button class="remove-btn" onclick="accoms.splice(${i},1);saveAccoms();renderAccoms()">Remove</button>
-    </div>`).join('');
+      <div class="fg fg1"><div><label>Notes</label><textarea oninput="lists.accom[${i}].notes=this.value;listQ('accom',lists.accom)">${esc(a.notes)}</textarea></div></div>
+      <button class="rm-btn" onclick="removeItem('accom',${i})">Remove</button>
+    </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No accommodation added yet.</p>';
 }
-function addAccom(){ accoms.push({name:'',area:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''}); saveAccoms(); renderAccoms(); }
-async function saveAccoms(){ await listSave(SH.accom, accoms); renderAccoms(); }
 
-// ── DIVE SHOPS ────────────────────────────────────────────────
-let diveShops = [];
 function renderDiveShops() {
-  document.getElementById('dive-shops-list').innerHTML = diveShops.map((s,i) => `
+  document.getElementById('dive_shops-list').innerHTML = lists.dive_shops.map((s,i) => `
     <div class="card" style="margin-bottom:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div class="card-label" style="margin-bottom:0">${esc(s.name)||'Dive Shop '+(i+1)}</div>
-        <span class="status-badge" style="background:${sbg(s.status)};color:${sfg(s.status)}">${esc(s.status)||'Researching'}</span>
+        <span class="sbadge" style="background:${sbg(s.status)};color:${sfg(s.status)}">${esc(s.status)||'Researching'}</span>
       </div>
-      <div class="field-group three">
-        <div><label>Shop name</label><input type="text" value="${esc(s.name)}" oninput="diveShops[${i}].name=this.value;saveDiveShops()"></div>
-        <div><label>Location</label><input type="text" value="${esc(s.location)}" placeholder="Ishigaki city, Kabira..." oninput="diveShops[${i}].location=this.value;saveDiveShops()"></div>
-        <div><label>Status</label><select onchange="diveShops[${i}].status=this.value;saveDiveShops()">${['Researching','Contacted — awaiting reply','Replied','Booked','Ruled out'].map(o=>`<option${o===s.status?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg fg3">
+        <div><label>Shop name</label><input type="text" value="${esc(s.name)}" oninput="lists.dive_shops[${i}].name=this.value;listQ('dive_shops',lists.dive_shops)"></div>
+        <div><label>Location</label><input type="text" value="${esc(s.location)}" placeholder="Ishigaki city..." oninput="lists.dive_shops[${i}].location=this.value;listQ('dive_shops',lists.dive_shops)"></div>
+        <div><label>Status</label><select onchange="lists.dive_shops[${i}].status=this.value;listQ('dive_shops',lists.dive_shops)">${['Researching','Contacted — awaiting reply','Replied','Booked','Ruled out'].map(o=>`<option${o===s.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group three">
-        <div><label>Phone / LINE</label><input type="text" value="${esc(s.phone)}" oninput="diveShops[${i}].phone=this.value;saveDiveShops()"></div>
-        <div><label>Email</label><input type="text" value="${esc(s.email)}" oninput="diveShops[${i}].email=this.value;saveDiveShops()"></div>
-        <div><label>Website</label><input type="text" value="${esc(s.website)}" oninput="diveShops[${i}].website=this.value;saveDiveShops()"></div>
+      <div class="fg fg3">
+        <div><label>Phone / LINE</label><input type="text" value="${esc(s.phone)}" oninput="lists.dive_shops[${i}].phone=this.value;listQ('dive_shops',lists.dive_shops)"></div>
+        <div><label>Email</label><input type="text" value="${esc(s.email)}" oninput="lists.dive_shops[${i}].email=this.value;listQ('dive_shops',lists.dive_shops)"></div>
+        <div><label>Website</label><input type="text" value="${esc(s.website)}" oninput="lists.dive_shops[${i}].website=this.value;listQ('dive_shops',lists.dive_shops)"></div>
       </div>
-      <div class="field-group three">
-        <div><label>OWD price (JPY)</label><input type="text" value="${esc(s.price)}" placeholder="¥ or ask" oninput="diveShops[${i}].price=this.value;saveDiveShops()"></div>
-        <div><label>Gear included?</label><select onchange="diveShops[${i}].gear=this.value;saveDiveShops()">${['Unknown','Yes','Rental extra','No'].map(o=>`<option${o===s.gear?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>English speaker?</label><select onchange="diveShops[${i}].english=this.value;saveDiveShops()">${['Unknown','Yes','Limited','No'].map(o=>`<option${o===s.english?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg fg3">
+        <div><label>OWD price (JPY)</label><input type="text" value="${esc(s.price)}" placeholder="¥ or ask" oninput="lists.dive_shops[${i}].price=this.value;listQ('dive_shops',lists.dive_shops)"></div>
+        <div><label>Gear included?</label><select onchange="lists.dive_shops[${i}].gear=this.value;listQ('dive_shops',lists.dive_shops)">${['Unknown','Yes','Rental extra','No'].map(o=>`<option${o===s.gear?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>English?</label><select onchange="lists.dive_shops[${i}].english=this.value;listQ('dive_shops',lists.dive_shops)">${['Unknown','Yes','Limited','No'].map(o=>`<option${o===s.english?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group single"><div><label>Notes</label><textarea oninput="diveShops[${i}].notes=this.value;saveDiveShops()">${esc(s.notes)}</textarea></div></div>
+      <div class="fg fg1"><div><label>Notes</label><textarea oninput="lists.dive_shops[${i}].notes=this.value;listQ('dive_shops',lists.dive_shops)">${esc(s.notes)}</textarea></div></div>
       <div style="margin-top:16px;border-top:1px solid #2A3A4A;padding-top:14px">
-        <div class="card-label" style="margin-bottom:10px">Contact Log</div>
+        <div class="card-label" style="margin-bottom:8px">Contact Log</div>
         ${(s.contacts||[]).map((c,ci)=>`
           <div class="log-entry">
-            <div class="log-entry-date">${esc(c.date)||'—'} · ${esc(c.dir)}</div>
+            <div class="log-date">${esc(c.date)||'—'} · ${esc(c.dir)}</div>
             <div style="font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(c.body)}</div>
-            <button class="remove-btn" onclick="diveShops[${i}].contacts.splice(${ci},1);saveDiveShops();renderDiveShops()">Remove</button>
+            <button class="rm-btn" onclick="removeContact('dive_shops',${i},${ci})">Remove</button>
           </div>`).join('')}
-        <div style="background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px">
-          <div class="field-group three">
-            <div><label>Date</label><input type="date" id="ds-log-date-${i}"></div>
-            <div><label>Direction</label><select id="ds-log-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Received — reply</option><option>Received — phone</option><option>Note to self</option></select></div>
-            <div style="display:flex;align-items:flex-end"><button class="add-row-btn" style="border-style:solid;border-color:var(--ocean);color:var(--reef)" onclick="addDiveContact(${i})">+ Add</button></div>
+        <div class="contact-box">
+          <div class="fg fg3">
+            <div><label>Date</label><input type="date" id="ds-d-${i}"></div>
+            <div><label>Direction</label><select id="ds-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Received — reply</option><option>Received — phone</option><option>Note to self</option></select></div>
+            <div style="display:flex;align-items:flex-end"><button class="add-btn solid" onclick="addContact('dive_shops',${i})">+ Add</button></div>
           </div>
-          <div class="field-group single"><div><label>Message / notes</label><textarea id="ds-log-body-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
+          <div class="fg fg1"><div><label>Message / notes</label><textarea id="ds-b-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
         </div>
       </div>
-      <button class="remove-btn" onclick="diveShops.splice(${i},1);saveDiveShops();renderDiveShops()">Remove shop</button>
-    </div>`).join('');
+      <button class="rm-btn" onclick="removeItem('dive_shops',${i})">Remove shop</button>
+    </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No dive shops added yet.</p>';
 }
-function addDiveShop(){ diveShops.push({name:'',location:'',status:'Researching',phone:'',email:'',website:'',price:'',gear:'Unknown',english:'Unknown',notes:'',contacts:[]}); saveDiveShops(); renderDiveShops(); }
-function addDiveContact(i){
-  const body = document.getElementById(`ds-log-body-${i}`).value.trim();
-  if(!body) return;
-  if(!diveShops[i].contacts) diveShops[i].contacts=[];
-  diveShops[i].contacts.unshift({date:document.getElementById(`ds-log-date-${i}`).value, dir:document.getElementById(`ds-log-dir-${i}`).value, body});
-  saveDiveShops(); renderDiveShops();
-}
-async function saveDiveShops(){ await listSave(SH.dive_shops, diveShops); }
 
-// ── DIVE SITES ────────────────────────────────────────────────
-let diveSites = [];
 function renderDiveSites() {
-  document.getElementById('dive-sites-list').innerHTML = diveSites.map((s,i) => `
+  document.getElementById('dive_sites-list').innerHTML = lists.dive_sites.map((s,i) => `
     <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #2A3A4A">
-      <div class="field-group three">
-        <div><label>Site name</label><input type="text" value="${esc(s.name)}" placeholder="e.g. Manta Scramble" oninput="diveSites[${i}].name=this.value;saveDiveSites()"></div>
-        <div><label>Date</label><input type="date" value="${esc(s.date)}" oninput="diveSites[${i}].date=this.value;saveDiveSites()"></div>
-        <div><label>Type</label><select onchange="diveSites[${i}].type=this.value;saveDiveSites()">${['Fun dive','Snorkel','Shore dive','Boat dive'].map(o=>`<option${o===s.type?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg fg3">
+        <div><label>Site name</label><input type="text" value="${esc(s.name)}" placeholder="e.g. Manta Scramble" oninput="lists.dive_sites[${i}].name=this.value;listQ('dive_sites',lists.dive_sites)"></div>
+        <div><label>Date</label><input type="date" value="${esc(s.date)}" oninput="lists.dive_sites[${i}].date=this.value;listQ('dive_sites',lists.dive_sites)"></div>
+        <div><label>Type</label><select onchange="lists.dive_sites[${i}].type=this.value;listQ('dive_sites',lists.dive_sites)">${['Fun dive','Snorkel','Shore dive','Boat dive'].map(o=>`<option${o===s.type?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group single"><div><label>Notes</label><input type="text" value="${esc(s.notes)}" placeholder="Visibility, current, highlights..." oninput="diveSites[${i}].notes=this.value;saveDiveSites()"></div></div>
-      <button class="remove-btn" onclick="diveSites.splice(${i},1);saveDiveSites();renderDiveSites()">Remove</button>
-    </div>`).join('');
+      <div class="fg fg1"><div><label>Notes</label><input type="text" value="${esc(s.notes)}" placeholder="Visibility, current, highlights..." oninput="lists.dive_sites[${i}].notes=this.value;listQ('dive_sites',lists.dive_sites)"></div></div>
+      <button class="rm-btn" onclick="removeItem('dive_sites',${i})">Remove</button>
+    </div>`).join('') || '';
 }
-function addDiveSite(){ diveSites.push({name:'',date:'',type:'Fun dive',notes:''}); saveDiveSites(); renderDiveSites(); }
-async function saveDiveSites(){ await listSave(SH.dive_sites, diveSites); }
 
-// ── SMILE CLINICS ─────────────────────────────────────────────
-let smileClinics = [];
 function renderSmileClinics() {
-  document.getElementById('smile-clinics-list').innerHTML = smileClinics.map((c,i) => `
+  document.getElementById('smile_clinics-list').innerHTML = lists.smile_clinics.map((c,i) => `
     <div class="card" style="margin-bottom:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div class="card-label" style="margin-bottom:0">${esc(c.name)||'Clinic '+(i+1)}</div>
-        <span class="status-badge" style="background:${sbg(c.status)};color:${sfg(c.status)}">${esc(c.status)||'Researching'}</span>
+        <span class="sbadge" style="background:${sbg(c.status)};color:${sfg(c.status)}">${esc(c.status)||'Researching'}</span>
       </div>
-      <div class="field-group three">
-        <div><label>Clinic name</label><input type="text" value="${esc(c.name)}" oninput="smileClinics[${i}].name=this.value;saveSmileClinics()"></div>
-        <div><label>District / area</label><input type="text" value="${esc(c.area)}" placeholder="Da'an, Zhongzheng..." oninput="smileClinics[${i}].area=this.value;saveSmileClinics()"></div>
-        <div><label>Status</label><select onchange="smileClinics[${i}].status=this.value;saveSmileClinics()">${['Researching','Contacted — awaiting reply','Replied','Consultation booked','Procedure confirmed','Complete ✓','Ruled out'].map(o=>`<option${o===c.status?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg fg3">
+        <div><label>Clinic name</label><input type="text" value="${esc(c.name)}" oninput="lists.smile_clinics[${i}].name=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>District / area</label><input type="text" value="${esc(c.area)}" placeholder="Da'an, Zhongzheng..." oninput="lists.smile_clinics[${i}].area=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>Status</label><select onchange="lists.smile_clinics[${i}].status=this.value;listQ('smile_clinics',lists.smile_clinics)">${['Researching','Contacted — awaiting reply','Replied','Consultation booked','Procedure confirmed','Complete ✓','Ruled out'].map(o=>`<option${o===c.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group three">
-        <div><label>Phone</label><input type="text" value="${esc(c.phone)}" oninput="smileClinics[${i}].phone=this.value;saveSmileClinics()"></div>
-        <div><label>Email</label><input type="text" value="${esc(c.email)}" oninput="smileClinics[${i}].email=this.value;saveSmileClinics()"></div>
-        <div><label>Website</label><input type="text" value="${esc(c.website)}" oninput="smileClinics[${i}].website=this.value;saveSmileClinics()"></div>
+      <div class="fg fg3">
+        <div><label>Phone</label><input type="text" value="${esc(c.phone)}" oninput="lists.smile_clinics[${i}].phone=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>Email</label><input type="text" value="${esc(c.email)}" oninput="lists.smile_clinics[${i}].email=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>Website</label><input type="text" value="${esc(c.website)}" oninput="lists.smile_clinics[${i}].website=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
       </div>
-      <div class="field-group">
-        <div><label>Quoted price (NTD)</label><input type="text" value="${esc(c.price)}" placeholder="both eyes" oninput="smileClinics[${i}].price=this.value;saveSmileClinics()"></div>
-        <div><label>English service?</label><select onchange="smileClinics[${i}].english=this.value;saveSmileClinics()">${['Unknown','Yes','Limited','No'].map(o=>`<option${o===c.english?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg">
+        <div><label>Quoted price (NTD)</label><input type="text" value="${esc(c.price)}" placeholder="both eyes" oninput="lists.smile_clinics[${i}].price=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>English service?</label><select onchange="lists.smile_clinics[${i}].english=this.value;listQ('smile_clinics',lists.smile_clinics)">${['Unknown','Yes','Limited','No'].map(o=>`<option${o===c.english?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group single"><div><label>Notes</label><textarea oninput="smileClinics[${i}].notes=this.value;saveSmileClinics()">${esc(c.notes)}</textarea></div></div>
+      <div class="fg fg1"><div><label>Notes</label><textarea oninput="lists.smile_clinics[${i}].notes=this.value;listQ('smile_clinics',lists.smile_clinics)">${esc(c.notes)}</textarea></div></div>
       <div style="margin-top:16px;border-top:1px solid #2A3A4A;padding-top:14px">
-        <div class="card-label" style="margin-bottom:10px">Contact Log</div>
+        <div class="card-label" style="margin-bottom:8px">Contact Log</div>
         ${(c.contacts||[]).map((ct,ci)=>`
           <div class="log-entry">
-            <div class="log-entry-date">${esc(ct.date)||'—'} · ${esc(ct.dir)}</div>
+            <div class="log-date">${esc(ct.date)||'—'} · ${esc(ct.dir)}</div>
             <div style="font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(ct.body)}</div>
-            <button class="remove-btn" onclick="smileClinics[${i}].contacts.splice(${ci},1);saveSmileClinics();renderSmileClinics()">Remove</button>
+            <button class="rm-btn" onclick="removeContact('smile_clinics',${i},${ci})">Remove</button>
           </div>`).join('')}
-        <div style="background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px">
-          <div class="field-group three">
-            <div><label>Date</label><input type="date" id="sc-log-date-${i}"></div>
-            <div><label>Direction</label><select id="sc-log-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Received — reply</option><option>Received — phone</option><option>Note to self</option></select></div>
-            <div style="display:flex;align-items:flex-end"><button class="add-row-btn" style="border-style:solid;border-color:var(--ocean);color:var(--reef)" onclick="addSmileContact(${i})">+ Add</button></div>
+        <div class="contact-box">
+          <div class="fg fg3">
+            <div><label>Date</label><input type="date" id="sc-d-${i}"></div>
+            <div><label>Direction</label><select id="sc-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Received — reply</option><option>Received — phone</option><option>Note to self</option></select></div>
+            <div style="display:flex;align-items:flex-end"><button class="add-btn solid" onclick="addContact('smile_clinics',${i})">+ Add</button></div>
           </div>
-          <div class="field-group single"><div><label>Message / notes</label><textarea id="sc-log-body-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
+          <div class="fg fg1"><div><label>Message / notes</label><textarea id="sc-b-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
         </div>
       </div>
-      <button class="remove-btn" onclick="smileClinics.splice(${i},1);saveSmileClinics();renderSmileClinics()">Remove clinic</button>
-    </div>`).join('');
+      <button class="rm-btn" onclick="removeItem('smile_clinics',${i})">Remove clinic</button>
+    </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No clinics added yet.</p>';
 }
-function addSmileClinic(){ smileClinics.push({name:'',area:'',status:'Researching',phone:'',email:'',website:'',price:'',english:'Unknown',notes:'',contacts:[]}); saveSmileClinics(); renderSmileClinics(); }
-function addSmileContact(i){
-  const body = document.getElementById(`sc-log-body-${i}`).value.trim();
-  if(!body) return;
-  if(!smileClinics[i].contacts) smileClinics[i].contacts=[];
-  smileClinics[i].contacts.unshift({date:document.getElementById(`sc-log-date-${i}`).value, dir:document.getElementById(`sc-log-dir-${i}`).value, body});
-  saveSmileClinics(); renderSmileClinics();
-}
-async function saveSmileClinics(){ await listSave(SH.smile_clinics, smileClinics); }
 
-// ── FOOD ──────────────────────────────────────────────────────
-let foods = [];
-function renderFoods() {
-  document.getElementById('food-list').innerHTML = foods.map((f,i) => `
+function renderFood() {
+  document.getElementById('food-list').innerHTML = lists.food.map((f,i) => `
     <div class="card">
-      <div class="field-group three">
-        <div><label>Name</label><input type="text" value="${esc(f.name)}" placeholder="Restaurant / market" oninput="foods[${i}].name=this.value;saveFoods()"></div>
-        <div><label>Location</label><select onchange="foods[${i}].loc=this.value;saveFoods()">${['Ishigaki','Taipei','TPE Airport area'].map(o=>`<option${o===f.loc?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>Type</label><select onchange="foods[${i}].type=this.value;saveFoods()">${['Seafood','Plant-based','Market','Izakaya','Ramen / noodles','Night market','Breakfast','Other'].map(o=>`<option${o===f.type?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg fg3">
+        <div><label>Name</label><input type="text" value="${esc(f.name)}" placeholder="Restaurant / market" oninput="lists.food[${i}].name=this.value;listQ('food',lists.food)"></div>
+        <div><label>Location</label><select onchange="lists.food[${i}].loc=this.value;listQ('food',lists.food)">${['Ishigaki','Taipei','TPE Airport area'].map(o=>`<option${o===f.loc?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Type</label><select onchange="lists.food[${i}].type=this.value;listQ('food',lists.food)">${['Seafood','Plant-based','Market','Izakaya','Ramen / noodles','Night market','Breakfast','Other'].map(o=>`<option${o===f.type?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group">
-        <div><label>Notes</label><input type="text" value="${esc(f.notes)}" placeholder="Vegan-friendly, must-try dish..." oninput="foods[${i}].notes=this.value;saveFoods()"></div>
-        <div><label>Status</label><select onchange="foods[${i}].status=this.value;saveFoods()">${['Want to try','Visited ✓','Skip'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg">
+        <div><label>Notes</label><input type="text" value="${esc(f.notes)}" placeholder="Vegan-friendly, must-try dish..." oninput="lists.food[${i}].notes=this.value;listQ('food',lists.food)"></div>
+        <div><label>Status</label><select onchange="lists.food[${i}].status=this.value;listQ('food',lists.food)">${['Want to try','Visited ✓','Skip'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <button class="remove-btn" onclick="foods.splice(${i},1);saveFoods();renderFoods()">Remove</button>
-    </div>`).join('');
+      <button class="rm-btn" onclick="removeItem('food',${i})">Remove</button>
+    </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No food places added yet.</p>';
 }
-function addFood(){ foods.push({name:'',loc:'Ishigaki',type:'Seafood',notes:'',status:'Want to try'}); saveFoods(); renderFoods(); }
-async function saveFoods(){ await listSave(SH.food, foods); renderFoods(); }
 
-// ── PLACES ────────────────────────────────────────────────────
-let places = [];
 function renderPlaces() {
-  document.getElementById('places-list').innerHTML = places.map((p,i) => `
+  document.getElementById('places-list').innerHTML = lists.places.map((p,i) => `
     <div class="card">
-      <div class="field-group three">
-        <div><label>Place name</label><input type="text" value="${esc(p.name)}" placeholder="Kabira Bay..." oninput="places[${i}].name=this.value;savePlaces()"></div>
-        <div><label>Location</label><select onchange="places[${i}].loc=this.value;savePlaces()">${['Ishigaki','Nearby island','Taipei','Taoyuan'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>Category</label><select onchange="places[${i}].cat=this.value;savePlaces()">${['Nature / beach','Cultural site','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg fg3">
+        <div><label>Place name</label><input type="text" value="${esc(p.name)}" placeholder="Kabira Bay..." oninput="lists.places[${i}].name=this.value;listQ('places',lists.places)"></div>
+        <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places)">${['Ishigaki','Nearby island','Taipei','Taoyuan'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Category</label><select onchange="lists.places[${i}].cat=this.value;listQ('places',lists.places)">${['Nature / beach','Cultural site','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="field-group">
-        <div><label>Notes</label><input type="text" value="${esc(p.notes)}" placeholder="Hours, cost, how to get there..." oninput="places[${i}].notes=this.value;savePlaces()"></div>
-        <div><label>Priority</label><select onchange="places[${i}].priority=this.value;savePlaces()">${['Must do','Nice to have','If time permits','Done ✓'].map(o=>`<option${o===p.priority?' selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="fg">
+        <div><label>Notes</label><input type="text" value="${esc(p.notes)}" placeholder="Hours, cost, how to get there..." oninput="lists.places[${i}].notes=this.value;listQ('places',lists.places)"></div>
+        <div><label>Priority</label><select onchange="lists.places[${i}].priority=this.value;listQ('places',lists.places)">${['Must do','Nice to have','If time permits','Done ✓'].map(o=>`<option${o===p.priority?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <button class="remove-btn" onclick="places.splice(${i},1);savePlaces();renderPlaces()">Remove</button>
+      <button class="rm-btn" onclick="removeItem('places',${i})">Remove</button>
+    </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No places added yet.</p>';
+}
+
+function renderTransportExtra() {
+  document.getElementById('transport_extra-list').innerHTML = lists.transport_extra.map((t,i) => `
+    <div class="card">
+      <div class="fg">
+        <div><label>Segment</label><input type="text" value="${esc(t.segment)}" placeholder="e.g. Ferry to Taketomi" oninput="lists.transport_extra[${i}].segment=this.value;listQ('transport_extra',lists.transport_extra)"></div>
+        <div><label>Date</label><input type="date" value="${esc(t.date)}" oninput="lists.transport_extra[${i}].date=this.value;listQ('transport_extra',lists.transport_extra)"></div>
+      </div>
+      <div class="fg fg1"><div><label>Details</label><textarea oninput="lists.transport_extra[${i}].details=this.value;listQ('transport_extra',lists.transport_extra)">${esc(t.details)}</textarea></div></div>
+      <button class="rm-btn" onclick="removeItem('transport_extra',${i})">Remove</button>
     </div>`).join('');
 }
-function addPlace(){ places.push({name:'',loc:'Ishigaki',cat:'Nature / beach',notes:'',priority:'Must do'}); savePlaces(); renderPlaces(); }
-async function savePlaces(){ await listSave(SH.places, places); renderPlaces(); }
 
-// ── TRANSPORT EXTRAS ──────────────────────────────────────────
-let transports = [];
-function renderTransports() {
-  document.getElementById('transport-extra-list').innerHTML = transports.map((t,i) => `
-    <div class="card">
-      <div class="field-group">
-        <div><label>Segment</label><input type="text" value="${esc(t.segment)}" placeholder="e.g. Ferry to Taketomi" oninput="transports[${i}].segment=this.value;saveTransports()"></div>
-        <div><label>Date</label><input type="date" value="${esc(t.date)}" oninput="transports[${i}].date=this.value;saveTransports()"></div>
-      </div>
-      <div class="field-group single"><div><label>Details</label><textarea oninput="transports[${i}].details=this.value;saveTransports()">${esc(t.details)}</textarea></div></div>
-      <button class="remove-btn" onclick="transports.splice(${i},1);saveTransports();renderTransports()">Remove</button>
-    </div>`).join('');
-}
-function addTransport(){ transports.push({segment:'',date:'',details:''}); saveTransports(); renderTransports(); }
-async function saveTransports(){ await listSave(SH.transport+'_extra', transports); }
-
-// ── TRIP LOG ──────────────────────────────────────────────────
-let logEntries = [];
 function renderLog() {
-  const c = document.getElementById('log-entries');
-  c.innerHTML = logEntries.length ? logEntries.map((e,i)=>`
+  document.getElementById('log-entries').innerHTML = lists.log.length ? lists.log.map((e,i)=>`
     <div class="log-entry">
-      <div class="log-entry-date">${esc(e.date)||'—'} · ${esc(e.location)}</div>
+      <div class="log-date">${esc(e.date)||'—'} · ${esc(e.location)}</div>
       <div style="font-size:13px;line-height:1.6">${esc(e.text)}</div>
-      <button class="remove-btn" onclick="logEntries.splice(${i},1);saveLog();renderLog()">Remove</button>
+      <button class="rm-btn" onclick="removeItem('log',${i})">Remove</button>
     </div>`).join('') : '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px;margin-top:12px">No entries yet.</p>';
 }
-async function addLogEntry(){
+
+const renderers = {
+  flights: renderFlights, accom: renderAccom, dive_shops: renderDiveShops,
+  dive_sites: renderDiveSites, smile_clinics: renderSmileClinics,
+  food: renderFood, places: renderPlaces, transport_extra: renderTransportExtra, log: renderLog
+};
+
+// ── ADD / REMOVE ──────────────────────────────────────────────
+function addItem(type) {
+  lists[type].push(defaultItem(type));
+  listQ(type, lists[type]);
+  renderers[type]();
+}
+
+function removeItem(type, i) {
+  lists[type].splice(i, 1);
+  listQ(type, lists[type]);
+  renderers[type]();
+}
+
+function addContact(listType, itemIdx) {
+  const prefix = listType === 'dive_shops' ? 'ds' : 'sc';
+  const body = document.getElementById(`${prefix}-b-${itemIdx}`).value.trim();
+  if(!body) return;
+  if(!lists[listType][itemIdx].contacts) lists[listType][itemIdx].contacts = [];
+  lists[listType][itemIdx].contacts.unshift({
+    date: document.getElementById(`${prefix}-d-${itemIdx}`).value,
+    dir:  document.getElementById(`${prefix}-dir-${itemIdx}`).value,
+    body
+  });
+  listQ(listType, lists[listType]);
+  renderers[listType]();
+}
+
+function removeContact(listType, itemIdx, contactIdx) {
+  lists[listType][itemIdx].contacts.splice(contactIdx, 1);
+  listQ(listType, lists[listType]);
+  renderers[listType]();
+}
+
+async function addLogEntry() {
   const text = document.getElementById('log-text').value.trim();
   if(!text) return;
-  logEntries.unshift({date:document.getElementById('log-date').value, location:document.getElementById('log-location').value, text});
-  document.getElementById('log-text').value='';
-  document.getElementById('log-date').value='';
-  await saveLog(); renderLog();
+  lists.log.unshift({ date: document.getElementById('log-date').value, location: document.getElementById('log-location').value, text });
+  document.getElementById('log-text').value = '';
+  document.getElementById('log-date').value = '';
+  listQ('log', lists.log);
+  renderLog();
 }
-async function saveLog(){ await listSave(SH.log, logEntries); }
 
 // ── INIT ──────────────────────────────────────────────────────
 async function init() {
-  setSyncStatus('saving','Loading...');
+  setSS('saving','Loading...');
   try {
-    // Ensure all sheets exist
-    const r = await fetch(`${BASE}/${SHEET_ID}?key=${API_KEY}`);
-    const meta = await r.json();
-    const existing = (meta.sheets||[]).map(s=>s.properties.title);
-    const needed = Object.values(SH).concat([SH.transport+'_extra']);
-    const missing = [...new Set(needed)].filter(n=>!existing.includes(n));
-    if(missing.length){
-      await fetch(`${BASE}/${SHEET_ID}:batchUpdate?key=${API_KEY}`,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({requests:missing.map(t=>({addSheet:{properties:{title:t}}}))})
-      });
-    }
-
     // Load KV sheets
     const [tl, div, sm, tr] = await Promise.all([
-      kvLoadAll(SH.timeline), kvLoadAll(SH.diving),
-      kvLoadAll(SH.smile), kvLoadAll(SH.transport)
+      kvLoad(SH.timeline), kvLoad(SH.diving), kvLoad(SH.smile), kvLoad(SH.transport)
     ]);
     fillKV(tl); fillKV(div); fillKV(sm); fillKV(tr);
 
     // Load list sheets
-    [flights, accoms, diveShops, diveSites, smileClinics, foods, places, transports, logEntries] = await Promise.all([
-      listLoad(SH.flights), listLoad(SH.accom), listLoad(SH.dive_shops),
-      listLoad(SH.dive_sites), listLoad(SH.smile_clinics), listLoad(SH.food),
-      listLoad(SH.places), listLoad(SH.transport+'_extra'), listLoad(SH.log)
-    ]);
+    const results = await Promise.all(
+      ['flights','accom','dive_shops','dive_sites','smile_clinics','food','places','transport_extra','log']
+        .map(k => listLoad(SH[k]))
+    );
+    ['flights','accom','dive_shops','dive_sites','smile_clinics','food','places','transport_extra','log']
+      .forEach((k,i) => { lists[k] = results[i]; });
 
-    renderFlights(); renderAccoms(); renderDiveShops(); renderDiveSites();
-    renderSmileClinics(); renderFoods(); renderPlaces(); renderTransports(); renderLog();
-
-    setSyncStatus('ok','Loaded · '+new Date().toLocaleTimeString());
+    Object.values(renderers).forEach(r => r());
+    setSS('ok','Loaded · '+new Date().toLocaleTimeString());
   } catch(e) {
-    setSyncStatus('err','Load failed — check connection');
+    setSS('err','Load failed — check connection');
     console.error(e);
   }
 }
