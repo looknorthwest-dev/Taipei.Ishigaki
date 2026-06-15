@@ -280,14 +280,11 @@ async function sheetRead(name) {
 
 // ── WRITE via Apps Script ─────────────────────────────────────
 async function sheetWrite(sheetName, data) {
-  // data = { type:'kv', map:{key:val} } or { type:'json', value: any }
   try {
-    await fetch(SCRIPT_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ sheet: sheetName, ...data })
-    });
-  } catch(e) { /* no-cors fetch always "fails" in catch but still sends */ }
+    const encoded = encodeURIComponent(JSON.stringify(data));
+    const url = `${SCRIPT_URL}?sheet=${encodeURIComponent(sheetName)}&data=${encoded}`;
+    await fetch(url, { mode:'no-cors' });
+  } catch(e) { /* request still goes through despite no-cors throw */ }
 }
 
 // ── KV SHEETS (timeline, diving, smile, transport) ─────────────
