@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ishigaki + Taipei Trip Planner</title>
+<title>Ishigaki + Taipei + Korea Trip Planner</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap');
   :root {
-    --ocean:#1A6B8A;--reef:#0ABFA3;--sand:#F5EDD8;--coral:#E07B5A;
+    --ocean:#1A6B8A;--reef:#0ABFA3;--sand:#F5EDD8;--coral:#E07B5A;--violet:#8A6FD8;
     --ink:#1A1F2E;--mono:'IBM Plex Mono',monospace;--sans:'Sora',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -40,7 +40,7 @@
   .rm-btn{background:transparent;border:1px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;cursor:pointer;margin-top:10px;}
   .sbadge{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:2px;}
   .phase{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:12px;}
-  .p-transit{background:#2A3A4A;color:#8AABB8;} .p-isg{background:rgba(10,191,163,.12);color:var(--reef);} .p-tpe{background:rgba(224,123,90,.12);color:var(--coral);}
+  .p-transit{background:#2A3A4A;color:#8AABB8;} .p-isg{background:rgba(10,191,163,.12);color:var(--reef);} .p-tpe{background:rgba(224,123,90,.12);color:var(--coral);} .p-kr{background:rgba(138,111,216,.14);color:var(--violet);}
   .tl-row{display:flex;gap:16px;margin-bottom:10px;align-items:flex-start;}
   .tl-lbl{font-family:var(--mono);font-size:11px;color:var(--reef);min-width:90px;padding-top:9px;}
   .proc-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #2A3A4A;}
@@ -51,14 +51,17 @@
   .log-entry{border-left:2px solid #2A3A4A;padding-left:14px;margin-bottom:16px;}
   .log-date{font-family:var(--mono);font-size:10px;color:var(--reef);margin-bottom:4px;}
   .contact-box{background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px;}
+  .todo-check{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+  .todo-check input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;accent-color:var(--reef);}
+  .todo-done .card-label{text-decoration:line-through;color:#3A5A6A;}
   @media(max-width:540px){.fg,.fg3{grid-template-columns:1fr;}.header-top{gap:8px;}}
 </style>
 </head>
 <body>
 <header>
   <div class="header-top">
-    <span class="trip-title">Ishigaki + Taipei — Oct 2026</span>
-    <span class="trip-sub">10d Ishigaki · 3–5d Taipei · SMILE</span>
+    <span class="trip-title">Ishigaki + Taipei + Korea — Oct 2026</span>
+    <span class="trip-sub">10d Ishigaki · Taiwan · ~5d Korea · SMILE</span>
     <div class="sync-dot" id="sync-dot"></div>
     <span id="sync-msg">Loading...</span>
   </div>
@@ -68,6 +71,7 @@
     <button class="tab" data-tab="accom">Accom</button>
     <button class="tab" data-tab="diving">Diving</button>
     <button class="tab" data-tab="smile">SMILE</button>
+    <button class="tab" data-tab="todo">To-Do</button>
     <button class="tab" data-tab="food">Food</button>
     <button class="tab" data-tab="places">Places</button>
     <button class="tab" data-tab="transport">Transport</button>
@@ -101,15 +105,26 @@
   <div class="card">
     <div class="tl-row"><div class="tl-lbl">Arrive TPE</div><div style="flex:1" class="fg">
       <div><label>Date</label><input type="date" id="tl-tpe-arrive" oninput="kvQ('timeline','tl-tpe-arrive',this.value)"></div>
-      <div><label>Note</label><input type="text" id="tl-tpe-arrive-note" placeholder="Check in, pre-op rest" oninput="kvQ('timeline','tl-tpe-arrive-note',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-tpe-arrive-note" placeholder="Check in, transit" oninput="kvQ('timeline','tl-tpe-arrive-note',this.value)"></div>
+    </div></div>
+    <div class="tl-row"><div class="tl-lbl">Depart TPE</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-tpe-depart" oninput="kvQ('timeline','tl-tpe-depart',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-tpe-depart-note" placeholder="TPE → Korea" oninput="kvQ('timeline','tl-tpe-depart-note',this.value)"></div>
+    </div></div>
+  </div>
+  <span class="phase p-kr">Korea</span>
+  <div class="card">
+    <div class="tl-row"><div class="tl-lbl">Arrive KR</div><div style="flex:1" class="fg">
+      <div><label>Date</label><input type="date" id="tl-kr-arrive" oninput="kvQ('timeline','tl-kr-arrive',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-kr-arrive-note" placeholder="Check in, pre-op rest" oninput="kvQ('timeline','tl-kr-arrive-note',this.value)"></div>
     </div></div>
     <div class="tl-row"><div class="tl-lbl">SMILE Day</div><div style="flex:1" class="fg">
       <div><label>Date</label><input type="date" id="tl-smile-date" oninput="kvQ('timeline','tl-smile-date',this.value)"></div>
       <div><label>Note</label><input type="text" id="tl-smile-note" placeholder="Procedure + rest" oninput="kvQ('timeline','tl-smile-note',this.value)"></div>
     </div></div>
-    <div class="tl-row"><div class="tl-lbl">Depart TPE</div><div style="flex:1" class="fg">
+    <div class="tl-row"><div class="tl-lbl">Depart KR</div><div style="flex:1" class="fg">
       <div><label>Date</label><input type="date" id="tl-home-date" oninput="kvQ('timeline','tl-home-date',this.value)"></div>
-      <div><label>Note</label><input type="text" id="tl-home-note" placeholder="TPE → PDX, home" oninput="kvQ('timeline','tl-home-note',this.value)"></div>
+      <div><label>Note</label><input type="text" id="tl-home-note" placeholder="Korea → PDX, home" oninput="kvQ('timeline','tl-home-note',this.value)"></div>
     </div></div>
   </div>
 </div>
@@ -162,7 +177,7 @@
 
 <!-- SMILE -->
 <div class="panel" id="panel-smile">
-  <div class="sec-title">SMILE Eye Procedure</div>
+  <div class="sec-title">SMILE Eye Procedure — Korea</div>
   <div class="card-label" style="margin-bottom:10px">Clinics</div>
   <div id="smile_clinics-list"></div>
   <button class="add-btn" onclick="addItem('smile_clinics')" style="margin-bottom:24px">+ Add clinic</button>
@@ -195,6 +210,13 @@
   </div>
 </div>
 
+<!-- TODO -->
+<div class="panel" id="panel-todo">
+  <div class="sec-title">To-Do — SIMs, Transit Cards, Logistics</div>
+  <div id="todo-list"></div>
+  <button class="add-btn" onclick="addItem('todo')">+ Add to-do item</button>
+</div>
+
 <!-- FOOD -->
 <div class="panel" id="panel-food">
   <div class="sec-title">Food & Restaurants</div>
@@ -224,8 +246,19 @@
   </div>
   <div class="card">
     <div class="card-label">Taipei / Taoyuan — Getting Around</div>
-    <div class="fg fg1"><div><label>Airport → city plan</label><textarea id="tr-tpe-airport" placeholder="Airport MRT ~NTD 160, 36 min. Zhongli Night Market via MRT for layover." oninput="kvQ('transport','tr-tpe-airport',this.value)"></textarea></div></div>
-    <div class="fg fg1"><div><label>City transport</label><textarea id="tr-tpe-city" placeholder="EasyCard for MRT, YouBike, taxi for clinic days. No driving post-SMILE." oninput="kvQ('transport','tr-tpe-city',this.value)"></textarea></div></div>
+    <div class="fg fg1"><div><label>Airport → city plan</label><textarea id="tr-tpe-airport" placeholder="Airport MRT ~NTD 160, 36 min." oninput="kvQ('transport','tr-tpe-airport',this.value)"></textarea></div></div>
+    <div class="fg fg1"><div><label>City transport</label><textarea id="tr-tpe-city" placeholder="EasyCard for MRT, YouBike, taxi..." oninput="kvQ('transport','tr-tpe-city',this.value)"></textarea></div></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Korea — Getting Around</div>
+    <div class="fg">
+      <div><label>SIM / eSIM plan</label><input type="text" id="tr-kr-sim" placeholder="Provider, GB, pickup/activation" oninput="kvQ('transport','tr-kr-sim',this.value)"></div>
+      <div><label>Transit card</label><select id="tr-kr-card" onchange="kvQ('transport','tr-kr-card',this.value)">
+        <option>Undecided</option><option>T-money</option><option>WOWPASS</option><option>Cashbee</option><option>Other</option>
+      </select></div>
+    </div>
+    <div class="fg fg1"><div><label>Airport → city plan</label><textarea id="tr-kr-airport" placeholder="AREX, airport limousine bus, taxi..." oninput="kvQ('transport','tr-kr-airport',this.value)"></textarea></div></div>
+    <div class="fg fg1"><div><label>City transport notes</label><textarea id="tr-kr-city" placeholder="No driving post-SMILE, subway lines, taxi apps (Kakao T)..." oninput="kvQ('transport','tr-kr-city',this.value)"></textarea></div></div>
   </div>
   <div id="transport_extra-list"></div>
   <button class="add-btn" onclick="addItem('transport_extra')">+ Add transport note</button>
@@ -239,7 +272,7 @@
     <div class="fg">
       <div><label>Date</label><input type="date" id="log-date"></div>
       <div><label>Location</label><select id="log-location">
-        <option>Ishigaki</option><option>Taipei</option><option>Taoyuan</option><option>Transit</option><option>Other</option>
+        <option>Ishigaki</option><option>Taipei</option><option>Taoyuan</option><option>Korea</option><option>Transit</option><option>Other</option>
       </select></div>
     </div>
     <div class="fg fg1"><div><label>Entry</label><textarea id="log-text" rows="4" placeholder="What happened today..."></textarea></div></div>
@@ -256,12 +289,12 @@ const API_KEY    = 'AIzaSyCVPD9x65DJnjckSDbVEKSQXAEXO9kVzLI';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0ICGAeioYM9adTyKDLeRWP-J4Mp82GYS416wolPUz2aBK9ZZba_itXFfAFo7qfDB_/exec';
 const BASE       = 'https://sheets.googleapis.com/v4/spreadsheets';
 
-// Sheet name map
+// Sheet name map — must match actual tab names in the Google Sheet exactly
 const SH = {
   timeline:'timeline', diving:'diving', smile:'smile', transport:'transport',
   flights:'flights', accom:'accom', food:'food', places:'places',
   log:'log', dive_shops:'dive_shops', smile_clinics:'smile_clinics',
-  dive_sites:'dive_sites', transport_extra:'transport_extra'
+  dive_sites:'dive_sites', transport_extra:'transport_extra', todo:'todo'
 };
 
 // ── SYNC STATUS ───────────────────────────────────────────────
@@ -278,7 +311,7 @@ async function sheetRead(name) {
   } catch(e) { return []; }
 }
 
-// ── WRITE via Apps Script ─────────────────────────────────────
+// ── WRITE via Apps Script (POST) ───────────────────────────────
 function sheetWrite(sheetName, data) {
   return fetch(SCRIPT_URL, {
     method: 'POST',
@@ -289,7 +322,6 @@ function sheetWrite(sheetName, data) {
 }
 
 // ── KV SHEETS (timeline, diving, smile, transport) ─────────────
-// Stored as rows of [key, value]
 let kvCache = {};
 let kvTimers = {};
 
@@ -323,7 +355,6 @@ function fillKV(map) {
 }
 
 // ── LIST SHEETS (everything else) ─────────────────────────────
-// Stored as JSON string in A1
 async function listLoad(sheetName) {
   const rows = await sheetRead(sheetName);
   if(!rows.length || !rows[0][0]) return [];
@@ -342,9 +373,6 @@ async function listFlush(sheetName, arr) {
   setSS('ok','Saved · '+new Date().toLocaleTimeString());
 }
 
-// ── APPS SCRIPT (must handle both types) ─────────────────────
-// The Apps Script needs updating — see note at bottom of file
-
 // ── TABS ──────────────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(t => {
   t.addEventListener('click', () => {
@@ -361,7 +389,7 @@ function sbg(s){ return s==='Booked'||s==='Complete ✓'||s==='Certified ✓'?'r
 function sfg(s){ return s==='Booked'||s==='Complete ✓'||s==='Certified ✓'?'#0ABFA3':s==='Replied'||s==='Confirmed'?'#7ACFE4':s&&s.includes('await')?'#E07B5A':'#5A7A8A'; }
 
 // ── GENERIC LIST DATA ─────────────────────────────────────────
-const lists = { flights:[], accom:[], dive_shops:[], dive_sites:[], smile_clinics:[], food:[], places:[], transport_extra:[], log:[] };
+const lists = { flights:[], accom:[], dive_shops:[], dive_sites:[], smile_clinics:[], food:[], places:[], transport_extra:[], log:[], todo:[] };
 
 // ── ITEM TEMPLATES ────────────────────────────────────────────
 function defaultItem(type) {
@@ -374,15 +402,13 @@ function defaultItem(type) {
     food:        {name:'',loc:'Ishigaki',type:'Seafood',notes:'',status:'Want to try'},
     places:      {name:'',loc:'Ishigaki',cat:'Nature / beach',notes:'',priority:'Must do'},
     transport_extra:{segment:'',date:'',details:''},
-    log:         {date:'',location:'',text:''}
+    log:         {date:'',location:'',text:''},
+    todo:        {title:'',category:'SIM card',location:'Korea',due:'',status:'To do',details:'',link:'',done:false}
   };
   return {...d[type]};
 }
 
 // ── RENDER FUNCTIONS ──────────────────────────────────────────
-// Key principle: inputs only update data, never trigger re-render.
-// Re-render only happens on add/remove.
-
 function renderFlights() {
   document.getElementById('flights-list').innerHTML = lists.flights.map((f,i) => `
     <div class="card">
@@ -411,13 +437,13 @@ function renderAccom() {
     <div class="card">
       <div class="card-label">${esc(a.name)||'Accommodation '+(i+1)}</div>
       <div class="fg">
-        <div><label>Property name</label><input type="text" value="${esc(a.name)}" placeholder="Guesthouse name" oninput="lists.accom[${i}].name=this.value;listQ('accom',lists.accom)"></div>
-        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki city, Kabira..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Property name</label><input type="text" value="${esc(a.name)}" placeholder="Guesthouse / hotel name" oninput="lists.accom[${i}].name=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki city, Taipei, Seoul..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom)"></div>
       </div>
       <div class="fg fg3">
         <div><label>Check-in</label><input type="date" value="${esc(a.checkin)}" oninput="lists.accom[${i}].checkin=this.value;listQ('accom',lists.accom)"></div>
         <div><label>Check-out</label><input type="date" value="${esc(a.checkout)}" oninput="lists.accom[${i}].checkout=this.value;listQ('accom',lists.accom)"></div>
-        <div><label>Cost</label><input type="text" value="${esc(a.cost)}" placeholder="¥ or $" oninput="lists.accom[${i}].cost=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Cost</label><input type="text" value="${esc(a.cost)}" placeholder="¥ ₩ or $" oninput="lists.accom[${i}].cost=this.value;listQ('accom',lists.accom)"></div>
       </div>
       <div class="fg">
         <div><label>Booking platform</label><input type="text" value="${esc(a.platform)}" oninput="lists.accom[${i}].platform=this.value;listQ('accom',lists.accom)"></div>
@@ -494,7 +520,7 @@ function renderSmileClinics() {
       </div>
       <div class="fg fg3">
         <div><label>Clinic name</label><input type="text" value="${esc(c.name)}" oninput="lists.smile_clinics[${i}].name=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
-        <div><label>District / area</label><input type="text" value="${esc(c.area)}" placeholder="Da'an, Zhongzheng..." oninput="lists.smile_clinics[${i}].area=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>District / area</label><input type="text" value="${esc(c.area)}" placeholder="Gangnam, Myeong-dong..." oninput="lists.smile_clinics[${i}].area=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>Status</label><select onchange="lists.smile_clinics[${i}].status=this.value;listQ('smile_clinics',lists.smile_clinics)">${['Researching','Contacted — awaiting reply','Replied','Consultation booked','Procedure confirmed','Complete ✓','Ruled out'].map(o=>`<option${o===c.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg3">
@@ -503,7 +529,7 @@ function renderSmileClinics() {
         <div><label>Website</label><input type="text" value="${esc(c.website)}" oninput="lists.smile_clinics[${i}].website=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
       </div>
       <div class="fg">
-        <div><label>Quoted price (NTD)</label><input type="text" value="${esc(c.price)}" placeholder="both eyes" oninput="lists.smile_clinics[${i}].price=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>Quoted price (KRW)</label><input type="text" value="${esc(c.price)}" placeholder="both eyes" oninput="lists.smile_clinics[${i}].price=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>English service?</label><select onchange="lists.smile_clinics[${i}].english=this.value;listQ('smile_clinics',lists.smile_clinics)">${['Unknown','Yes','Limited','No'].map(o=>`<option${o===c.english?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea oninput="lists.smile_clinics[${i}].notes=this.value;listQ('smile_clinics',lists.smile_clinics)">${esc(c.notes)}</textarea></div></div>
@@ -528,13 +554,35 @@ function renderSmileClinics() {
     </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No clinics added yet.</p>';
 }
 
+function renderTodo() {
+  document.getElementById('todo-list').innerHTML = lists.todo.map((t,i) => `
+    <div class="card ${t.done?'todo-done':''}">
+      <div class="todo-check">
+        <input type="checkbox" ${t.done?'checked':''} onchange="lists.todo[${i}].done=this.checked;listQ('todo',lists.todo);renderTodo()">
+        <div class="card-label" style="margin-bottom:0">${esc(t.title)||'To-do item '+(i+1)}</div>
+      </div>
+      <div class="fg fg3" style="margin-top:12px">
+        <div><label>Title</label><input type="text" value="${esc(t.title)}" placeholder="e.g. Get Korean eSIM" oninput="lists.todo[${i}].title=this.value;listQ('todo',lists.todo)"></div>
+        <div><label>Category</label><select onchange="lists.todo[${i}].category=this.value;listQ('todo',lists.todo)">${['SIM card','Transit card','Visa / entry','Currency / cash','Packing','Booking','Insurance','Other'].map(o=>`<option${o===t.category?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Location</label><select onchange="lists.todo[${i}].location=this.value;listQ('todo',lists.todo)">${['Ishigaki','Taiwan','Korea','Before departure','Anywhere'].map(o=>`<option${o===t.location?' selected':''}>${o}</option>`).join('')}</select></div>
+      </div>
+      <div class="fg fg3">
+        <div><label>Due / target date</label><input type="date" value="${esc(t.due)}" oninput="lists.todo[${i}].due=this.value;listQ('todo',lists.todo)"></div>
+        <div><label>Status</label><select onchange="lists.todo[${i}].status=this.value;listQ('todo',lists.todo)">${['To do','Researching','In progress','Done ✓'].map(o=>`<option${o===t.status?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Link</label><input type="text" value="${esc(t.link)}" placeholder="website / reference URL" oninput="lists.todo[${i}].link=this.value;listQ('todo',lists.todo)"></div>
+      </div>
+      <div class="fg fg1"><div><label>Details</label><textarea placeholder="Where/when/how to get it, cost, pickup location, requirements..." oninput="lists.todo[${i}].details=this.value;listQ('todo',lists.todo)">${esc(t.details)}</textarea></div></div>
+      <button class="rm-btn" onclick="removeItem('todo',${i})">Remove</button>
+    </div>`).join('') || '<p style="color:#3A5A6A;font-family:var(--mono);font-size:12px">No to-do items yet. Add things like SIM cards, T-money / WOWPASS, visas...</p>';
+}
+
 function renderFood() {
   document.getElementById('food-list').innerHTML = lists.food.map((f,i) => `
     <div class="card">
       <div class="fg fg3">
         <div><label>Name</label><input type="text" value="${esc(f.name)}" placeholder="Restaurant / market" oninput="lists.food[${i}].name=this.value;listQ('food',lists.food)"></div>
-        <div><label>Location</label><select onchange="lists.food[${i}].loc=this.value;listQ('food',lists.food)">${['Ishigaki','Taipei','TPE Airport area'].map(o=>`<option${o===f.loc?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>Type</label><select onchange="lists.food[${i}].type=this.value;listQ('food',lists.food)">${['Seafood','Plant-based','Market','Izakaya','Ramen / noodles','Night market','Breakfast','Other'].map(o=>`<option${o===f.type?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Location</label><select onchange="lists.food[${i}].loc=this.value;listQ('food',lists.food)">${['Ishigaki','Taipei','TPE Airport area','Korea'].map(o=>`<option${o===f.loc?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Type</label><select onchange="lists.food[${i}].type=this.value;listQ('food',lists.food)">${['Seafood','Plant-based','Market','Izakaya','Ramen / noodles','Night market','Korean BBQ','Breakfast','Other'].map(o=>`<option${o===f.type?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg">
         <div><label>Notes</label><input type="text" value="${esc(f.notes)}" placeholder="Vegan-friendly, must-try dish..." oninput="lists.food[${i}].notes=this.value;listQ('food',lists.food)"></div>
@@ -549,7 +597,7 @@ function renderPlaces() {
     <div class="card">
       <div class="fg fg3">
         <div><label>Place name</label><input type="text" value="${esc(p.name)}" placeholder="Kabira Bay..." oninput="lists.places[${i}].name=this.value;listQ('places',lists.places)"></div>
-        <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places)">${['Ishigaki','Nearby island','Taipei','Taoyuan'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places)">${['Ishigaki','Nearby island','Taipei','Taoyuan','Korea'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
         <div><label>Category</label><select onchange="lists.places[${i}].cat=this.value;listQ('places',lists.places)">${['Nature / beach','Cultural site','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg">
@@ -584,7 +632,8 @@ function renderLog() {
 const renderers = {
   flights: renderFlights, accom: renderAccom, dive_shops: renderDiveShops,
   dive_sites: renderDiveSites, smile_clinics: renderSmileClinics,
-  food: renderFood, places: renderPlaces, transport_extra: renderTransportExtra, log: renderLog
+  food: renderFood, places: renderPlaces, transport_extra: renderTransportExtra, log: renderLog,
+  todo: renderTodo
 };
 
 // ── ADD / REMOVE ──────────────────────────────────────────────
@@ -634,19 +683,14 @@ async function addLogEntry() {
 async function init() {
   setSS('saving','Loading...');
   try {
-    // Load KV sheets
     const [tl, div, sm, tr] = await Promise.all([
       kvLoad(SH.timeline), kvLoad(SH.diving), kvLoad(SH.smile), kvLoad(SH.transport)
     ]);
     fillKV(tl); fillKV(div); fillKV(sm); fillKV(tr);
 
-    // Load list sheets
-    const results = await Promise.all(
-      ['flights','accom','dive_shops','dive_sites','smile_clinics','food','places','transport_extra','log']
-        .map(k => listLoad(SH[k]))
-    );
-    ['flights','accom','dive_shops','dive_sites','smile_clinics','food','places','transport_extra','log']
-      .forEach((k,i) => { lists[k] = results[i]; });
+    const keys = ['flights','accom','dive_shops','dive_sites','smile_clinics','food','places','transport_extra','log','todo'];
+    const results = await Promise.all(keys.map(k => listLoad(SH[k])));
+    keys.forEach((k,i) => { lists[k] = results[i]; });
 
     Object.values(renderers).forEach(r => r());
     setSS('ok','Loaded · '+new Date().toLocaleTimeString());
