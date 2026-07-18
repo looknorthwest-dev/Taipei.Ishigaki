@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ishigaki + Taipei + Korea Trip Planner</title>
+<title>Ishigaki + Taiwan + Korea Trip Planner</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap');
   :root {
@@ -32,7 +32,7 @@
   .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
   .fg1{grid-template-columns:1fr;} .fg3{grid-template-columns:1fr 1fr 1fr;}
   label{display:block;font-family:var(--mono);font-size:10px;color:#5A7A8A;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
-  input[type="text"],input[type="date"],input[type="number"],select,textarea{width:100%;background:#141C26;border:1px solid #2A3A4A;border-radius:4px;color:var(--sand);font-family:var(--sans);font-size:13px;padding:8px 10px;outline:none;transition:border-color .15s;}
+  input[type="text"],input[type="date"],input[type="time"],input[type="number"],select,textarea{width:100%;background:#141C26;border:1px solid #2A3A4A;border-radius:4px;color:var(--sand);font-family:var(--sans);font-size:13px;padding:8px 10px;outline:none;transition:border-color .15s;}
   input:focus,select:focus,textarea:focus{border-color:var(--ocean);}
   textarea{resize:vertical;min-height:70px;}
   textarea.notes-area{resize:none;overflow:hidden;word-wrap:break-word;white-space:pre-wrap;transition:height .08s;}
@@ -52,22 +52,24 @@
   .log-date{font-family:var(--mono);font-size:10px;color:var(--reef);margin-bottom:4px;}
   .contact-box{background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px;}
 
-  /* ── Collapsible entry cards (reorderable list items) ── */
+  /* ── Collapsible entry cards ── */
   .panel-toolbar{display:flex;justify-content:flex-end;gap:16px;margin-bottom:10px;}
   .toolbar-link{font-family:var(--mono);font-size:10px;color:#4A6A7A;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;background:none;border:none;padding:0;}
   .toolbar-link:hover{color:var(--reef);}
   .entry-card{background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;margin-bottom:10px;overflow:hidden;transition:border-color .15s;}
   .entry-card.drag-over{border-color:var(--reef);}
   .entry-card.dragging{opacity:.35;}
-  .entry-header{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none;}
+  
+  /* Robust structural layout for headers on mobile viewports */
+  .entry-header{display:grid;grid-template-columns:auto auto auto 1fr auto auto;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none;}
   .entry-header:hover{background:#24323F;}
   .drag-handle{color:#3A5A6A;cursor:grab;font-size:14px;flex-shrink:0;line-height:1;}
   .drag-handle:active{cursor:grabbing;}
   .entry-chevron{display:inline-block;color:var(--reef);font-size:10px;flex-shrink:0;width:10px;transition:transform .15s;}
   .entry-card:not(.collapsed) .entry-chevron{transform:rotate(90deg);}
-  .entry-title{font-size:13px;font-weight:600;color:var(--sand);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .entry-meta{font-family:var(--mono);font-size:10px;color:#5A7A8A;flex-shrink:0;display:flex;align-items:center;gap:6px;}
-  .entry-controls{display:flex;gap:4px;flex-shrink:0;margin-left:4px;}
+  .entry-title{font-size:13px;font-weight:600;color:var(--sand);min-width:0;padding-right:4px;}
+  .entry-meta{font-family:var(--mono);font-size:10px;color:#5A7A8A;display:flex;align-items:center;gap:6px;justify-self:end;}
+  .entry-controls{display:flex;gap:4px;margin-left:4px;}
   .reorder-btn{background:transparent;border:1px solid #2A3A4A;color:#5A7A8A;width:22px;height:22px;border-radius:3px;cursor:pointer;font-size:11px;line-height:1;}
   .reorder-btn:hover{border-color:var(--ocean);color:var(--reef);}
   .entry-body{padding:16px 18px 18px;border-top:1px solid #2A3A4A;}
@@ -95,14 +97,21 @@
   .ov-item .ov-date{font-family:var(--mono);font-size:10px;color:#5A7A8A;min-width:80px;flex-shrink:0;padding-top:1px;}
   .ov-empty{color:#3A5A6A;font-family:var(--mono);font-size:11px;padding:10px 0;}
 
-  @media(max-width:540px){.fg,.fg3{grid-template-columns:1fr;}.header-top{gap:8px;}.entry-title{white-space:normal;}}
+  @media(max-width:540px){
+    .fg,.fg3{grid-template-columns:1fr;}
+    .header-top{gap:8px;}
+    .entry-header{grid-template-columns:auto auto 1fr; gap:6px 8px;}
+    .entry-title{grid-column: span 3; white-space: normal; word-break: break-word;}
+    .entry-meta{grid-column: span 2; justify-self: start;}
+    .entry-controls{grid-column: 3; justify-self: end;}
+  }
 </style>
 </head>
 <body>
 <header>
   <div class="header-top">
-    <span class="trip-title">Ishigaki + Taipei + Korea — Oct 2026</span>
-    <span class="trip-sub">10d Ishigaki · Taiwan · ~5d Korea · SMILE</span>
+    <span class="trip-title">Ishigaki + Taiwan + Korea — Oct 2026</span>
+    <span class="trip-sub">Taiwan · 10d Ishigaki · ~5d Korea · SMILE</span>
     <div class="sync-dot" id="sync-dot"></div>
     <span id="sync-msg">Loading...</span>
   </div>
@@ -223,22 +232,34 @@
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
         <div class="step-title">Pre-op consultation</div>
         <div class="step-note">Eye measurements, candidacy check. Stop contacts ~2 weeks before.</div>
-        <input type="date" id="smile-consult-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-consult-date',this.value)">
+        <div class="fg" style="margin-top:8px;max-width:400px;">
+          <div><label>Date</label><input type="date" id="smile-consult-date" oninput="kvQ('smile','smile-consult-date',this.value)"></div>
+          <div><label>Time</label><input type="time" id="smile-consult-time" oninput="kvQ('smile','smile-consult-time',this.value)"></div>
+        </div>
       </div></div>
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
         <div class="step-title">Procedure day</div>
         <div class="step-note">~30 min total. Arrange quiet rest same day. No driving.</div>
-        <input type="date" id="smile-procedure-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-procedure-date',this.value)">
+        <div class="fg" style="margin-top:8px;max-width:400px;">
+          <div><label>Date</label><input type="date" id="smile-procedure-date" oninput="kvQ('smile','smile-procedure-date',this.value)"></div>
+          <div><label>Time</label><input type="time" id="smile-procedure-time" oninput="kvQ('smile','smile-procedure-time',this.value)"></div>
+        </div>
       </div></div>
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
         <div class="step-title">Day-after follow-up</div>
         <div class="step-note">Vision check, drops confirmed. Avoid screens, bright light.</div>
-        <input type="date" id="smile-followup-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-followup-date',this.value)">
+        <div class="fg" style="margin-top:8px;max-width:400px;">
+          <div><label>Date</label><input type="date" id="smile-followup-date" oninput="kvQ('smile','smile-followup-date',this.value)"></div>
+          <div><label>Time</label><input type="time" id="smile-followup-time" oninput="kvQ('smile','smile-followup-time',this.value)"></div>
+        </div>
       </div></div>
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
         <div class="step-title">Final check / clearance to fly</div>
         <div class="step-note">Confirm OK to travel. Keep drops in carry-on.</div>
-        <input type="date" id="smile-clearance-date" style="margin-top:8px;width:auto" oninput="kvQ('smile','smile-clearance-date',this.value)">
+        <div class="fg" style="margin-top:8px;max-width:400px;">
+          <div><label>Date</label><input type="date" id="smile-clearance-date" oninput="kvQ('smile','smile-clearance-date',this.value)"></div>
+          <div><label>Time</label><input type="time" id="smile-clearance-time" oninput="kvQ('smile','smile-clearance-time',this.value)"></div>
+        </div>
       </div></div>
     </div>
   </div>
@@ -301,7 +322,7 @@
     </div>
   </div>
   <div class="card simple-card" id="card-tr-tpe">
-    <div class="card-label" onclick="toggleSimple('card-tr-tpe')"><span class="entry-chevron">▸</span>Taipei / Taoyuan — Getting Around</div>
+    <div class="card-label" onclick="toggleSimple('card-tr-tpe')"><span class="entry-chevron">▸</span>Taiwan — Getting Around</div>
     <div class="card-body">
       <div class="fg fg1"><div><label>Airport → city plan</label><textarea class="notes-area" id="tr-tpe-airport" placeholder="Airport MRT ~NTD 160, 36 min." oninput="autoGrow(this);kvQ('transport','tr-tpe-airport',this.value)"></textarea></div></div>
       <div class="fg fg1"><div><label>City transport</label><textarea class="notes-area" id="tr-tpe-city" placeholder="EasyCard for MRT, YouBike, taxi..." oninput="autoGrow(this);kvQ('transport','tr-tpe-city',this.value)"></textarea></div></div>
@@ -336,7 +357,7 @@
     <div class="fg">
       <div><label>Date</label><input type="date" id="log-date"></div>
       <div><label>Location</label><select id="log-location">
-        <option>Ishigaki</option><option>Taipei</option><option>Taoyuan</option><option>Korea</option><option>Transit</option><option>Other</option>
+        <option>Taiwan</option><option>Ishigaki</option><option>Korea</option><option>Transit</option><option>Other</option>
       </select></div>
     </div>
     <div class="fg fg1"><div><label>Entry</label><textarea id="log-text" rows="4" placeholder="What happened today..."></textarea></div></div>
@@ -352,7 +373,7 @@ const SHEET_ID   = '1rfTvbs8S5sdeAcVjihK9jcLn-YXezamPiOVzQy15dvk';
 const API_KEY    = 'AIzaSyCVPD9x65DJnjckSDbVEKSQXAEXO9kVzLI';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0ICGAeioYM9adTyKDLeRWP-J4Mp82GYS416wolPUz2aBK9ZZba_itXFfAFo7qfDB_/exec';
 const BASE       = 'https://sheets.googleapis.com/v4/spreadsheets';
-// Sheet name map — must match actual tab names in the Google Sheet exactly
+
 const SH = {
   timeline:'timeline', diving:'diving', smile:'smile', transport:'transport',
   flights:'flights', accom:'accom', food:'food', places:'places',
@@ -552,21 +573,21 @@ const lists = { timeline:[], flights:[], accom:[], dive_shops:[], dive_sites:[],
 function defaultItem(type) {
   const d = {
     timeline:    {id:uid(), phase:'Transit', title:'', date:'', note:''},
-    flights:     {id:uid(), route:'',date:'',airline:'',dep:'',arr:'',status:'To book',conf:'',cost:'',notes:''},
+    flights:     {id:uid(), route:'',date:'',airline:'',flight_num:'',dep:'',arr:'',status:'To book',conf:'',cost:'',notes:''},
     accom:       {id:uid(), name:'',area:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''},
     dive_shops:  {id:uid(), name:'',location:'',status:'Researching',phone:'',email:'',website:'',price:'',gear:'Unknown',english:'Unknown',notes:'',contacts:[]},
     dive_sites:  {id:uid(), name:'',date:'',type:'Fun dive',notes:''},
     smile_clinics:{id:uid(), name:'',area:'',status:'Researching',phone:'',email:'',website:'',price:'',english:'Unknown',notes:'',contacts:[]},
-    food:        {id:uid(), name:'',loc:'Ishigaki',type:'Seafood',notes:'',status:'Want to try'},
-    places:      {id:uid(), name:'',loc:'Ishigaki',cat:'Nature / beach',notes:'',priority:'Must do'},
+    food:        {id:uid(), name:'',loc:'Taiwan',type:'Night market',notes:'',status:'Want to try'},
+    places:      {id:uid(), name:'',loc:'Taiwan',cat:'Cultural site',notes:'',priority:'Must do'},
     transport_extra:{id:uid(), segment:'',date:'',details:''},
-    log:         {id:uid(), date:'',location:'',text:''},
-    todo:        {id:uid(), title:'',category:'SIM card',location:'Korea',due:'',status:'To do',details:'',link:'',done:false}
+    log:         {id:uid(), date:'',location:'Taiwan',text:''},
+    todo:        {id:uid(), title:'',category:'SIM card',location:'Taiwan',due:'',status:'To do',details:'',link:'',done:false}
   };
   return {...d[type]};
 }
 // ── RENDER: TIMELINE ───────────────────────────────────────────
-const PHASE_CLASS = {Transit:'p-transit', Ishigaki:'p-isg', Taipei:'p-tpe', Korea:'p-kr', Other:'p-transit'};
+const PHASE_CLASS = {Transit:'p-transit', Taiwan:'p-tpe', Ishigaki:'p-isg', Korea:'p-kr', Other:'p-transit'};
 function renderTimeline() {
   document.getElementById('timeline-list').innerHTML = lists.timeline.map((t,i) => {
     const meta = `<span class="phase ${PHASE_CLASS[t.phase]||'p-transit'}">${esc(t.phase)}</span>${t.date?' '+fmtDate(t.date):''}`;
@@ -574,7 +595,7 @@ function renderTimeline() {
       <div class="fg fg3">
         <div><label>Phase</label><select onchange="lists.timeline[${i}].phase=this.value;listQ('timeline',lists.timeline);renderTimeline()">${Object.keys(PHASE_CLASS).map(o=>`<option${o===t.phase?' selected':''}>${o}</option>`).join('')}</select></div>
         <div><label>Date</label><input type="date" value="${esc(t.date)}" oninput="lists.timeline[${i}].date=this.value;listQ('timeline',lists.timeline)"></div>
-        <div><label>Title</label><input type="text" value="${esc(t.title)}" placeholder="e.g. Arrive Ishigaki" oninput="lists.timeline[${i}].title=this.value;listQ('timeline',lists.timeline)"></div>
+        <div><label>Title</label><input type="text" value="${esc(t.title)}" placeholder="e.g. Arrive Taiwan" oninput="lists.timeline[${i}].title=this.value;listQ('timeline',lists.timeline)"></div>
       </div>
       <div class="fg fg1"><div><label>Note</label><textarea class="notes-area" oninput="autoGrow(this);lists.timeline[${i}].note=this.value;listQ('timeline',lists.timeline)">${esc(t.note)}</textarea></div></div>
       <button class="rm-btn" onclick="removeItem('timeline',${i})">Remove</button>
@@ -591,21 +612,22 @@ function renderFlights() {
       <div class="fg fg3">
         <div><label>Route</label><input type="text" value="${esc(f.route)}" placeholder="PDX → TPE" oninput="lists.flights[${i}].route=this.value;listQ('flights',lists.flights)"></div>
         <div><label>Date</label><input type="date" value="${esc(f.date)}" oninput="lists.flights[${i}].date=this.value;listQ('flights',lists.flights)"></div>
-        <div><label>Airline / #</label><input type="text" value="${esc(f.airline)}" oninput="lists.flights[${i}].airline=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Airline</label><input type="text" value="${esc(f.airline)}" oninput="lists.flights[${i}].airline=this.value;listQ('flights',lists.flights)"></div>
       </div>
       <div class="fg fg3">
+        <div><label>Flight Number</label><input type="text" value="${esc(f.flight_num||'')}" placeholder="BR25" oninput="lists.flights[${i}].flight_num=this.value;listQ('flights',lists.flights)"></div>
         <div><label>Departs</label><input type="text" value="${esc(f.dep)}" placeholder="HH:MM" oninput="lists.flights[${i}].dep=this.value;listQ('flights',lists.flights)"></div>
         <div><label>Arrives</label><input type="text" value="${esc(f.arr)}" placeholder="HH:MM" oninput="lists.flights[${i}].arr=this.value;listQ('flights',lists.flights)"></div>
-        <div><label>Status</label><select onchange="lists.flights[${i}].status=this.value;listQ('flights',lists.flights);renderFlights()">${['To book','Booked','Confirmed'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="fg">
+      <div class="fg fg3">
+        <div><label>Status</label><select onchange="lists.flights[${i}].status=this.value;listQ('flights',lists.flights);renderFlights()">${['To book','Booked','Confirmed'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
         <div><label>Confirmation #</label><input type="text" value="${esc(f.conf)}" oninput="lists.flights[${i}].conf=this.value;listQ('flights',lists.flights)"></div>
         <div><label>Cost (USD)</label><input type="number" value="${esc(f.cost)}" oninput="lists.flights[${i}].cost=this.value;listQ('flights',lists.flights)"></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" oninput="autoGrow(this);lists.flights[${i}].notes=this.value;listQ('flights',lists.flights)">${esc(f.notes)}</textarea></div></div>
       <button class="rm-btn" onclick="removeItem('flights',${i})">Remove</button>
     `;
-    return cardShell('flights', f, i, {title: f.route||('Flight '+(i+1)), meta}, body);
+    return cardShell('flights', f, i, {title: f.route ? (f.route + (f.flight_num ? ' ('+f.flight_num+')' : '')) : ('Flight '+(i+1)), meta}, body);
   }).join('') || '<p class="ov-empty">No flights added yet.</p>';
   autoGrowAllIn('flights-list');
 }
@@ -616,7 +638,7 @@ function renderAccom() {
     const body = `
       <div class="fg">
         <div><label>Property name</label><input type="text" value="${esc(a.name)}" placeholder="Guesthouse / hotel name" oninput="lists.accom[${i}].name=this.value;listQ('accom',lists.accom)"></div>
-        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki city, Taipei, Seoul..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki, Taiwan, Seoul..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom)"></div>
       </div>
       <div class="fg fg3">
         <div><label>Check-in</label><input type="date" value="${esc(a.checkin)}" oninput="lists.accom[${i}].checkin=this.value;listQ('accom',lists.accom)"></div>
@@ -645,7 +667,7 @@ function renderDiveShops() {
         <div><label>Status</label><select onchange="lists.dive_shops[${i}].status=this.value;listQ('dive_shops',lists.dive_shops);renderDiveShops()">${['Researching','Contacted — awaiting reply','Replied','Booked','Ruled out'].map(o=>`<option${o===s.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg3">
-        <div><label>Phone / LINE</label><input type="text" value="${esc(s.phone)}" oninput="lists.dive_shops[${i}].phone=this.value;listQ('dive_shops',lists.dive_shops)"></div>
+        <div><label>Phone / LINE / WhatsApp</label><input type="text" value="${esc(s.phone)}" oninput="lists.dive_shops[${i}].phone=this.value;listQ('dive_shops',lists.dive_shops)"></div>
         <div><label>Email</label><input type="text" value="${esc(s.email)}" oninput="lists.dive_shops[${i}].email=this.value;listQ('dive_shops',lists.dive_shops)"></div>
         <div><label>Website</label><input type="text" value="${esc(s.website)}" oninput="lists.dive_shops[${i}].website=this.value;listQ('dive_shops',lists.dive_shops)"></div>
       </div>
@@ -666,7 +688,7 @@ function renderDiveShops() {
         <div class="contact-box">
           <div class="fg fg3">
             <div><label>Date</label><input type="date" id="ds-d-${i}"></div>
-            <div><label>Direction</label><select id="ds-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Received — reply</option><option>Received — phone</option><option>Note to self</option></select></div>
+            <div><label>Direction</label><select id="ds-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Sent — WhatsApp</option><option>Received — reply</option><option>Received — phone</option><option>Received — WhatsApp</option><option>Note to self</option></select></div>
             <div style="display:flex;align-items:flex-end"><button class="add-btn solid" onclick="addContact('dive_shops',${i})">+ Add</button></div>
           </div>
           <div class="fg fg1"><div><label>Message / notes</label><textarea id="ds-b-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
@@ -706,7 +728,7 @@ function renderSmileClinics() {
         <div><label>Status</label><select onchange="lists.smile_clinics[${i}].status=this.value;listQ('smile_clinics',lists.smile_clinics);renderSmileClinics()">${['Researching','Contacted — awaiting reply','Replied','Consultation booked','Procedure confirmed','Complete ✓','Ruled out'].map(o=>`<option${o===c.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg3">
-        <div><label>Phone</label><input type="text" value="${esc(c.phone)}" oninput="lists.smile_clinics[${i}].phone=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>Phone / WhatsApp</label><input type="text" value="${esc(c.phone)}" oninput="lists.smile_clinics[${i}].phone=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>Email</label><input type="text" value="${esc(c.email)}" oninput="lists.smile_clinics[${i}].email=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>Website</label><input type="text" value="${esc(c.website)}" oninput="lists.smile_clinics[${i}].website=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
       </div>
@@ -726,7 +748,7 @@ function renderSmileClinics() {
         <div class="contact-box">
           <div class="fg fg3">
             <div><label>Date</label><input type="date" id="sc-d-${i}"></div>
-            <div><label>Direction</label><select id="sc-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Received — reply</option><option>Received — phone</option><option>Note to self</option></select></div>
+            <div><label>Direction</label><select id="sc-dir-${i}"><option>Sent — email</option><option>Sent — phone</option><option>Sent — WhatsApp</option><option>Received — reply</option><option>Received — phone</option><option>Received — WhatsApp</option><option>Note to self</option></select></div>
             <div style="display:flex;align-items:flex-end"><button class="add-btn solid" onclick="addContact('smile_clinics',${i})">+ Add</button></div>
           </div>
           <div class="fg fg1"><div><label>Message / notes</label><textarea id="sc-b-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
@@ -741,25 +763,28 @@ function renderSmileClinics() {
 // ── RENDER: TODO ─────────────────────────────────────────────────
 function renderTodo() {
   document.getElementById('todo-list').innerHTML = lists.todo.map((t,i) => {
+    const targetPreview = t.due ? ` [Target: ${fmtDate(t.due)}] ` : '';
     const meta = `${esc(t.location||'')}${t.location?' · ':''}${statusMeta(t.status||'To do')}`;
     const extraHeader = `<input type="checkbox" ${t.done?'checked':''} onclick="event.stopPropagation()" onchange="lists.todo[${i}].done=this.checked;listQ('todo',lists.todo);renderTodo()" style="width:16px;height:16px;accent-color:var(--reef);flex-shrink:0;margin:0">`;
     const titleStyle = t.done ? 'text-decoration:line-through;color:#3A5A6A' : '';
+    const displayTitle = (t.title||('To-do item '+(i+1))) + targetPreview;
+    
     const body = `
       <div class="fg fg3">
-        <div><label>Title</label><input type="text" value="${esc(t.title)}" placeholder="e.g. Get Korean eSIM" oninput="lists.todo[${i}].title=this.value;listQ('todo',lists.todo)"></div>
+        <div><label>Title</label><input type="text" value="${esc(t.title)}" placeholder="e.g. Get Taiwan eSIM" oninput="lists.todo[${i}].title=this.value;listQ('todo',lists.todo)"></div>
         <div><label>Category</label><select onchange="lists.todo[${i}].category=this.value;listQ('todo',lists.todo)">${['SIM card','Transit card','Visa / entry','Currency / cash','Packing','Booking','Insurance','Other'].map(o=>`<option${o===t.category?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>Location</label><select onchange="lists.todo[${i}].location=this.value;listQ('todo',lists.todo);renderTodo()">${['Ishigaki','Taiwan','Korea','Before departure','Anywhere'].map(o=>`<option${o===t.location?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Location</label><select onchange="lists.todo[${i}].location=this.value;listQ('todo',lists.todo);renderTodo()">${['Taiwan','Ishigaki','Korea','Before departure','Anywhere'].map(o=>`<option${o===t.location?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg3">
-        <div><label>Due / target date</label><input type="date" value="${esc(t.due)}" oninput="lists.todo[${i}].due=this.value;listQ('todo',lists.todo)"></div>
+        <div><label>Due / target date</label><input type="date" value="${esc(t.due)}" oninput="lists.todo[${i}].due=this.value;listQ('todo',lists.todo);renderTodo()"></div>
         <div><label>Status</label><select onchange="lists.todo[${i}].status=this.value;listQ('todo',lists.todo);renderTodo()">${['To do','Researching','In progress','Done ✓'].map(o=>`<option${o===t.status?' selected':''}>${o}</option>`).join('')}</select></div>
         <div><label>Link</label><input type="text" value="${esc(t.link)}" placeholder="website / reference URL" oninput="lists.todo[${i}].link=this.value;listQ('todo',lists.todo)"></div>
       </div>
       <div class="fg fg1"><div><label>Details</label><textarea class="notes-area" placeholder="Where/when/how to get it, cost, pickup location, requirements..." oninput="autoGrow(this);lists.todo[${i}].details=this.value;listQ('todo',lists.todo)">${esc(t.details)}</textarea></div></div>
       <button class="rm-btn" onclick="removeItem('todo',${i})">Remove</button>
     `;
-    return cardShell('todo', t, i, {title: t.title||('To-do item '+(i+1)), meta, extraHeader, titleStyle}, body);
-  }).join('') || '<p class="ov-empty">No to-do items yet. Add things like SIM cards, T-money / WOWPASS, visas...</p>';
+    return cardShell('todo', t, i, {title: displayTitle, meta, extraHeader, titleStyle}, body);
+  }).join('') || '<p class="ov-empty">No to-do items yet. Add things like SIM cards, EasyCard, visas...</p>';
   autoGrowAllIn('todo-list');
 }
 // ── RENDER: FOOD ──────────────────────────────────────────────────
@@ -769,8 +794,8 @@ function renderFood() {
     const body = `
       <div class="fg fg3">
         <div><label>Name</label><input type="text" value="${esc(f.name)}" placeholder="Restaurant / market" oninput="lists.food[${i}].name=this.value;listQ('food',lists.food)"></div>
-        <div><label>Location</label><select onchange="lists.food[${i}].loc=this.value;listQ('food',lists.food);renderFood()">${['Ishigaki','Taipei','TPE Airport area','Korea'].map(o=>`<option${o===f.loc?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>Type</label><select onchange="lists.food[${i}].type=this.value;listQ('food',lists.food)">${['Seafood','Plant-based','Market','Izakaya','Ramen / noodles','Night market','Korean BBQ','Breakfast','Other'].map(o=>`<option${o===f.type?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Location</label><select onchange="lists.food[${i}].loc=this.value;listQ('food',lists.food);renderFood()">${['Taiwan','Ishigaki','Korea'].map(o=>`<option${o===f.loc?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Type</label><select onchange="lists.food[${i}].type=this.value;listQ('food',lists.food)">${['Night market','Seafood','Plant-based','Market','Izakaya','Ramen / noodles','Korean BBQ','Breakfast','Other'].map(o=>`<option${o===f.type?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" placeholder="Vegan-friendly, must-try dish..." oninput="autoGrow(this);lists.food[${i}].notes=this.value;listQ('food',lists.food)">${esc(f.notes)}</textarea></div></div>
       <div class="fg fg1"><div><label>Status</label><select onchange="lists.food[${i}].status=this.value;listQ('food',lists.food);renderFood()">${['Want to try','Visited ✓','Skip'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div></div>
@@ -786,9 +811,9 @@ function renderPlaces() {
     const meta = `${esc(p.loc||'')}${p.loc?' · ':''}${esc(p.priority||'')}`;
     const body = `
       <div class="fg fg3">
-        <div><label>Place name</label><input type="text" value="${esc(p.name)}" placeholder="Kabira Bay..." oninput="lists.places[${i}].name=this.value;listQ('places',lists.places)"></div>
-        <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places);renderPlaces()">${['Ishigaki','Nearby island','Taipei','Taoyuan','Korea'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>Category</label><select onchange="lists.places[${i}].cat=this.value;listQ('places',lists.places)">${['Nature / beach','Cultural site','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Place name</label><input type="text" value="${esc(p.name)}" placeholder="Jiufen..." oninput="lists.places[${i}].name=this.value;listQ('places',lists.places)"></div>
+        <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places);renderPlaces()">${['Taiwan','Ishigaki','Nearby island','Korea'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Category</label><select onchange="lists.places[${i}].cat=this.value;listQ('places',lists.places)">${['Cultural site','Nature / beach','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" placeholder="Hours, cost, how to get there..." oninput="autoGrow(this);lists.places[${i}].notes=this.value;listQ('places',lists.places)">${esc(p.notes)}</textarea></div></div>
       <div class="fg fg1"><div><label>Priority</label><select onchange="lists.places[${i}].priority=this.value;listQ('places',lists.places);renderPlaces()">${['Must do','Nice to have','If time permits','Done ✓'].map(o=>`<option${o===p.priority?' selected':''}>${o}</option>`).join('')}</select></div></div>
@@ -804,7 +829,7 @@ function renderTransportExtra() {
     const meta = t.date ? fmtDate(t.date) : '';
     const body = `
       <div class="fg">
-        <div><label>Segment</label><input type="text" value="${esc(t.segment)}" placeholder="e.g. Ferry to Taketomi" oninput="lists.transport_extra[${i}].segment=this.value;listQ('transport_extra',lists.transport_extra)"></div>
+        <div><label>Segment</label><input type="text" value="${esc(t.segment)}" placeholder="e.g. Train to Hualien" oninput="lists.transport_extra[${i}].segment=this.value;listQ('transport_extra',lists.transport_extra)"></div>
         <div><label>Date</label><input type="date" value="${esc(t.date)}" oninput="lists.transport_extra[${i}].date=this.value;listQ('transport_extra',lists.transport_extra)"></div>
       </div>
       <div class="fg fg1"><div><label>Details</label><textarea class="notes-area" oninput="autoGrow(this);lists.transport_extra[${i}].details=this.value;listQ('transport_extra',lists.transport_extra)">${esc(t.details)}</textarea></div></div>
@@ -834,13 +859,14 @@ function canonGroup(s){
   s = (s||'').toLowerCase();
   if(!s) return 'Other';
   if(s.includes('transit')) return 'Transit';
+  if(s.includes('taiwan')||s.includes('taipei')||s.includes('taoyuan')||s.includes('tpe')) return 'Taiwan';
   if(s.includes('ishigaki')) return 'Ishigaki';
-  if(s.includes('taipei')||s.includes('taoyuan')||s.includes('tpe')) return 'Taipei';
   if(s.includes('korea')||s.includes('seoul')||s.includes('gangnam')||s.includes('myeong')) return 'Korea';
   return 'Other';
 }
 function renderOverview(){
-  const order = ['Transit','Ishigaki','Taipei','Korea','Other'];
+  // Taiwan rearranged chronologically ahead of Ishigaki
+  const order = ['Transit','Taiwan','Ishigaki','Korea','Other'];
   const groups = {};
   order.forEach(o => groups[o] = {timeline:[], accom:[], places:[], food:[]});
   lists.timeline.forEach(t => groups[canonGroup(t.phase)].timeline.push(t));
@@ -882,7 +908,7 @@ function renderOverview(){
   }).join('');
 }
 function toggleOverviewGroup(name){
-  if(!expandedIds['__overview']) expandedIds['__overview'] = new Set(['Transit','Ishigaki','Taipei','Korea']);
+  if(!expandedIds['__overview']) expandedIds['__overview'] = new Set(['Transit','Taiwan','Ishigaki','Korea']);
   const set = expandedIds['__overview'];
   if(set.has(name)) set.delete(name); else set.add(name);
   const node = document.querySelector(`.ov-group[data-ovid="${name}"]`);
@@ -933,11 +959,18 @@ async function addLogEntry() {
 async function init() {
   setSS('saving','Loading...');
   try {
-    expandedIds['__overview'] = new Set(['Transit','Ishigaki','Taipei','Korea']);
+    expandedIds['__overview'] = new Set(['Transit','Taiwan','Ishigaki','Korea']);
     const [div, sm, tr] = await Promise.all([
       kvLoad(SH.diving), kvLoad(SH.smile), kvLoad(SH.transport)
     ]);
     fillKV(div); fillKV(sm); fillKV(tr);
+    
+    // Check and populate unique time elements for the procedure timeline
+    if(sm['smile-consult-time']) document.getElementById('smile-consult-time').value = sm['smile-consult-time'];
+    if(sm['smile-procedure-time']) document.getElementById('smile-procedure-time').value = sm['smile-procedure-time'];
+    if(sm['smile-followup-time']) document.getElementById('smile-followup-time').value = sm['smile-followup-time'];
+    if(sm['smile-clearance-time']) document.getElementById('smile-clearance-time').value = sm['smile-clearance-time'];
+
     const keys = ['timeline','flights','accom','dive_shops','dive_sites','smile_clinics','food','places','transport_extra','log','todo'];
     const results = await Promise.all(keys.map(k => listLoad(SH[k])));
     keys.forEach((k,i) => { lists[k] = ensureIds(results[i]); });
