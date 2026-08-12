@@ -7,9 +7,17 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap');
   :root {
-    --ocean:#1A6B8A;--reef:#0ABFA3;--sand:#F5EDD8;--coral:#E07B5A;--violet:#8A6FD8;
-    --ink:#1A1F2E;--mono:'IBM Plex Mono',monospace;--sans:'Sora',sans-serif;
-    --muted:#9BB4C4;--ocean-text:#4FA8D8;
+    /* High-contrast slate dark theme */
+    --ocean:#3182CE;         /* Bright electric blue for active boundaries & focus states */
+    --reef:#00E6C3;          /* High-luminance teal for active tabs and highlights */
+    --sand:#F7FAFC;          /* Crisp high-contrast off-white body text */
+    --coral:#FF7A61;         /* Bright coral for warnings/badges */
+    --violet:#B794F4;        /* Vibrant lavender for Korea phase tags */
+    --ink:#0F172A;           /* Deep slate/navy background */
+    --mono:'IBM Plex Mono',monospace;
+    --sans:'Sora',sans-serif;
+    --muted:#CBD5E1;         /* High-visibility silver gray for labels and secondary text */
+    --ocean-text:#63B3ED;    /* Readable sky blue for section badges */
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--sans);background:var(--ink);color:var(--sand);min-height:100vh;}
@@ -28,12 +36,12 @@
   .panel{display:none;} .panel.active{display:block;}
   .sec-title{font-size:13px;font-family:var(--mono);font-weight:600;color:var(--reef);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;}
   .sec-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px;max-width:560px;}
-  .card{background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;padding:18px 20px;margin-bottom:12px;}
+  .card{background: #1E293B;border:1px solid #334155;border-radius:6px;padding:18px 20px;margin-bottom:12px;}
   .card-label{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ocean-text);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;}
   .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
   .fg1{grid-template-columns:1fr;} .fg3{grid-template-columns:1fr 1fr 1fr;}
   label{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
-  input[type="text"],input[type="date"],input[type="time"],input[type="number"],select,textarea{width:100%;background:#141C26;border:1px solid #2A3A4A;border-radius:4px;color:var(--sand);font-family:var(--sans);font-size:15px;padding:8px 10px;outline:none;transition:border-color .15s;}
+  input[type="text"],input[type="date"],input[type="time"],input[type="number"],select,textarea{width:100%;background:#0F172A;border:1px solid #475569;border-radius:4px;color:var(--sand);font-family:var(--sans);font-size:15px;padding:8px 10px;outline:none;transition:border-color .15s;}
   input:focus,select:focus,textarea:focus{border-color:var(--ocean);}
   textarea{resize:vertical;min-height:70px;}
   textarea.notes-area{resize:none;overflow:hidden;word-wrap:break-word;white-space:pre-wrap;transition:height .08s;}
@@ -57,7 +65,7 @@
   .panel-toolbar{display:flex;justify-content:flex-end;gap:16px;margin-bottom:10px;}
   .toolbar-link{font-family:var(--mono);font-size:12px;color:var(--muted);cursor:pointer;letter-spacing:.08em;text-transform:uppercase;background:none;border:none;padding:0;}
   .toolbar-link:hover{color:var(--reef);}
-  .entry-card{background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;margin-bottom:10px;overflow:hidden;transition:border-color .15s;}
+  .entry-card{background:#1E293B;border:1px solid #334155;border-radius:6px;margin-bottom:10px;overflow:hidden;transition:border-color .15s;}
   .entry-card.drag-over{border-color:var(--reef);}
   .entry-card.dragging{opacity:.35;}
   
@@ -84,7 +92,7 @@
 
   /* ── Overview tab ── */
   .ov-group{margin-bottom:12px;}
-  .ov-group-header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;cursor:pointer;user-select:none;}
+  .ov-group-header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#1E293B;border:1px solid #334155;border-radius:6px;cursor:pointer;user-select:none;}
   .ov-group-header:hover{background:#24323F;}
   .ov-group-title{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--reef);flex:1;}
   .ov-group-count{font-family:var(--mono);font-size:12px;color:var(--muted);}
@@ -105,6 +113,9 @@
     .entry-title{grid-column: span 3; white-space: normal; word-break: break-word;}
     .entry-meta{grid-column: span 2; justify-self: start;}
     .entry-controls{grid-column: 3; justify-self: end;}
+  }
+  label, .trip-sub, #sync-msg, .ov-group-count, .entry-meta, .toolbar-link {
+    color: #CBD5E1;
   }
 </style>
 </head>
