@@ -9,52 +9,53 @@
   :root {
     --ocean:#1A6B8A;--reef:#0ABFA3;--sand:#F5EDD8;--coral:#E07B5A;--violet:#8A6FD8;
     --ink:#1A1F2E;--mono:'IBM Plex Mono',monospace;--sans:'Sora',sans-serif;
+    --muted:#9BB4C4;--ocean-text:#4FA8D8;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--sans);background:var(--ink);color:var(--sand);min-height:100vh;}
   header{background:var(--ink);border-bottom:1px solid #2E3A4A;padding:18px 24px 0;position:sticky;top:0;z-index:100;}
   .header-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
-  .trip-title{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--reef);letter-spacing:.12em;text-transform:uppercase;}
-  .trip-sub{font-size:12px;color:#5A7A8A;font-family:var(--mono);}
+  .trip-title{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--reef);letter-spacing:.12em;text-transform:uppercase;}
+  .trip-sub{font-size:14px;color:var(--muted);font-family:var(--mono);}
   .sync-dot{width:8px;height:8px;border-radius:50%;background:#3A5A6A;flex-shrink:0;margin-left:auto;}
   .sync-dot.ok{background:var(--reef);} .sync-dot.saving{background:#F0C040;} .sync-dot.err{background:var(--coral);}
-  #sync-msg{font-family:var(--mono);font-size:10px;color:#5A7A8A;}
+  #sync-msg{font-family:var(--mono);font-size:12px;color:var(--muted);}
   .tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
   .tabs::-webkit-scrollbar{display:none;}
-  .tab{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px 10px;border:none;background:transparent;color:#4A6A7A;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;}
+  .tab{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px 10px;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;}
   .tab:hover{color:var(--sand);} .tab.active{color:var(--reef);border-bottom-color:var(--reef);}
   main{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
   .panel{display:none;} .panel.active{display:block;}
-  .sec-title{font-size:11px;font-family:var(--mono);font-weight:600;color:var(--reef);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;}
-  .sec-desc{font-size:12px;color:#5A7A8A;line-height:1.6;margin-bottom:18px;max-width:560px;}
+  .sec-title{font-size:13px;font-family:var(--mono);font-weight:600;color:var(--reef);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;}
+  .sec-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px;max-width:560px;}
   .card{background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;padding:18px 20px;margin-bottom:12px;}
-  .card-label{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ocean);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;}
+  .card-label{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ocean-text);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;}
   .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
   .fg1{grid-template-columns:1fr;} .fg3{grid-template-columns:1fr 1fr 1fr;}
-  label{display:block;font-family:var(--mono);font-size:10px;color:#5A7A8A;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
-  input[type="text"],input[type="date"],input[type="time"],input[type="number"],select,textarea{width:100%;background:#141C26;border:1px solid #2A3A4A;border-radius:4px;color:var(--sand);font-family:var(--sans);font-size:13px;padding:8px 10px;outline:none;transition:border-color .15s;}
+  label{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+  input[type="text"],input[type="date"],input[type="time"],input[type="number"],select,textarea{width:100%;background:#141C26;border:1px solid #2A3A4A;border-radius:4px;color:var(--sand);font-family:var(--sans);font-size:15px;padding:8px 10px;outline:none;transition:border-color .15s;}
   input:focus,select:focus,textarea:focus{border-color:var(--ocean);}
   textarea{resize:vertical;min-height:70px;}
   textarea.notes-area{resize:none;overflow:hidden;word-wrap:break-word;white-space:pre-wrap;transition:height .08s;}
-  .add-btn{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:transparent;border:1px dashed #2A3A4A;color:#4A6A7A;cursor:pointer;border-radius:4px;width:100%;margin-top:4px;transition:border-color .15s,color .15s;}
+  .add-btn{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:transparent;border:1px dashed #2A3A4A;color:var(--muted);cursor:pointer;border-radius:4px;width:100%;margin-top:4px;transition:border-color .15s,color .15s;}
   .add-btn:hover{border-color:var(--ocean);color:var(--reef);}
   .add-btn.solid{border-style:solid;border-color:var(--ocean);color:var(--reef);}
-  .rm-btn{background:transparent;border:1px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;cursor:pointer;margin-top:10px;}
-  .sbadge{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:2px;white-space:nowrap;}
-  .phase{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:2px;}
+  .rm-btn{background:transparent;border:1px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;cursor:pointer;margin-top:10px;}
+  .sbadge{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:2px;white-space:nowrap;}
+  .phase{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:2px;}
   .p-transit{background:#2A3A4A;color:#8AABB8;} .p-isg{background:rgba(10,191,163,.12);color:var(--reef);} .p-tpe{background:rgba(224,123,90,.12);color:var(--coral);} .p-kr{background:rgba(138,111,216,.14);color:var(--violet);}
   .proc-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #2A3A4A;}
   .proc-step:last-child{border-bottom:none;}
   .step-dot{width:8px;height:8px;border-radius:50%;background:var(--coral);margin-top:5px;flex-shrink:0;}
-  .step-title{font-size:13px;font-weight:600;color:var(--sand);margin-bottom:4px;}
-  .step-note{font-size:12px;color:#5A7A8A;line-height:1.5;}
+  .step-title{font-size:15px;font-weight:600;color:var(--sand);margin-bottom:4px;}
+  .step-note{font-size:14px;color:var(--muted);line-height:1.5;}
   .log-entry{border-left:2px solid #2A3A4A;padding-left:14px;margin-bottom:16px;}
-  .log-date{font-family:var(--mono);font-size:10px;color:var(--reef);margin-bottom:4px;}
+  .log-date{font-family:var(--mono);font-size:12px;color:var(--reef);margin-bottom:4px;}
   .contact-box{background:#141C26;border:1px solid #2A3A4A;border-radius:4px;padding:12px;margin-top:8px;}
 
   /* ── Collapsible entry cards ── */
   .panel-toolbar{display:flex;justify-content:flex-end;gap:16px;margin-bottom:10px;}
-  .toolbar-link{font-family:var(--mono);font-size:10px;color:#4A6A7A;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;background:none;border:none;padding:0;}
+  .toolbar-link{font-family:var(--mono);font-size:12px;color:var(--muted);cursor:pointer;letter-spacing:.08em;text-transform:uppercase;background:none;border:none;padding:0;}
   .toolbar-link:hover{color:var(--reef);}
   .entry-card{background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;margin-bottom:10px;overflow:hidden;transition:border-color .15s;}
   .entry-card.drag-over{border-color:var(--reef);}
@@ -63,14 +64,14 @@
   /* Robust structural layout for headers on mobile viewports */
   .entry-header{display:grid;grid-template-columns:auto auto auto 1fr auto auto;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none;}
   .entry-header:hover{background:#24323F;}
-  .drag-handle{color:#3A5A6A;cursor:grab;font-size:14px;flex-shrink:0;line-height:1;}
+  .drag-handle{color:var(--muted);cursor:grab;font-size:16px;flex-shrink:0;line-height:1;}
   .drag-handle:active{cursor:grabbing;}
-  .entry-chevron{display:inline-block;color:var(--reef);font-size:10px;flex-shrink:0;width:10px;transition:transform .15s;}
+  .entry-chevron{display:inline-block;color:var(--reef);font-size:12px;flex-shrink:0;width:12px;transition:transform .15s;}
   .entry-card:not(.collapsed) .entry-chevron{transform:rotate(90deg);}
-  .entry-title{font-size:13px;font-weight:600;color:var(--sand);min-width:0;padding-right:4px;}
-  .entry-meta{font-family:var(--mono);font-size:10px;color:#5A7A8A;display:flex;align-items:center;gap:6px;justify-self:end;}
+  .entry-title{font-size:15px;font-weight:600;color:var(--sand);min-width:0;padding-right:4px;}
+  .entry-meta{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;justify-self:end;}
   .entry-controls{display:flex;gap:4px;margin-left:4px;}
-  .reorder-btn{background:transparent;border:1px solid #2A3A4A;color:#5A7A8A;width:22px;height:22px;border-radius:3px;cursor:pointer;font-size:11px;line-height:1;}
+  .reorder-btn{background:transparent;border:1px solid #2A3A4A;color:var(--muted);width:22px;height:22px;border-radius:3px;cursor:pointer;font-size:13px;line-height:1;}
   .reorder-btn:hover{border-color:var(--ocean);color:var(--reef);}
   .entry-body{padding:16px 18px 18px;border-top:1px solid #2A3A4A;}
   .entry-card.collapsed .entry-body{display:none;}
@@ -85,17 +86,17 @@
   .ov-group{margin-bottom:12px;}
   .ov-group-header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#1F2B38;border:1px solid #2A3A4A;border-radius:6px;cursor:pointer;user-select:none;}
   .ov-group-header:hover{background:#24323F;}
-  .ov-group-title{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--reef);flex:1;}
-  .ov-group-count{font-family:var(--mono);font-size:10px;color:#5A7A8A;}
+  .ov-group-title{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--reef);flex:1;}
+  .ov-group-count{font-family:var(--mono);font-size:12px;color:var(--muted);}
   .ov-group:not(.collapsed) .ov-group-header .entry-chevron{transform:rotate(90deg);}
   .ov-group-body{padding:14px 6px 4px 18px;display:none;}
   .ov-group:not(.collapsed) .ov-group-body{display:block;}
   .ov-sub{margin-bottom:14px;}
-  .ov-sub-label{font-family:var(--mono);font-size:9px;color:var(--ocean);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
-  .ov-item{font-size:13px;color:var(--sand);padding:7px 0;border-bottom:1px solid #25323F;display:flex;gap:12px;line-height:1.4;}
+  .ov-sub-label{font-family:var(--mono);font-size:11px;color:var(--ocean-text);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+  .ov-item{font-size:15px;color:var(--sand);padding:7px 0;border-bottom:1px solid #25323F;display:flex;gap:12px;line-height:1.4;}
   .ov-item:last-child{border-bottom:none;}
-  .ov-item .ov-date{font-family:var(--mono);font-size:10px;color:#5A7A8A;min-width:80px;flex-shrink:0;padding-top:1px;}
-  .ov-empty{color:#3A5A6A;font-family:var(--mono);font-size:11px;padding:10px 0;}
+  .ov-item .ov-date{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:80px;flex-shrink:0;padding-top:1px;}
+  .ov-empty{color:var(--muted);font-family:var(--mono);font-size:13px;padding:10px 0;}
 
   @media(max-width:540px){
     .fg,.fg3{grid-template-columns:1fr;}
@@ -134,14 +135,14 @@
 <!-- OVERVIEW -->
 <div class="panel active" id="panel-overview">
   <div class="sec-title">Trip Overview</div>
-  <div class="sec-desc">A live itinerary built automatically from your Timeline, Accommodation, Places, and Food entries, grouped by location. Reorder entries in their own tabs (drag the ⠿ handle or use ↑ ↓) to change the sequence shown here.</div>
+  <div class="sec-desc">A live itinerary built automatically from your Timeline, Accommodation, Places, and Food entries, grouped by location. Reorder entries in their own tabs (drag the entry's header or use ↑ ↓) to change the sequence shown here.</div>
   <div id="overview-content"></div>
 </div>
 
 <!-- TIMELINE -->
 <div class="panel" id="panel-timeline">
   <div class="sec-title">Trip Timeline</div>
-  <div class="sec-desc">Add, tag, and reorder milestones as plans evolve — nothing here is fixed. Drag the ⠿ handle or use the arrows to put things in chronological (or any) order.</div>
+  <div class="sec-desc">Add your own milestones below — flights, accommodation check-ins, dive dates, and SMILE appointments are pulled in automatically from their tabs. Everything shown here is sorted chronologically by date; undated items sit at the bottom.</div>
   <div class="panel-toolbar">
     <button class="toolbar-link" onclick="expandAll('timeline')">Expand all</button>
     <button class="toolbar-link" onclick="collapseAll('timeline')">Collapse all</button>
@@ -417,6 +418,7 @@ function kvQ(sheetName, key, value) {
   setSS('saving','Saving...');
   clearTimeout(kvTimers[sheetName]);
   kvTimers[sheetName] = setTimeout(() => kvFlush(sheetName), 1500);
+  if(sheetName==='smile' && lists.timeline !== undefined) { /* timeline picks this up next render */ }
 }
 async function kvFlush(sheetName) {
   const map = kvCache[sheetName]||{};
@@ -454,13 +456,14 @@ document.querySelectorAll('.tab').forEach(t => {
     t.classList.add('active');
     document.getElementById('panel-'+t.dataset.tab).classList.add('active');
     if(t.dataset.tab==='overview') renderOverview();
+    if(t.dataset.tab==='timeline') renderTimeline();
     requestAnimationFrame(autoGrowAllGlobal);
   });
 });
 // ── HELPERS ───────────────────────────────────────────────────
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function sbg(s){ return s==='Booked'||s==='Complete ✓'||s==='Certified ✓'?'rgba(10,191,163,.15)':s==='Replied'||s==='Confirmed'?'rgba(26,107,138,.3)':s&&s.includes('await')?'rgba(224,123,90,.15)':'#2A3A4A'; }
-function sfg(s){ return s==='Booked'||s==='Complete ✓'||s==='Certified ✓'?'#0ABFA3':s==='Replied'||s==='Confirmed'?'#7ACFE4':s&&s.includes('await')?'#E07B5A':'#5A7A8A'; }
+function sfg(s){ return s==='Booked'||s==='Complete ✓'||s==='Certified ✓'?'#0ABFA3':s==='Replied'||s==='Confirmed'?'#7ACFE4':s&&s.includes('await')?'#E07B5A':'var(--muted)'; }
 function statusMeta(s){ return s ? `<span class="sbadge" style="background:${sbg(s)};color:${sfg(s)}">${esc(s)}</span>` : ''; }
 function uid(){ return 'id_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
 function fmtDate(d){
@@ -499,16 +502,24 @@ function toggleCard(listType, id){
 }
 function expandAll(listType){
   if(!expandedIds[listType]) expandedIds[listType] = new Set();
-  (lists[listType]||[]).forEach(it=>expandedIds[listType].add(it.id));
+  let items = lists[listType]||[];
+  if(listType==='timeline') items = items.concat(computeAutoTimelineItems());
+  items.forEach(it=>expandedIds[listType].add(it.id));
   renderers[listType]();
 }
 function collapseAll(listType){
   expandedIds[listType] = new Set();
   renderers[listType]();
 }
-// ── DRAG-AND-DROP REORDERING ─────────────────────────────────────
+// ── DRAG-AND-DROP REORDERING (grab by the header only) ───────────
 let dragInfo = null;
 function dragStart(e, listType, id){
+  if(!e.target.closest('.entry-header')){
+    // Not started from the header row (e.g. inside a textarea/input) — let
+    // the browser handle normal text selection instead of a card drag.
+    e.preventDefault();
+    return;
+  }
   dragInfo = { listType, id };
   e.dataTransfer.effectAllowed = 'move';
   try { e.dataTransfer.setData('text/plain', id); } catch(err){}
@@ -543,26 +554,33 @@ function moveItem(listType, idx, dir){
 }
 // ── ENTRY CARD SHELL ─────────────────────────────────────────────
 function cardShell(listType, item, idx, opts, bodyHtml){
-  const { title='', meta='', extraHeader='', titleStyle='' } = opts;
+  const { title='', meta='', extraHeader='', titleStyle='', noReorder=false } = opts;
   const id = item.id;
   const expanded = expandedIds[listType] && expandedIds[listType].has(id);
-  return `<div class="entry-card${expanded?'':' collapsed'}" data-id="${id}"
-      draggable="true"
+  const dragAttrs = noReorder ? '' : `draggable="true"
       ondragstart="dragStart(event,'${listType}','${id}')"
       ondragover="dragOver(event)"
       ondragleave="this.classList.remove('drag-over')"
       ondragend="dragEnd(event)"
-      ondrop="dragDrop(event,'${listType}','${id}')">
-    <div class="entry-header" onclick="toggleCard('${listType}','${id}')">
-      <span class="drag-handle" onclick="event.stopPropagation()" title="Drag to reorder">⠿</span>
-      <span class="entry-chevron">▸</span>
-      ${extraHeader}
-      <span class="entry-title" style="${titleStyle}">${esc(title)}</span>
-      <span class="entry-meta">${meta}</span>
-      <span class="entry-controls">
+      ondrop="dragDrop(event,'${listType}','${id}')"`;
+  const handle = noReorder ? '' : `<span class="drag-handle" onclick="event.stopPropagation()" title="Drag the header to reorder">⠿</span>`;
+  const controls = noReorder ? '' : `<span class="entry-controls">
         <button class="reorder-btn" onclick="event.stopPropagation();moveItem('${listType}',${idx},-1)" title="Move up">↑</button>
         <button class="reorder-btn" onclick="event.stopPropagation();moveItem('${listType}',${idx},1)" title="Move down">↓</button>
-      </span>
+      </span>`;
+  // Timeline items are auto-sorted by date, so they skip the grid layout
+  // (built for the drag-handle/controls columns) in favor of a simple flex row.
+  const headerStyle = noReorder ? ' style="display:flex;align-items:center;gap:10px;"' : '';
+  const titleFullStyle = noReorder ? `flex:1;min-width:0;${titleStyle}` : titleStyle;
+  const metaWrapStyle = noReorder ? ' style="flex-shrink:0"' : '';
+  return `<div class="entry-card${expanded?'':' collapsed'}" data-id="${id}" ${dragAttrs}>
+    <div class="entry-header"${headerStyle} onclick="toggleCard('${listType}','${id}')">
+      ${handle}
+      <span class="entry-chevron">▸</span>
+      ${extraHeader}
+      <span class="entry-title" style="${titleFullStyle}">${esc(title)}</span>
+      <span class="entry-meta"${metaWrapStyle}>${meta}</span>
+      ${controls}
     </div>
     <div class="entry-body">${bodyHtml}</div>
   </div>`;
@@ -588,9 +606,81 @@ function defaultItem(type) {
 }
 // ── RENDER: TIMELINE ───────────────────────────────────────────
 const PHASE_CLASS = {Transit:'p-transit', Taiwan:'p-tpe', Ishigaki:'p-isg', Korea:'p-kr', Other:'p-transit'};
+
+// Pulls dated items from Flights, Accommodation, Dive Sites, and the SMILE
+// timeline so they show up on the Timeline tab automatically. Only items
+// that actually have a date attached are included.
+function computeAutoTimelineItems(){
+  const items = [];
+  lists.flights.forEach(f=>{
+    if(!f.date) return;
+    items.push({
+      id:'auto_fl_'+f.id, phase:'Transit',
+      title:(f.route||'Flight')+(f.flight_num?' ('+f.flight_num+')':''),
+      date:f.date,
+      note:f.dep?('Departs '+f.dep+(f.arr?' · Arrives '+f.arr:'')):'',
+      source:'Flights', tab:'flights'
+    });
+  });
+  lists.accom.forEach(a=>{
+    if(!a.checkin) return;
+    items.push({
+      id:'auto_ac_'+a.id, phase:canonGroup(a.area),
+      title:'Check in: '+(a.name||'Accommodation'),
+      date:a.checkin, note:a.area||'',
+      source:'Accommodation', tab:'accom'
+    });
+  });
+  lists.dive_sites.forEach(s=>{
+    if(!s.date) return;
+    items.push({
+      id:'auto_ds_'+s.id, phase:'Ishigaki',
+      title:s.name||'Dive site', date:s.date, note:s.type||'',
+      source:'Diving', tab:'diving'
+    });
+  });
+  const sm = kvCache.smile || {};
+  [['smile-consult-date','smile-consult-time','Pre-op consultation'],
+   ['smile-procedure-date','smile-procedure-time','SMILE procedure'],
+   ['smile-followup-date','smile-followup-time','Day-after follow-up'],
+   ['smile-clearance-date','smile-clearance-time','Clearance to fly']
+  ].forEach(([dk,tk,label])=>{
+    if(!sm[dk]) return;
+    items.push({
+      id:'auto_sm_'+dk, phase:'Korea', title:label,
+      date:sm[dk], note:sm[tk]?('Time: '+sm[tk]):'',
+      source:'SMILE', tab:'smile'
+    });
+  });
+  items.forEach(it=>it.auto=true);
+  return items;
+}
+function jumpToTab(tabId){
+  const btn = document.querySelector(`.tab[data-tab="${tabId}"]`);
+  if(btn) btn.click();
+}
 function renderTimeline() {
-  document.getElementById('timeline-list').innerHTML = lists.timeline.map((t,i) => {
+  const auto = computeAutoTimelineItems();
+  const manual = lists.timeline.map(t => ({...t, auto:false}));
+  const merged = manual.concat(auto);
+  merged.sort((a,b) => {
+    if(a.date && b.date) return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    if(a.date) return -1;
+    if(b.date) return 1;
+    return 0;
+  });
+
+  document.getElementById('timeline-list').innerHTML = merged.map(t => {
     const meta = `<span class="phase ${PHASE_CLASS[t.phase]||'p-transit'}">${esc(t.phase)}</span>${t.date?' '+fmtDate(t.date):''}`;
+    if(t.auto){
+      const body = `
+        <div style="font-size:14px;color:var(--sand);line-height:1.6">${t.note?esc(t.note):'<span style="color:var(--muted)">No additional details.</span>'}</div>
+        <div style="margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Auto-added from ${esc(t.source)}</div>
+        <button class="add-btn" style="margin-top:12px" onclick="jumpToTab('${t.tab}')">Edit in ${esc(t.source)} tab →</button>
+      `;
+      return cardShell('timeline', t, -1, {title: t.title, meta, noReorder:true}, body);
+    }
+    const i = lists.timeline.findIndex(x=>x.id===t.id);
     const body = `
       <div class="fg fg3">
         <div><label>Phase</label><select onchange="lists.timeline[${i}].phase=this.value;listQ('timeline',lists.timeline);renderTimeline()">${Object.keys(PHASE_CLASS).map(o=>`<option${o===t.phase?' selected':''}>${o}</option>`).join('')}</select></div>
@@ -600,8 +690,8 @@ function renderTimeline() {
       <div class="fg fg1"><div><label>Note</label><textarea class="notes-area" oninput="autoGrow(this);lists.timeline[${i}].note=this.value;listQ('timeline',lists.timeline)">${esc(t.note)}</textarea></div></div>
       <button class="rm-btn" onclick="removeItem('timeline',${i})">Remove</button>
     `;
-    return cardShell('timeline', t, i, {title: t.title||t.phase||('Event '+(i+1)), meta}, body);
-  }).join('') || '<p class="ov-empty">No timeline events yet — add your first milestone below.</p>';
+    return cardShell('timeline', t, i, {title: t.title||t.phase||('Event'), meta, noReorder:true}, body);
+  }).join('') || '<p class="ov-empty">No timeline events yet — add a milestone below, or add flights, accommodation, dive dates, or SMILE dates elsewhere in the planner and they will appear here automatically, in order.</p>';
   autoGrowAllIn('timeline-list');
 }
 // ── RENDER: FLIGHTS ─────────────────────────────────────────────
@@ -682,7 +772,7 @@ function renderDiveShops() {
         ${(s.contacts||[]).map((c,ci)=>`
           <div class="log-entry">
             <div class="log-date">${esc(c.date)||'—'} · ${esc(c.dir)}</div>
-            <div style="font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(c.body)}</div>
+            <div style="font-size:15px;line-height:1.6;white-space:pre-wrap">${esc(c.body)}</div>
             <button class="rm-btn" onclick="removeContact('dive_shops',${i},${ci})">Remove</button>
           </div>`).join('')}
         <div class="contact-box">
@@ -742,7 +832,7 @@ function renderSmileClinics() {
         ${(c.contacts||[]).map((ct,ci)=>`
           <div class="log-entry">
             <div class="log-date">${esc(ct.date)||'—'} · ${esc(ct.dir)}</div>
-            <div style="font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(ct.body)}</div>
+            <div style="font-size:15px;line-height:1.6;white-space:pre-wrap">${esc(ct.body)}</div>
             <button class="rm-btn" onclick="removeContact('smile_clinics',${i},${ci})">Remove</button>
           </div>`).join('')}
         <div class="contact-box">
@@ -843,7 +933,7 @@ function renderTransportExtra() {
 function renderLog() {
   document.getElementById('log-entries').innerHTML = lists.log.length ? lists.log.map((e,i) => {
     const meta = esc(e.location||'');
-    const body = `<div style="font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(e.text)}</div>
+    const body = `<div style="font-size:15px;line-height:1.6;white-space:pre-wrap">${esc(e.text)}</div>
       <button class="rm-btn" onclick="removeItem('log',${i})">Remove</button>`;
     return cardShell('log', e, i, {title: (e.date?fmtDate(e.date)+' — ':'')+(e.location||'Entry '+(i+1)), meta: ''}, body);
   }).join('') : '<p class="ov-empty" style="margin-top:12px">No entries yet.</p>';
