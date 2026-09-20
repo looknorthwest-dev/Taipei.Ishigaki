@@ -323,13 +323,13 @@
 <!-- PLACES -->
 <div class="panel" id="panel-places">
   <div class="sec-title">Places & Sightseeing</div>
-  <div class="sec-desc">Reorder these into the sequence you plan to visit them — this order also drives the Overview tab.</div>
+  <div class="sec-desc">Grouped by location — Taiwan, then Ishigaki, then Korea. Reorder within a group into the sequence you plan to visit them — this order also drives the Overview tab.</div>
   <div class="panel-toolbar">
     <button class="toolbar-link" onclick="expandAll('places')">Expand all</button>
     <button class="toolbar-link" onclick="collapseAll('places')">Collapse all</button>
   </div>
+  <button class="add-btn" style="margin-bottom:12px" onclick="addItem('places')">+ Add place</button>
   <div id="places-list"></div>
-  <button class="add-btn" onclick="addItem('places')">+ Add place</button>
 </div>
 <!-- TRANSPORT -->
 <div class="panel" id="panel-transport">
@@ -1008,20 +1008,34 @@ function renderFood() {
   autoGrowAllIn('food-list');
 }
 // ── RENDER: PLACES ────────────────────────────────────────────────
+const PLACES_LOCS = ['Taiwan','Ishigaki','Nearby island','Korea'];
+function placesLocOf(p){ return PLACES_LOCS.includes(p.loc) ? p.loc : 'Other'; }
 function renderPlaces() {
-  document.getElementById('places-list').innerHTML = lists.places.map((p,i) => {
-    const meta = `${esc(p.loc||'')}${p.loc?' · ':''}${esc(p.priority||'')}`;
-    const body = `
-      <div class="fg fg3">
-        <div><label>Place name</label><input type="text" value="${esc(p.name)}" placeholder="Jiufen..." oninput="lists.places[${i}].name=this.value;listQ('places',lists.places)"></div>
-        <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places);renderPlaces()">${['Taiwan','Ishigaki','Nearby island','Korea'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
-        <div><label>Category</label><select onchange="lists.places[${i}].cat=this.value;listQ('places',lists.places)">${['Cultural site','Nature / beach','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
-      </div>
-      <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" placeholder="Hours, cost, how to get there..." oninput="autoGrow(this);lists.places[${i}].notes=this.value;listQ('places',lists.places)">${esc(p.notes)}</textarea></div></div>
-      <div class="fg fg1"><div><label>Priority</label><select onchange="lists.places[${i}].priority=this.value;listQ('places',lists.places);renderPlaces()">${['Must do','Nice to have','If time permits','Done ✓'].map(o=>`<option${o===p.priority?' selected':''}>${o}</option>`).join('')}</select></div></div>
-      <button class="rm-btn" onclick="removeItem('places',${i})">Remove</button>
-    `;
-    return cardShell('places', p, i, {title: p.name||('Place '+(i+1)), meta}, body);
+  const groups = {};
+  PLACES_LOCS.concat('Other').forEach(g => groups[g] = []);
+  lists.places.forEach(p => groups[placesLocOf(p)].push(p));
+  const shown = PLACES_LOCS.concat('Other').filter(g => groups[g].length);
+  document.getElementById('places-list').innerHTML = shown.map(loc => {
+    const items = groups[loc];
+    const cards = items.map(p => {
+      const i = lists.places.findIndex(x=>x.id===p.id);
+      const meta = `${esc(p.cat||'')}${p.cat?' · ':''}${esc(p.priority||'')}`;
+      const body = `
+        <div class="fg fg3">
+          <div><label>Place name</label><input type="text" value="${esc(p.name)}" placeholder="Jiufen..." oninput="lists.places[${i}].name=this.value;listQ('places',lists.places)"></div>
+          <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places);renderPlaces()">${['Taiwan','Ishigaki','Nearby island','Korea'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
+          <div><label>Category</label><select onchange="lists.places[${i}].cat=this.value;listQ('places',lists.places)">${['Cultural site','Nature / beach','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
+        </div>
+        <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" placeholder="Hours, cost, how to get there..." oninput="autoGrow(this);lists.places[${i}].notes=this.value;listQ('places',lists.places)">${esc(p.notes)}</textarea></div></div>
+        <div class="fg fg1"><div><label>Priority</label><select onchange="lists.places[${i}].priority=this.value;listQ('places',lists.places);renderPlaces()">${['Must do','Nice to have','If time permits','Done ✓'].map(o=>`<option${o===p.priority?' selected':''}>${o}</option>`).join('')}</select></div></div>
+        <button class="rm-btn" onclick="removeItem('places',${i})">Remove</button>
+      `;
+      return cardShell('places', p, i, {title: p.name||('Place '+(i+1)), meta}, body);
+    }).join('');
+    return `<div style="margin-bottom:18px">
+      <div style="font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ocean-text);margin:4px 0 8px 2px;">${esc(loc)} · ${items.length} place${items.length===1?'':'s'}</div>
+      ${cards}
+    </div>`;
   }).join('') || '<p class="ov-empty">No places added yet.</p>';
   autoGrowAllIn('places-list');
 }
