@@ -286,8 +286,8 @@
     <button class="toolbar-link" onclick="expandAll('todo')">Expand all</button>
     <button class="toolbar-link" onclick="collapseAll('todo')">Collapse all</button>
   </div>
+  <button class="add-btn" style="margin-bottom:12px" onclick="addItem('todo')">+ Add to-do item</button>
   <div id="todo-list"></div>
-  <button class="add-btn" onclick="addItem('todo')">+ Add to-do item</button>
 </div>
 <!-- BUY -->
 <div class="panel" id="panel-buy">
@@ -874,7 +874,17 @@ function renderSmileClinics() {
 }
 // ── RENDER: TODO ─────────────────────────────────────────────────
 function renderTodo() {
-  document.getElementById('todo-list').innerHTML = lists.todo.map((t,i) => {
+  const sorted = [...lists.todo].sort((a,b) => {
+    if(a.due && b.due){
+      if(a.due !== b.due) return a.due < b.due ? -1 : 1;
+      return (b.title||'').localeCompare(a.title||'');
+    }
+    if(a.due) return -1;
+    if(b.due) return 1;
+    return (b.title||'').localeCompare(a.title||'');
+  });
+  document.getElementById('todo-list').innerHTML = sorted.map((t) => {
+    const i = lists.todo.findIndex(x=>x.id===t.id);
     const targetPreview = t.due ? ` [Target: ${fmtDate(t.due)}] ` : '';
     const meta = `${esc(t.location||'')}${t.location?' · ':''}${statusMeta(t.status||'To do')}`;
     const extraHeader = `<input type="checkbox" ${t.done?'checked':''} onclick="event.stopPropagation()" onchange="lists.todo[${i}].done=this.checked;listQ('todo',lists.todo);renderTodo()" style="width:16px;height:16px;accent-color:var(--reef);flex-shrink:0;margin:0">`;
@@ -895,7 +905,7 @@ function renderTodo() {
       <div class="fg fg1"><div><label>Details</label><textarea class="notes-area" placeholder="Where/when/how to get it, cost, pickup location, requirements..." oninput="autoGrow(this);lists.todo[${i}].details=this.value;listQ('todo',lists.todo)">${esc(t.details)}</textarea></div></div>
       <button class="rm-btn" onclick="removeItem('todo',${i})">Remove</button>
     `;
-    return cardShell('todo', t, i, {title: displayTitle, meta, extraHeader, titleStyle}, body);
+    return cardShell('todo', t, i, {title: displayTitle, meta, extraHeader, titleStyle, noReorder:true}, body);
   }).join('') || '<p class="ov-empty">No to-do items yet. Add things like SIM cards, EasyCard, visas...</p>';
   autoGrowAllIn('todo-list');
 }
