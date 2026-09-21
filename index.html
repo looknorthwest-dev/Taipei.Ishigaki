@@ -72,6 +72,9 @@
   /* Robust structural layout for headers on mobile viewports */
   .entry-header{display:grid;grid-template-columns:auto auto auto 1fr auto auto;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none;}
   .entry-header:hover{background:#24323F;}
+  .entry-header.noreorder{display:flex;align-items:center;gap:10px;}
+  .entry-header.noreorder .entry-title{flex:1;min-width:0;}
+  .entry-header.noreorder .entry-meta{flex-shrink:0;}
   .drag-handle{color:var(--muted);cursor:grab;font-size:16px;flex-shrink:0;line-height:1;}
   .drag-handle:active{cursor:grabbing;}
   .entry-chevron{display:inline-block;color:var(--reef);font-size:12px;flex-shrink:0;width:12px;transition:transform .15s;}
@@ -118,6 +121,9 @@
     .entry-title{grid-column: span 3; white-space: normal; word-break: break-word;}
     .entry-meta{grid-column: span 2; justify-self: start;}
     .entry-controls{grid-column: 3; justify-self: end;}
+    .entry-header.noreorder{flex-wrap:wrap;}
+    .entry-header.noreorder .entry-title{flex:1 1 100%; white-space: normal; word-break: break-word;}
+    .entry-header.noreorder .entry-meta{flex:1 1 100%; justify-content:flex-start;}
   }
   label, .trip-sub, #sync-msg, .ov-group-count, .entry-meta, .toolbar-link {
     color: #CBD5E1;
@@ -591,18 +597,17 @@ function cardShell(listType, item, idx, opts, bodyHtml){
         <button class="reorder-btn" onclick="event.stopPropagation();moveItem('${listType}',${idx},-1)" title="Move up">↑</button>
         <button class="reorder-btn" onclick="event.stopPropagation();moveItem('${listType}',${idx},1)" title="Move down">↓</button>
       </span>`;
-  // Timeline items are auto-sorted by date, so they skip the grid layout
-  // (built for the drag-handle/controls columns) in favor of a simple flex row.
-  const headerStyle = noReorder ? ' style="display:flex;align-items:center;gap:10px;"' : '';
-  const titleFullStyle = noReorder ? `flex:1;min-width:0;${titleStyle}` : titleStyle;
-  const metaWrapStyle = noReorder ? ' style="flex-shrink:0"' : '';
+  // Timeline/To-Do items are auto-sorted, so they skip the grid layout
+  // (built for the drag-handle/controls columns) in favor of a simple flex row —
+  // see .entry-header.noreorder, which also gets its own mobile wrap rules below.
+  const headerClass = noReorder ? ' noreorder' : '';
   return `<div class="entry-card${expanded?'':' collapsed'}" data-id="${id}" ${dragAttrs}>
-    <div class="entry-header"${headerStyle} onclick="toggleCard('${listType}','${id}')">
+    <div class="entry-header${headerClass}" onclick="toggleCard('${listType}','${id}')">
       ${handle}
       <span class="entry-chevron">▸</span>
       ${extraHeader}
-      <span class="entry-title" style="${titleFullStyle}">${esc(title)}</span>
-      <span class="entry-meta"${metaWrapStyle}>${meta}</span>
+      <span class="entry-title" style="${titleStyle}">${esc(title)}</span>
+      <span class="entry-meta">${meta}</span>
       ${controls}
     </div>
     <div class="entry-body">${bodyHtml}</div>
