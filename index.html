@@ -692,6 +692,7 @@ function renderTimeline() {
   const manual = lists.timeline.map(t => ({...t, auto:false}));
   const merged = manual.concat(auto);
   merged.sort((a,b) => {
+    const f = freshFirst(a, b, 'date'); if(f) return f;
     if(a.date && b.date) return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
     if(a.date) return -1;
     if(b.date) return 1;
@@ -880,6 +881,7 @@ function renderSmileClinics() {
 // ── RENDER: TODO ─────────────────────────────────────────────────
 function renderTodo() {
   const sorted = [...lists.todo].sort((a,b) => {
+    const f = freshFirst(a, b, 'due'); if(f) return f;
     if(a.due && b.due){
       if(a.due !== b.due) return a.due < b.due ? -1 : 1;
       return (b.title||'').localeCompare(a.title||'');
@@ -986,7 +988,7 @@ function addBuyItem(){
   const item = defaultItem('buy');
   const filterEl = document.getElementById('buy-filter');
   if(filterEl && filterEl.value !== 'All') item.country = filterEl.value;
-  lists.buy.push(item);
+  lists.buy.unshift(item);
   if(!expandedIds.buy) expandedIds.buy = new Set();
   expandedIds.buy.add(item.id);
   if(!expandedIds['__buy']) expandedIds['__buy'] = new Set(BUY_COUNTRIES);
@@ -1134,9 +1136,18 @@ function toggleOverviewGroup(name){
   if(node) node.classList.toggle('collapsed', !set.has(name));
 }
 // ── ADD / REMOVE ──────────────────────────────────────────────
+// Ids of items added this session. Date-sorted lists (Timeline, To-Do) keep
+// these pinned at the top while still undated so a new blank entry doesn't
+// sink to the bottom; once a date is set they sort normally. Not persisted.
+const freshIds = new Set();
+function freshFirst(a, b, dateKey){
+  const af = freshIds.has(a.id) && !a[dateKey], bf = freshIds.has(b.id) && !b[dateKey];
+  return af === bf ? 0 : af ? -1 : 1;
+}
 function addItem(type) {
   const item = defaultItem(type);
-  lists[type].push(item);
+  lists[type].unshift(item);
+  freshIds.add(item.id);
   if(!expandedIds[type]) expandedIds[type] = new Set();
   expandedIds[type].add(item.id);
   listQ(type, lists[type]);
