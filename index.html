@@ -409,10 +409,32 @@ const SH = {
   dive_sites:'dive_sites', transport_extra:'transport_extra', todo:'todo',
   buy:'buy'
 };
+// ── DATE/TIME PICKER GUARD ────────────────────────────────────
+// Safari changes a date input's value (firing input) as you page through
+// months in its calendar, and any DOM update while that calendar is open
+// closes it. So while a date/time field has focus, UI updates (sync status,
+// re-renders) are held by key and run once the field loses focus.
+const deferredUI = new Map();
+function pickerFocused(){
+  const el = document.activeElement;
+  return !!el && el.tagName==='INPUT' && (el.type==='date' || el.type==='time');
+}
+function uiDefer(key, fn){ if(pickerFocused()) deferredUI.set(key, fn); else fn(); }
+document.addEventListener('focusout', e => {
+  if(e.target.type!=='date' && e.target.type!=='time') return;
+  setTimeout(() => {
+    if(pickerFocused()) return;
+    const fns = [...deferredUI.values()];
+    deferredUI.clear();
+    fns.forEach(fn => fn());
+  });
+});
 // ── SYNC STATUS ───────────────────────────────────────────────
 function setSS(state, msg) {
-  document.getElementById('sync-dot').className = 'sync-dot ' + state;
-  document.getElementById('sync-msg').textContent = msg;
+  uiDefer('sync', () => {
+    document.getElementById('sync-dot').className = 'sync-dot ' + state;
+    document.getElementById('sync-msg').textContent = msg;
+  });
 }
 // ── READ via API key ──────────────────────────────────────────
 async function sheetRead(name) {
@@ -470,7 +492,7 @@ function listQ(sheetName, arr) {
   setSS('saving','Saving...');
   clearTimeout(listTimers[sheetName]);
   listTimers[sheetName] = setTimeout(() => listFlush(sheetName, arr), 1500);
-  if(['timeline','accom','places','food','buy'].includes(sheetName)) renderOverview();
+  if(['timeline','accom','places','food','buy'].includes(sheetName)) uiDefer('overview', renderOverview);
 }
 async function listFlush(sheetName, arr) {
   await sheetWrite(sheetName, { type:'json', value: JSON.stringify(arr) });
@@ -623,7 +645,7 @@ function defaultItem(type) {
     accom:       {id:uid(), name:'',area:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''},
     dive_shops:  {id:uid(), name:'',location:'',status:'Researching',phone:'',email:'',website:'',price:'',gear:'Unknown',english:'Unknown',notes:'',contacts:[]},
     dive_sites:  {id:uid(), name:'',date:'',type:'Fun dive',notes:''},
-    smile_clinics:{id:uid(), name:'',area:'',procedure:'',status:'Researching',phone:'',email:'',website:'',price:'',english:'Unknown',notes:'',contacts:[]},
+    smile_clinics:{id:uid(), name:'',area:'',procedure:'',status:'Researching',phone:'',email:'',website:'',price:'',appt_date:'',appt_time:'',notes:'',contacts:[]},
     food:        {id:uid(), name:'',loc:'Taiwan',type:'Night market',notes:'',status:'Want to try'},
     places:      {id:uid(), name:'',loc:'Taiwan',cat:'Cultural site',notes:'',priority:'Must do'},
     transport_extra:{id:uid(), segment:'',date:'',details:''},
@@ -853,7 +875,10 @@ function renderSmileClinics() {
       <div class="fg fg3">
         <div><label>Procedure</label><input type="text" value="${esc(c.procedure||'')}" placeholder="Eye surgery, dental, dermatology..." oninput="lists.smile_clinics[${i}].procedure=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>Quoted price (KRW)</label><input type="text" value="${esc(c.price)}" placeholder="total quoted" oninput="lists.smile_clinics[${i}].price=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
-        <div><label>English service?</label><select onchange="lists.smile_clinics[${i}].english=this.value;listQ('smile_clinics',lists.smile_clinics)">${['Unknown','Yes','Limited','No'].map(o=>`<option${o===c.english?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div><label>Appointment</label><div style="display:flex;gap:8px">
+          <input type="date" style="flex:1;min-width:0" value="${esc(c.appt_date||'')}" oninput="lists.smile_clinics[${i}].appt_date=this.value;listQ('smile_clinics',lists.smile_clinics)">
+          <input type="time" style="flex:1;min-width:0" value="${esc(c.appt_time||'')}" oninput="lists.smile_clinics[${i}].appt_time=this.value;listQ('smile_clinics',lists.smile_clinics)">
+        </div></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" oninput="autoGrow(this);lists.smile_clinics[${i}].notes=this.value;listQ('smile_clinics',lists.smile_clinics)">${esc(c.notes)}</textarea></div></div>
       <div style="margin-top:16px;border-top:1px solid #2A3A4A;padding-top:14px">
@@ -906,7 +931,7 @@ function renderTodo() {
         <div><label>Location</label><select onchange="lists.todo[${i}].location=this.value;listQ('todo',lists.todo);renderTodo()">${['Taiwan','Ishigaki','Korea','Before departure','Anywhere'].map(o=>`<option${o===t.location?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg3">
-        <div><label>Due / target date</label><input type="date" value="${esc(t.due)}" oninput="lists.todo[${i}].due=this.value;listQ('todo',lists.todo);renderTodo()"></div>
+        <div><label>Due / target date</label><input type="date" value="${esc(t.due)}" oninput="lists.todo[${i}].due=this.value;listQ('todo',lists.todo);uiDefer('todo',renderTodo)"></div>
         <div><label>Status</label><select onchange="lists.todo[${i}].status=this.value;listQ('todo',lists.todo);renderTodo()">${['To do','Researching','In progress','Done ✓'].map(o=>`<option${o===t.status?' selected':''}>${o}</option>`).join('')}</select></div>
         <div><label>Link</label><input type="text" value="${esc(t.link)}" placeholder="website / reference URL" oninput="lists.todo[${i}].link=this.value;listQ('todo',lists.todo)"></div>
       </div>
