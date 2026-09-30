@@ -49,6 +49,10 @@
   .add-btn{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:transparent;border:1px dashed #2A3A4A;color:var(--muted);cursor:pointer;border-radius:4px;width:100%;margin-top:4px;transition:border-color .15s,color .15s;}
   .add-btn:hover{border-color:var(--ocean);color:var(--reef);}
   .add-btn.solid{border-style:solid;border-color:var(--ocean);color:var(--reef);}
+  .copy-row{display:flex;gap:6px;} .copy-row input{flex:1;min-width:0;}
+  .copy-btn{flex-shrink:0;width:40px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid #475569;border-radius:4px;color:var(--muted);cursor:pointer;}
+  .copy-btn:hover{border-color:var(--ocean);color:var(--reef);}
+  .copy-btn.copied{border-color:var(--reef);color:var(--reef);} .copy-btn.copy-failed{border-color:var(--coral);color:var(--coral);}
   .rm-btn{background:transparent;border:1px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;cursor:pointer;margin-top:10px;}
   .sbadge{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:2px;white-space:nowrap;}
   .phase{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:2px;}
@@ -241,49 +245,6 @@
   </div>
   <button class="add-btn" style="margin-bottom:12px" onclick="addItem('smile_clinics')">+ Add clinic</button>
   <div id="smile_clinics-list" style="margin-bottom:12px"></div>
-  <div class="card simple-card" id="card-smiletimeline">
-    <div class="card-label" onclick="toggleSimple('card-smiletimeline')"><span class="entry-chevron">▸</span>Procedure Timeline</div>
-    <div class="card-body">
-      <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
-        <div class="step-title">Consultation</div>
-        <div class="step-note">Assessment / candidacy check. Ask about any prep needed beforehand (meds, fasting, contacts, etc.).</div>
-        <div class="fg" style="margin-top:8px;max-width:400px;">
-          <div><label>Date</label><input type="date" id="smile-consult-date" oninput="kvQ('smile','smile-consult-date',this.value)"></div>
-          <div><label>Time</label><input type="time" id="smile-consult-time" oninput="kvQ('smile','smile-consult-time',this.value)"></div>
-        </div>
-      </div></div>
-      <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
-        <div class="step-title">Procedure day</div>
-        <div class="step-note">Arrange quiet rest the same day. Confirm whether driving or activity is restricted.</div>
-        <div class="fg" style="margin-top:8px;max-width:400px;">
-          <div><label>Date</label><input type="date" id="smile-procedure-date" oninput="kvQ('smile','smile-procedure-date',this.value)"></div>
-          <div><label>Time</label><input type="time" id="smile-procedure-time" oninput="kvQ('smile','smile-procedure-time',this.value)"></div>
-        </div>
-      </div></div>
-      <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
-        <div class="step-title">Follow-up</div>
-        <div class="step-note">Post-procedure check. Confirm meds and aftercare instructions.</div>
-        <div class="fg" style="margin-top:8px;max-width:400px;">
-          <div><label>Date</label><input type="date" id="smile-followup-date" oninput="kvQ('smile','smile-followup-date',this.value)"></div>
-          <div><label>Time</label><input type="time" id="smile-followup-time" oninput="kvQ('smile','smile-followup-time',this.value)"></div>
-        </div>
-      </div></div>
-      <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
-        <div class="step-title">Final check / clearance to fly</div>
-        <div class="step-note">Confirm OK to fly and dive. Keep any meds in carry-on.</div>
-        <div class="fg" style="margin-top:8px;max-width:400px;">
-          <div><label>Date</label><input type="date" id="smile-clearance-date" oninput="kvQ('smile','smile-clearance-date',this.value)"></div>
-          <div><label>Time</label><input type="time" id="smile-clearance-time" oninput="kvQ('smile','smile-clearance-time',this.value)"></div>
-        </div>
-      </div></div>
-    </div>
-  </div>
-  <div class="card simple-card" id="card-smilenotes">
-    <div class="card-label" onclick="toggleSimple('card-smilenotes')"><span class="entry-chevron">▸</span>General Notes</div>
-    <div class="card-body">
-      <textarea class="notes-area" id="smile-general-notes" placeholder="Which procedures you're considering, restrictions post-op (diving, flying, sun), insurance, records to bring..." oninput="autoGrow(this);kvQ('smile','smile-general-notes',this.value)"></textarea>
-    </div>
-  </div>
 </div>
 <!-- TODO -->
 <div class="panel" id="panel-todo">
@@ -403,7 +364,7 @@ const API_KEY    = 'AIzaSyCVPD9x65DJnjckSDbVEKSQXAEXO9kVzLI';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0ICGAeioYM9adTyKDLeRWP-J4Mp82GYS416wolPUz2aBK9ZZba_itXFfAFo7qfDB_/exec';
 const BASE       = 'https://sheets.googleapis.com/v4/spreadsheets';
 const SH = {
-  timeline:'timeline', diving:'diving', smile:'smile', transport:'transport',
+  timeline:'timeline', diving:'diving', transport:'transport',
   flights:'flights', accom:'accom', food:'food', places:'places',
   log:'log', dive_shops:'dive_shops', smile_clinics:'smile_clinics',
   dive_sites:'dive_sites', transport_extra:'transport_extra', todo:'todo',
@@ -452,7 +413,7 @@ function sheetWrite(sheetName, data) {
     body: JSON.stringify({ sheet: sheetName, data })
   }).catch(() => {});
 }
-// ── KV SHEETS (diving, smile, transport) ───────────────────────
+// ── KV SHEETS (diving, transport) ─────────────────────────────
 let kvCache = {};
 let kvTimers = {};
 async function kvLoad(sheetName) {
@@ -468,7 +429,6 @@ function kvQ(sheetName, key, value) {
   setSS('saving','Saving...');
   clearTimeout(kvTimers[sheetName]);
   kvTimers[sheetName] = setTimeout(() => kvFlush(sheetName), 1500);
-  if(sheetName==='smile' && lists.timeline !== undefined) { /* timeline picks this up next render */ }
 }
 async function kvFlush(sheetName) {
   const map = kvCache[sheetName]||{};
@@ -535,6 +495,31 @@ function autoGrowAllIn(containerId){
   c.querySelectorAll('textarea.notes-area').forEach(autoGrow);
 }
 function autoGrowWithin(node){ node.querySelectorAll('textarea.notes-area').forEach(autoGrow); }
+// ── COPY TO CLIPBOARD ─────────────────────────────────────────
+// valueExpr is a JS expression read at click time (e.g. lists.x[3].area), so
+// the button always copies what's currently typed in the field.
+function copyBtn(valueExpr, label){
+  return `<button type="button" class="copy-btn" title="${label}" aria-label="${label}" onclick="copyText(${valueExpr}, this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>`;
+}
+async function copyText(text, btn){
+  text = text || '';
+  if(!text) return;
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch(e) {}
+  if(!ok){
+    // Fallback for browsers/contexts without the async Clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly','');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, text.length);
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    ta.remove();
+  }
+  btn.classList.add(ok ? 'copied' : 'copy-failed');
+  btn.title = ok ? 'Copied!' : 'Copy failed';
+  setTimeout(() => { btn.classList.remove('copied','copy-failed'); btn.title = btn.getAttribute('aria-label'); }, 1500);
+}
 function autoGrowAllGlobal(){ document.querySelectorAll('textarea.notes-area').forEach(autoGrow); }
 // ── SIMPLE COLLAPSIBLE CARDS (static, non-reorderable) ──────────
 function toggleSimple(id){ document.getElementById(id).classList.toggle('collapsed'); }
@@ -657,8 +642,8 @@ function defaultItem(type) {
 }
 // ── RENDER: TIMELINE ───────────────────────────────────────────
 const PHASE_CLASS = {Transit:'p-transit', Taiwan:'p-tpe', Ishigaki:'p-isg', Korea:'p-kr', Other:'p-transit'};
-// Pulls dated items from Flights, Accommodation, Dive Sites, and the Medical
-// timeline so they show up on the Timeline tab automatically. Only items
+// Pulls dated items from Flights, Accommodation, Dive Sites, and Medical
+// clinic appointments so they show up on the Timeline tab automatically. Only items
 // that actually have a date attached are included.
 function computeAutoTimelineItems(){
   const items = [];
@@ -689,16 +674,13 @@ function computeAutoTimelineItems(){
       source:'Diving', tab:'diving'
     });
   });
-  const sm = kvCache.smile || {};
-  [['smile-consult-date','smile-consult-time','Medical consultation'],
-   ['smile-procedure-date','smile-procedure-time','Medical procedure'],
-   ['smile-followup-date','smile-followup-time','Medical follow-up'],
-   ['smile-clearance-date','smile-clearance-time','Clearance to fly']
-  ].forEach(([dk,tk,label])=>{
-    if(!sm[dk]) return;
+  lists.smile_clinics.forEach(c=>{
+    if(!c.appt_date) return;
+    const g = canonGroup(c.area);
     items.push({
-      id:'auto_sm_'+dk, phase:'Korea', title:label,
-      date:sm[dk], note:sm[tk]?('Time: '+sm[tk]):'',
+      id:'auto_mc_'+c.id, phase:g==='Other'?'Korea':g,
+      title:'Appointment: '+(c.name||'Clinic'), date:c.appt_date,
+      note:[c.procedure, c.appt_time?('Time: '+c.appt_time):''].filter(Boolean).join(' · '),
       source:'Medical', tab:'smile'
     });
   });
@@ -859,12 +841,23 @@ function renderDiveSites() {
 }
 // ── RENDER: MEDICAL CLINICS ──────────────────────────────────────
 function renderSmileClinics() {
-  document.getElementById('smile_clinics-list').innerHTML = lists.smile_clinics.map((c,i) => {
-    const meta = `${esc(c.procedure||'')}${c.procedure?' · ':''}${esc(c.area||'')}${c.area?' · ':''}${statusMeta(c.status||'Researching')}`;
+  // Soonest appointment first; clinics without one sit at the bottom.
+  const apptKey = c => c.appt_date + ' ' + (c.appt_time || '~');
+  const sorted = [...lists.smile_clinics].sort((a,b) => {
+    const f = freshFirst(a, b, 'appt_date'); if(f) return f;
+    if(a.appt_date && b.appt_date) return apptKey(a) < apptKey(b) ? -1 : apptKey(a) > apptKey(b) ? 1 : 0;
+    if(a.appt_date) return -1;
+    if(b.appt_date) return 1;
+    return 0;
+  });
+  document.getElementById('smile_clinics-list').innerHTML = sorted.map((c) => {
+    const i = lists.smile_clinics.findIndex(x=>x.id===c.id);
+    const appt = c.appt_date ? fmtDate(c.appt_date)+(c.appt_time?' '+c.appt_time:'') : '';
+    const meta = [appt, esc(c.procedure||'')].filter(Boolean).map(x=>x+' · ').join('') + statusMeta(c.status||'Researching');
     const body = `
       <div class="fg fg3">
         <div><label>Clinic name</label><input type="text" value="${esc(c.name)}" oninput="lists.smile_clinics[${i}].name=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
-        <div><label>Address</label><input type="text" value="${esc(c.area)}" placeholder="Street address, district..." oninput="lists.smile_clinics[${i}].area=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>Address</label><div class="copy-row"><input type="text" value="${esc(c.area)}" placeholder="Street address, district..." oninput="lists.smile_clinics[${i}].area=this.value;listQ('smile_clinics',lists.smile_clinics)">${copyBtn(`lists.smile_clinics[${i}].area`, 'Copy address')}</div></div>
         <div><label>Status</label><select onchange="lists.smile_clinics[${i}].status=this.value;listQ('smile_clinics',lists.smile_clinics);renderSmileClinics()">${['Researching','Contacted — awaiting reply','Replied','Consultation booked','Procedure confirmed','Complete ✓','Ruled out'].map(o=>`<option${o===c.status?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg3">
@@ -876,8 +869,8 @@ function renderSmileClinics() {
         <div><label>Procedure</label><input type="text" value="${esc(c.procedure||'')}" placeholder="Eye surgery, dental, dermatology..." oninput="lists.smile_clinics[${i}].procedure=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>Quoted price (KRW)</label><input type="text" value="${esc(c.price)}" placeholder="total quoted" oninput="lists.smile_clinics[${i}].price=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>Appointment</label><div style="display:flex;gap:8px">
-          <input type="date" style="flex:1;min-width:0" value="${esc(c.appt_date||'')}" oninput="lists.smile_clinics[${i}].appt_date=this.value;listQ('smile_clinics',lists.smile_clinics)">
-          <input type="time" style="flex:1;min-width:0" value="${esc(c.appt_time||'')}" oninput="lists.smile_clinics[${i}].appt_time=this.value;listQ('smile_clinics',lists.smile_clinics)">
+          <input type="date" style="flex:1;min-width:0" value="${esc(c.appt_date||'')}" oninput="lists.smile_clinics[${i}].appt_date=this.value;listQ('smile_clinics',lists.smile_clinics);uiDefer('smile_clinics',renderSmileClinics)">
+          <input type="time" style="flex:1;min-width:0" value="${esc(c.appt_time||'')}" oninput="lists.smile_clinics[${i}].appt_time=this.value;listQ('smile_clinics',lists.smile_clinics);uiDefer('smile_clinics',renderSmileClinics)">
         </div></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" oninput="autoGrow(this);lists.smile_clinics[${i}].notes=this.value;listQ('smile_clinics',lists.smile_clinics)">${esc(c.notes)}</textarea></div></div>
@@ -900,7 +893,7 @@ function renderSmileClinics() {
       </div>
       <button class="rm-btn" onclick="removeItem('smile_clinics',${i})">Remove clinic</button>
     `;
-    return cardShell('smile_clinics', c, i, {title: c.name||('Clinic '+(i+1)), meta}, body);
+    return cardShell('smile_clinics', c, i, {title: c.name||('Clinic '+(i+1)), meta, noReorder:true}, body);
   }).join('') || '<p class="ov-empty">No clinics added yet.</p>';
   autoGrowAllIn('smile_clinics-list');
 }
@@ -1228,16 +1221,10 @@ async function init() {
   try {
     expandedIds['__overview'] = new Set(['Transit','Taiwan','Ishigaki','Korea']);
     expandedIds['__buy'] = new Set(BUY_COUNTRIES);
-    const [div, sm, tr] = await Promise.all([
-      kvLoad(SH.diving), kvLoad(SH.smile), kvLoad(SH.transport)
+    const [div, tr] = await Promise.all([
+      kvLoad(SH.diving), kvLoad(SH.transport)
     ]);
-    fillKV(div); fillKV(sm); fillKV(tr);
-
-    // Check and populate unique time elements for the procedure timeline
-    if(sm['smile-consult-time']) document.getElementById('smile-consult-time').value = sm['smile-consult-time'];
-    if(sm['smile-procedure-time']) document.getElementById('smile-procedure-time').value = sm['smile-procedure-time'];
-    if(sm['smile-followup-time']) document.getElementById('smile-followup-time').value = sm['smile-followup-time'];
-    if(sm['smile-clearance-time']) document.getElementById('smile-clearance-time').value = sm['smile-clearance-time'];
+    fillKV(div); fillKV(tr);
     const keys = ['timeline','flights','accom','dive_shops','dive_sites','smile_clinics','food','places','transport_extra','log','todo','buy'];
     const results = await Promise.all(keys.map(k => listLoad(SH[k])));
     keys.forEach((k,i) => { lists[k] = ensureIds(results[i]); });
