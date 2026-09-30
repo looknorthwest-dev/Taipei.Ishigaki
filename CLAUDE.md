@@ -25,6 +25,8 @@ There is no test suite, linter, or build command. "Running" the app means openin
 
 Both write paths debounce and show state via `setSS()` driving the sync dot in the header (`ok`/`saving`/`err`).
 
+**Medical tab uses legacy `smile` names internally.** The tab was originally "SMILE" (one eye procedure) and was relabeled "Medical" for procedures in general. Its sheets, `data-tab`, `lists` key and element IDs are still `smile` / `smile_clinics` / `smile-*` so existing Google Sheet data keeps loading — rename only the visible text unless you migrate the sheets as well.
+
 **Tabs/panels.** Each nav tab (`.tab[data-tab=X]`) shows/hides a `.panel#panel-X`. `lists` holds one array per list-sheet type; `renderers` maps each type to its `render*()` function, which re-renders that panel's `#<type>-list` container from `lists[type]`.
 
 **Per-item card pattern.** Every list item renders via the shared `cardShell(listType, item, idx, opts, bodyHtml)` helper, which builds the collapsible card header (drag handle, chevron, title, meta badge, ↑/↓ reorder buttons) and body. `idx` must be the item's real index in `lists[type]` — inline `onXXX` handlers reference `lists[type][idx]` directly by that index, so any custom sort in a `render*()` function must render a *sorted copy* while still resolving each item's true array index (via `lists[type].findIndex(x => x.id === t.id)`) for the handlers and for `cardShell`'s `idx` argument. See `renderTimeline()` and `renderTodo()` for this pattern — both are auto-sorted (by date) and pass `noReorder:true` to `cardShell` since manual drag/↑↓ reordering doesn't make sense when order is computed.
@@ -34,6 +36,6 @@ Both write paths debounce and show state via `setSS()` driving the sync dot in t
 
 **Overview tab is derived, not stored.** `renderOverview()` builds a read-only itinerary by merging `timeline`, `accom`, `places`, `food`, and `buy` entries and grouping by `canonGroup()` (Transit/Taiwan/Ishigaki/Korea). It has no sheet of its own — don't add a `todo`-style CRUD list for it.
 
-**Auto-generated timeline entries.** `computeAutoTimelineItems()` synthesizes timeline rows from flights/accom/dive/SMILE dates so they show up on the Timeline tab without manual entry; these are marked `auto:true` and render with a "Edit in {source} tab →" button (`jumpToTab`) instead of inline edit fields, since editing them means editing the source tab.
+**Auto-generated timeline entries.** `computeAutoTimelineItems()` synthesizes timeline rows from flights/accom/dive/medical dates so they show up on the Timeline tab without manual entry; these are marked `auto:true` and render with a "Edit in {source} tab →" button (`jumpToTab`) instead of inline edit fields, since editing them means editing the source tab.
 
 **Adding a new list-backed tab** means: add the sheet name to `SH`, an empty array to `lists`, a case in `defaultItem()`, a `render*()` function following the existing pattern (map over `lists[type]`, call `cardShell`), register it in `renderers`, and add the panel markup + nav tab in the HTML.

@@ -134,7 +134,7 @@
 <header>
   <div class="header-top">
     <span class="trip-title">Ishigaki + Taiwan + Korea — Oct 2026</span>
-    <span class="trip-sub">Taiwan · 10d Ishigaki · ~5d Korea · SMILE</span>
+    <span class="trip-sub">Taiwan · 10d Ishigaki · ~5d Korea · Medical</span>
     <div class="sync-dot" id="sync-dot"></div>
     <span id="sync-msg">Loading...</span>
   </div>
@@ -144,7 +144,7 @@
     <button class="tab" data-tab="flights">Flights</button>
     <button class="tab" data-tab="accom">Accom</button>
     <button class="tab" data-tab="diving">Diving</button>
-    <button class="tab" data-tab="smile">SMILE</button>
+    <button class="tab" data-tab="smile">Medical</button>
     <button class="tab" data-tab="todo">To-Do</button>
     <button class="tab" data-tab="buy">Buy</button>
     <button class="tab" data-tab="food">Food</button>
@@ -163,7 +163,7 @@
 <!-- TIMELINE -->
 <div class="panel" id="panel-timeline">
   <div class="sec-title">Trip Timeline</div>
-  <div class="sec-desc">Add your own milestones below — flights, accommodation check-ins, dive dates, and SMILE appointments are pulled in automatically from their tabs. Everything shown here is sorted chronologically by date; undated items sit at the bottom.</div>
+  <div class="sec-desc">Add your own milestones below — flights, accommodation check-ins, dive dates, and medical appointments are pulled in automatically from their tabs. Everything shown here is sorted chronologically by date; undated items sit at the bottom.</div>
   <div class="panel-toolbar">
     <button class="toolbar-link" onclick="expandAll('timeline')">Expand all</button>
     <button class="toolbar-link" onclick="collapseAll('timeline')">Collapse all</button>
@@ -231,9 +231,9 @@
     </div>
   </div>
 </div>
-<!-- SMILE -->
+<!-- MEDICAL PROCEDURES (internal ids/sheets still use "smile" to keep saved data) -->
 <div class="panel" id="panel-smile">
-  <div class="sec-title">SMILE Eye Procedure — Korea</div>
+  <div class="sec-title">Medical Procedures</div>
   <div class="card-label" style="margin-bottom:10px">Clinics</div>
   <div class="panel-toolbar">
     <button class="toolbar-link" onclick="expandAll('smile_clinics')">Expand all</button>
@@ -245,8 +245,8 @@
     <div class="card-label" onclick="toggleSimple('card-smiletimeline')"><span class="entry-chevron">▸</span>Procedure Timeline</div>
     <div class="card-body">
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
-        <div class="step-title">Pre-op consultation</div>
-        <div class="step-note">Eye measurements, candidacy check. Stop contacts ~2 weeks before.</div>
+        <div class="step-title">Consultation</div>
+        <div class="step-note">Assessment / candidacy check. Ask about any prep needed beforehand (meds, fasting, contacts, etc.).</div>
         <div class="fg" style="margin-top:8px;max-width:400px;">
           <div><label>Date</label><input type="date" id="smile-consult-date" oninput="kvQ('smile','smile-consult-date',this.value)"></div>
           <div><label>Time</label><input type="time" id="smile-consult-time" oninput="kvQ('smile','smile-consult-time',this.value)"></div>
@@ -254,15 +254,15 @@
       </div></div>
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
         <div class="step-title">Procedure day</div>
-        <div class="step-note">~30 min total. Arrange quiet rest same day. No driving.</div>
+        <div class="step-note">Arrange quiet rest the same day. Confirm whether driving or activity is restricted.</div>
         <div class="fg" style="margin-top:8px;max-width:400px;">
           <div><label>Date</label><input type="date" id="smile-procedure-date" oninput="kvQ('smile','smile-procedure-date',this.value)"></div>
           <div><label>Time</label><input type="time" id="smile-procedure-time" oninput="kvQ('smile','smile-procedure-time',this.value)"></div>
         </div>
       </div></div>
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
-        <div class="step-title">Day-after follow-up</div>
-        <div class="step-note">Vision check, drops confirmed. Avoid screens, bright light.</div>
+        <div class="step-title">Follow-up</div>
+        <div class="step-note">Post-procedure check. Confirm meds and aftercare instructions.</div>
         <div class="fg" style="margin-top:8px;max-width:400px;">
           <div><label>Date</label><input type="date" id="smile-followup-date" oninput="kvQ('smile','smile-followup-date',this.value)"></div>
           <div><label>Time</label><input type="time" id="smile-followup-time" oninput="kvQ('smile','smile-followup-time',this.value)"></div>
@@ -270,7 +270,7 @@
       </div></div>
       <div class="proc-step"><div class="step-dot"></div><div style="flex:1">
         <div class="step-title">Final check / clearance to fly</div>
-        <div class="step-note">Confirm OK to travel. Keep drops in carry-on.</div>
+        <div class="step-note">Confirm OK to fly and dive. Keep any meds in carry-on.</div>
         <div class="fg" style="margin-top:8px;max-width:400px;">
           <div><label>Date</label><input type="date" id="smile-clearance-date" oninput="kvQ('smile','smile-clearance-date',this.value)"></div>
           <div><label>Time</label><input type="time" id="smile-clearance-time" oninput="kvQ('smile','smile-clearance-time',this.value)"></div>
@@ -281,7 +281,7 @@
   <div class="card simple-card" id="card-smilenotes">
     <div class="card-label" onclick="toggleSimple('card-smilenotes')"><span class="entry-chevron">▸</span>General Notes</div>
     <div class="card-body">
-      <textarea class="notes-area" id="smile-general-notes" placeholder="Prescription, astigmatism, dive restrictions post-op, flying clearance..." oninput="autoGrow(this);kvQ('smile','smile-general-notes',this.value)"></textarea>
+      <textarea class="notes-area" id="smile-general-notes" placeholder="Which procedures you're considering, restrictions post-op (diving, flying, sun), insurance, records to bring..." oninput="autoGrow(this);kvQ('smile','smile-general-notes',this.value)"></textarea>
     </div>
   </div>
 </div>
@@ -369,7 +369,7 @@
         </select></div>
       </div>
       <div class="fg fg1"><div><label>Airport → city plan</label><textarea class="notes-area" id="tr-kr-airport" placeholder="AREX, airport limousine bus, taxi..." oninput="autoGrow(this);kvQ('transport','tr-kr-airport',this.value)"></textarea></div></div>
-      <div class="fg fg1"><div><label>City transport notes</label><textarea class="notes-area" id="tr-kr-city" placeholder="No driving post-SMILE, subway lines, taxi apps (Kakao T)..." oninput="autoGrow(this);kvQ('transport','tr-kr-city',this.value)"></textarea></div></div>
+      <div class="fg fg1"><div><label>City transport notes</label><textarea class="notes-area" id="tr-kr-city" placeholder="Post-procedure driving limits, subway lines, taxi apps (Kakao T)..." oninput="autoGrow(this);kvQ('transport','tr-kr-city',this.value)"></textarea></div></div>
     </div>
   </div>
   <div class="panel-toolbar">
@@ -623,7 +623,7 @@ function defaultItem(type) {
     accom:       {id:uid(), name:'',area:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''},
     dive_shops:  {id:uid(), name:'',location:'',status:'Researching',phone:'',email:'',website:'',price:'',gear:'Unknown',english:'Unknown',notes:'',contacts:[]},
     dive_sites:  {id:uid(), name:'',date:'',type:'Fun dive',notes:''},
-    smile_clinics:{id:uid(), name:'',area:'',status:'Researching',phone:'',email:'',website:'',price:'',english:'Unknown',notes:'',contacts:[]},
+    smile_clinics:{id:uid(), name:'',area:'',procedure:'',status:'Researching',phone:'',email:'',website:'',price:'',english:'Unknown',notes:'',contacts:[]},
     food:        {id:uid(), name:'',loc:'Taiwan',type:'Night market',notes:'',status:'Want to try'},
     places:      {id:uid(), name:'',loc:'Taiwan',cat:'Cultural site',notes:'',priority:'Must do'},
     transport_extra:{id:uid(), segment:'',date:'',details:''},
@@ -635,7 +635,7 @@ function defaultItem(type) {
 }
 // ── RENDER: TIMELINE ───────────────────────────────────────────
 const PHASE_CLASS = {Transit:'p-transit', Taiwan:'p-tpe', Ishigaki:'p-isg', Korea:'p-kr', Other:'p-transit'};
-// Pulls dated items from Flights, Accommodation, Dive Sites, and the SMILE
+// Pulls dated items from Flights, Accommodation, Dive Sites, and the Medical
 // timeline so they show up on the Timeline tab automatically. Only items
 // that actually have a date attached are included.
 function computeAutoTimelineItems(){
@@ -668,16 +668,16 @@ function computeAutoTimelineItems(){
     });
   });
   const sm = kvCache.smile || {};
-  [['smile-consult-date','smile-consult-time','Pre-op consultation'],
-   ['smile-procedure-date','smile-procedure-time','SMILE procedure'],
-   ['smile-followup-date','smile-followup-time','Day-after follow-up'],
+  [['smile-consult-date','smile-consult-time','Medical consultation'],
+   ['smile-procedure-date','smile-procedure-time','Medical procedure'],
+   ['smile-followup-date','smile-followup-time','Medical follow-up'],
    ['smile-clearance-date','smile-clearance-time','Clearance to fly']
   ].forEach(([dk,tk,label])=>{
     if(!sm[dk]) return;
     items.push({
       id:'auto_sm_'+dk, phase:'Korea', title:label,
       date:sm[dk], note:sm[tk]?('Time: '+sm[tk]):'',
-      source:'SMILE', tab:'smile'
+      source:'Medical', tab:'smile'
     });
   });
   items.forEach(it=>it.auto=true);
@@ -719,7 +719,7 @@ function renderTimeline() {
       <button class="rm-btn" onclick="removeItem('timeline',${i})">Remove</button>
     `;
     return cardShell('timeline', t, i, {title: t.title||t.phase||('Event'), meta, noReorder:true}, body);
-  }).join('') || '<p class="ov-empty">No timeline events yet — add a milestone below, or add flights, accommodation, dive dates, or SMILE dates elsewhere in the planner and they will appear here automatically, in order.</p>';
+  }).join('') || '<p class="ov-empty">No timeline events yet — add a milestone below, or add flights, accommodation, dive dates, or medical dates elsewhere in the planner and they will appear here automatically, in order.</p>';
   autoGrowAllIn('timeline-list');
 }
 // ── RENDER: FLIGHTS ─────────────────────────────────────────────
@@ -835,10 +835,10 @@ function renderDiveSites() {
   }).join('') || '<p class="ov-empty">No sites added yet.</p>';
   autoGrowAllIn('dive_sites-list');
 }
-// ── RENDER: SMILE CLINICS ────────────────────────────────────────
+// ── RENDER: MEDICAL CLINICS ──────────────────────────────────────
 function renderSmileClinics() {
   document.getElementById('smile_clinics-list').innerHTML = lists.smile_clinics.map((c,i) => {
-    const meta = `${esc(c.area||'')}${c.area?' · ':''}${statusMeta(c.status||'Researching')}`;
+    const meta = `${esc(c.procedure||'')}${c.procedure?' · ':''}${esc(c.area||'')}${c.area?' · ':''}${statusMeta(c.status||'Researching')}`;
     const body = `
       <div class="fg fg3">
         <div><label>Clinic name</label><input type="text" value="${esc(c.name)}" oninput="lists.smile_clinics[${i}].name=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
@@ -850,8 +850,9 @@ function renderSmileClinics() {
         <div><label>Email</label><input type="text" value="${esc(c.email)}" oninput="lists.smile_clinics[${i}].email=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>Website</label><input type="text" value="${esc(c.website)}" oninput="lists.smile_clinics[${i}].website=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
       </div>
-      <div class="fg">
-        <div><label>Quoted price (KRW)</label><input type="text" value="${esc(c.price)}" placeholder="both eyes" oninput="lists.smile_clinics[${i}].price=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+      <div class="fg fg3">
+        <div><label>Procedure</label><input type="text" value="${esc(c.procedure||'')}" placeholder="Eye surgery, dental, dermatology..." oninput="lists.smile_clinics[${i}].procedure=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
+        <div><label>Quoted price (KRW)</label><input type="text" value="${esc(c.price)}" placeholder="total quoted" oninput="lists.smile_clinics[${i}].price=this.value;listQ('smile_clinics',lists.smile_clinics)"></div>
         <div><label>English service?</label><select onchange="lists.smile_clinics[${i}].english=this.value;listQ('smile_clinics',lists.smile_clinics)">${['Unknown','Yes','Limited','No'].map(o=>`<option${o===c.english?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" oninput="autoGrow(this);lists.smile_clinics[${i}].notes=this.value;listQ('smile_clinics',lists.smile_clinics)">${esc(c.notes)}</textarea></div></div>
@@ -1190,9 +1191,9 @@ async function addLogEntry() {
 // overwrite or duplicate items once anything has been saved.
 const BUY_SEED = [
   {item:'Sunblock', country:'Korea', location:'Olive Young — any branch', category:'Skincare / cosmetics',
-   qty:'2–3', cost:'₩10–20k each', status:'To buy', link:'', notes:'Korean sunblock is cheap and much better textured than US. Buy after SMILE, not before — the eyes are light-sensitive post-op and you will want a hat too.', done:false},
+   qty:'2–3', cost:'₩10–20k each', status:'To buy', link:'', notes:'Korean sunblock is cheap and much better textured than US. If you have eye surgery, buy after, not before — eyes are light-sensitive post-op and you will want a hat too.', done:false},
   {item:'Continuous glucose monitor (CGM)', country:'Korea', location:'', category:'Pharmacy / health',
-   qty:'1', cost:'', status:'Researching', link:'', notes:'Confirm before relying on it: which brand is sold OTC in Korea, whether a prescription or clinic visit is required, and whether the reader app works on a US phone/account. Ask the SMILE clinic — they may point you to a nearby internal medicine clinic.', done:false},
+   qty:'1', cost:'', status:'Researching', link:'', notes:'Confirm before relying on it: which brand is sold OTC in Korea, whether a prescription or clinic visit is required, and whether the reader app works on a US phone/account. Ask whichever clinic you use — they may point you to a nearby internal medicine clinic.', done:false},
   {item:'Gifts', country:'Korea', location:'', category:'Gifts / souvenirs',
    qty:'', cost:'', status:'To buy', link:'', notes:'List who each gift is for, then a place per person. Duplicate this row per recipient once you know.', done:false}
 ];
