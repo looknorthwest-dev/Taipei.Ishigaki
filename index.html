@@ -501,6 +501,31 @@ function autoGrowWithin(node){ node.querySelectorAll('textarea.notes-area').forE
 function copyBtn(valueExpr, label){
   return `<button type="button" class="copy-btn" title="${label}" aria-label="${label}" onclick="copyText(${valueExpr}, this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>`;
 }
+function isKoreaStay(a){
+  return canonGroup(a.area)==='Korea' || canonGroup(a.address)==='Korea' || /[\uAC00-\uD7AF]/.test(a.address||'');
+}
+function kakaoBtn(i, show){
+  return `<button type="button" class="copy-btn kakao-btn" style="${show?'':'display:none'}" title="Open in Kakao Map" aria-label="Open in Kakao Map" onclick="openKakao(lists.accom[${i}].address)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>`;
+}
+// Show the Kakao button only for Korea stays; el is any input inside the card body
+function syncKakaoBtn(el, i){
+  const b = el.closest('.fg').parentNode.querySelector('.kakao-btn');
+  if(b) b.style.display = isKoreaStay(lists.accom[i]) ? '' : 'none';
+}
+function openKakao(addr){
+  addr = (addr||'').trim();
+  if(!addr) return;
+  const q = encodeURIComponent(addr);
+  if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+    // Try the Kakao Map app; fall back to the mobile web map if the app doesn't take over
+    const t = setTimeout(()=>{ location.href = 'https://m.map.kakao.com/actions/searchView?q=' + q; }, 1500);
+    const cancel = ()=>{ if(document.hidden){ clearTimeout(t); document.removeEventListener('visibilitychange', cancel); } };
+    document.addEventListener('visibilitychange', cancel);
+    location.href = 'kakaomap://search?q=' + q;
+  } else {
+    window.open('https://map.kakao.com/?q=' + q, '_blank', 'noopener');
+  }
+}
 async function copyText(text, btn){
   text = text || '';
   if(!text) return;
@@ -627,7 +652,7 @@ function defaultItem(type) {
   const d = {
     timeline:    {id:uid(), phase:'Transit', title:'', date:'', note:''},
     flights:     {id:uid(), route:'',date:'',airline:'',flight_num:'',dep:'',arr:'',status:'To book',conf:'',cost:'',notes:''},
-    accom:       {id:uid(), name:'',area:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''},
+    accom:       {id:uid(), name:'',area:'',address:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''},
     dive_shops:  {id:uid(), name:'',location:'',status:'Researching',phone:'',email:'',website:'',price:'',gear:'Unknown',english:'Unknown',notes:'',contacts:[]},
     dive_sites:  {id:uid(), name:'',date:'',type:'Fun dive',notes:''},
     smile_clinics:{id:uid(), name:'',area:'',procedure:'',status:'Researching',phone:'',email:'',website:'',price:'',appt_date:'',appt_time:'',notes:'',contacts:[]},
@@ -760,8 +785,9 @@ function renderAccom() {
     const body = `
       <div class="fg">
         <div><label>Property name</label><input type="text" value="${esc(a.name)}" placeholder="Guesthouse / hotel name" oninput="lists.accom[${i}].name=this.value;listQ('accom',lists.accom)"></div>
-        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki, Taiwan, Seoul..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom)"></div>
+        <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki, Taiwan, Seoul..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom);syncKakaoBtn(this,${i})"></div>
       </div>
+      <div class="fg fg1"><div><label>Address</label><div class="copy-row"><input type="text" value="${esc(a.address||'')}" placeholder="Street address" oninput="lists.accom[${i}].address=this.value;listQ('accom',lists.accom);syncKakaoBtn(this,${i})">${copyBtn(`lists.accom[${i}].address`, 'Copy address')}${kakaoBtn(i, isKoreaStay(a))}</div></div></div>
       <div class="fg fg3">
         <div><label>Check-in</label><input type="date" value="${esc(a.checkin)}" oninput="lists.accom[${i}].checkin=this.value;listQ('accom',lists.accom)"></div>
         <div><label>Check-out</label><input type="date" value="${esc(a.checkout)}" oninput="lists.accom[${i}].checkout=this.value;listQ('accom',lists.accom)"></div>
