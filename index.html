@@ -49,6 +49,12 @@
   .add-btn{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:transparent;border:1px dashed #2A3A4A;color:var(--muted);cursor:pointer;border-radius:4px;width:100%;margin-top:4px;transition:border-color .15s,color .15s;}
   .add-btn:hover{border-color:var(--ocean);color:var(--reef);}
   .add-btn.solid{border-style:solid;border-color:var(--ocean);color:var(--reef);}
+  .photo-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;}
+  .photo-thumb{position:relative;width:84px;height:84px;border-radius:4px;overflow:hidden;border:1px solid #2A3A4A;background:#16222E;}
+  .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-thumb button{position:absolute;top:2px;right:2px;width:20px;height:20px;line-height:18px;padding:0;border:none;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:13px;cursor:pointer;}
+  .photo-add{display:inline-flex;align-items:center;justify-content:center;min-height:84px;padding:0 14px;border:1px dashed var(--coral);border-radius:4px;color:var(--coral);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
+  .photo-add.busy{opacity:.5;pointer-events:none;}
   .copy-row{display:flex;gap:6px;} .copy-row input{flex:1;min-width:0;}
   .copy-btn{flex-shrink:0;width:40px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid #475569;border-radius:4px;color:var(--muted);cursor:pointer;}
   .copy-btn:hover{border-color:var(--ocean);color:var(--reef);}
@@ -501,6 +507,63 @@ function autoGrowWithin(node){ node.querySelectorAll('textarea.notes-area').forE
 function copyBtn(valueExpr, label){
   return `<button type="button" class="copy-btn" title="${label}" aria-label="${label}" onclick="copyText(${valueExpr}, this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>`;
 }
+// ── PHOTOS (stored in Google Drive via the Apps Script; entries keep only file ids) ──
+function photoBlock(listType, i){
+  const item = lists[listType][i];
+  const thumbs = (item.photos||[]).map(ph => `<div class="photo-thumb">
+      <a href="https://drive.google.com/thumbnail?id=${esc(ph.id)}&sz=w2000" target="_blank" rel="noopener"><img loading="lazy" src="https://drive.google.com/thumbnail?id=${esc(ph.id)}&sz=w300" alt="Photo"></a>
+      <button type="button" title="Remove photo" aria-label="Remove photo" onclick="removePhoto('${listType}',${i},'${esc(ph.id)}')">×</button>
+    </div>`).join('');
+  return `<div class="photo-row">${thumbs}<label class="photo-add">+ Add photo<input type="file" accept="image/*" multiple hidden onchange="addPhotos('${listType}',${i},this)"></label></div>`;
+}
+function resizeImage(file, max=1600){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, max/Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg', 0.8).split(',')[1]);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('Could not read image')); };
+    img.src = url;
+  });
+}
+async function addPhotos(listType, i, input){
+  const files = [...input.files];
+  const item = lists[listType][i];
+  if(!files.length || !item) return;
+  const label = input.parentNode;
+  label.classList.add('busy');
+  setSS('saving','Uploading photo...');
+  let failed = 0;
+  for(const f of files){
+    try {
+      const data = await resizeImage(f);
+      // text/plain keeps this a "simple" request (no CORS preflight) so the response can be read
+      const r = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'upload', name:(f.name||'photo').replace(/\.\w+$/,'')+'.jpg', mime:'image/jpeg', data }) });
+      const j = await r.json();
+      if(!j.ok || !j.id) throw new Error(j.error||'upload failed');
+      (item.photos = item.photos||[]).push({id:j.id});
+    } catch(e) { failed++; }
+  }
+  listQ(listType, lists[listType]);
+  renderers[listType]();
+  if(failed) setSS('err', failed+' photo(s) failed to upload — is the Apps Script updated?');
+}
+function removePhoto(listType, i, id){
+  const item = lists[listType][i];
+  if(!item || !confirm('Remove this photo?')) return;
+  item.photos = (item.photos||[]).filter(p => p.id !== id);
+  listQ(listType, lists[listType]);
+  // best-effort: ask the script to trash the Drive file too
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action:'delete', id}) }).catch(()=>{});
+  renderers[listType]();
+}
 function isKoreaStay(a){
   return canonGroup(a.area)==='Korea' || canonGroup(a.address)==='Korea' || /[\uAC00-\uD7AF]/.test(a.address||'');
 }
@@ -798,6 +861,7 @@ function renderAccom() {
         <div><label>Confirmation #</label><input type="text" value="${esc(a.conf)}" oninput="lists.accom[${i}].conf=this.value;listQ('accom',lists.accom)"></div>
       </div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" oninput="autoGrow(this);lists.accom[${i}].notes=this.value;listQ('accom',lists.accom)">${esc(a.notes)}</textarea></div></div>
+      ${photoBlock('accom',i)}
       <button class="rm-btn" onclick="removeItem('accom',${i})">Remove</button>
     `;
     return cardShell('accom', a, i, {title: a.name||('Accommodation '+(i+1)), meta: esc(range)}, body);
@@ -842,6 +906,7 @@ function renderDiveShops() {
           <div class="fg fg1"><div><label>Message / notes</label><textarea id="ds-b-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
         </div>
       </div>
+      ${photoBlock('dive_shops',i)}
       <button class="rm-btn" onclick="removeItem('dive_shops',${i})">Remove shop</button>
     `;
     return cardShell('dive_shops', s, i, {title: s.name||('Dive Shop '+(i+1)), meta}, body);
@@ -917,6 +982,7 @@ function renderSmileClinics() {
           <div class="fg fg1"><div><label>Message / notes</label><textarea id="sc-b-${i}" placeholder="What did you ask or what did they say..."></textarea></div></div>
         </div>
       </div>
+      ${photoBlock('smile_clinics',i)}
       <button class="rm-btn" onclick="removeItem('smile_clinics',${i})">Remove clinic</button>
     `;
     return cardShell('smile_clinics', c, i, {title: c.name||('Clinic '+(i+1)), meta, noReorder:true}, body);
