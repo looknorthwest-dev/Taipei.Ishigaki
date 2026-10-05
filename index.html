@@ -575,10 +575,21 @@ function isKoreaStay(a){
 function kakaoBtn(valueExpr, show){
   return `<button type="button" class="copy-btn kakao-btn" style="${show?'':'display:none'}" title="Open in Kakao Map" aria-label="Open in Kakao Map" onclick="openKakao(${valueExpr})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>`;
 }
-// Show the Kakao button only for Korea stays; el is any input inside the card body
+function gmapsBtn(valueExpr, show){
+  return `<button type="button" class="copy-btn gmaps-btn" style="${show?'':'display:none'}" title="Open in Google Maps" aria-label="Open in Google Maps" onclick="openGMaps(${valueExpr})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>`;
+}
+function openGMaps(addr){
+  addr = (addr||'').trim();
+  if(!addr) return;
+  window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr), '_blank', 'noopener');
+}
+// Accom: Kakao button for Korea stays, Google Maps button for everywhere else; el is any input inside the card body
 function syncKakaoBtn(el, i){
-  const b = el.closest('.fg').parentNode.querySelector('.kakao-btn');
-  if(b) b.style.display = isKoreaStay(lists.accom[i]) ? '' : 'none';
+  const body = el.closest('.fg').parentNode;
+  const kr = isKoreaStay(lists.accom[i]);
+  const k = body.querySelector('.kakao-btn'), g = body.querySelector('.gmaps-btn');
+  if(k) k.style.display = kr ? '' : 'none';
+  if(g) g.style.display = kr ? 'none' : '';
 }
 function openKakao(addr){
   addr = (addr||'').trim();
@@ -855,7 +866,7 @@ function renderAccom() {
         <div><label>Property name</label><input type="text" value="${esc(a.name)}" placeholder="Guesthouse / hotel name" oninput="lists.accom[${i}].name=this.value;listQ('accom',lists.accom)"></div>
         <div><label>Area</label><input type="text" value="${esc(a.area)}" placeholder="Ishigaki, Taiwan, Seoul..." oninput="lists.accom[${i}].area=this.value;listQ('accom',lists.accom);syncKakaoBtn(this,${i})"></div>
       </div>
-      <div class="fg fg1"><div><label>Address</label><div class="copy-row"><input type="text" value="${esc(a.address||'')}" placeholder="Street address" oninput="lists.accom[${i}].address=this.value;listQ('accom',lists.accom);syncKakaoBtn(this,${i})">${copyBtn(`lists.accom[${i}].address`, 'Copy address')}${kakaoBtn(`lists.accom[${i}].address`, isKoreaStay(a))}</div></div></div>
+      <div class="fg fg1"><div><label>Address</label><div class="copy-row"><input type="text" value="${esc(a.address||'')}" placeholder="Street address" oninput="lists.accom[${i}].address=this.value;listQ('accom',lists.accom);syncKakaoBtn(this,${i})">${copyBtn(`lists.accom[${i}].address`, 'Copy address')}${kakaoBtn(`lists.accom[${i}].address`, isKoreaStay(a))}${gmapsBtn(`lists.accom[${i}].address`, !isKoreaStay(a))}</div></div></div>
       <div class="fg fg3">
         <div><label>Check-in</label><input type="date" value="${esc(a.checkin)}" oninput="lists.accom[${i}].checkin=this.value;listQ('accom',lists.accom)"></div>
         <div><label>Check-out</label><input type="date" value="${esc(a.checkout)}" oninput="lists.accom[${i}].checkout=this.value;listQ('accom',lists.accom)"></div>
@@ -1122,7 +1133,7 @@ function renderFood() {
         <div><label>Location</label><select onchange="lists.food[${i}].loc=this.value;listQ('food',lists.food);renderFood()">${['Taiwan','Ishigaki','Korea'].map(o=>`<option${o===f.loc?' selected':''}>${o}</option>`).join('')}</select></div>
         <div><label>Type</label><select onchange="lists.food[${i}].type=this.value;listQ('food',lists.food)">${['Night market','Seafood','Plant-based','Market','Izakaya','Ramen / noodles','Korean BBQ','Breakfast','Other'].map(o=>`<option${o===f.type?' selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <div class="fg fg1"><div><label>Address</label><div class="copy-row"><input type="text" value="${esc(f.address||'')}" placeholder="Street address" oninput="lists.food[${i}].address=this.value;listQ('food',lists.food)">${copyBtn(`lists.food[${i}].address`, 'Copy address')}${kakaoBtn(`lists.food[${i}].address`, f.loc==='Korea')}</div></div></div>
+      <div class="fg fg1"><div><label>Address</label><div class="copy-row"><input type="text" value="${esc(f.address||'')}" placeholder="Street address" oninput="lists.food[${i}].address=this.value;listQ('food',lists.food)">${copyBtn(`lists.food[${i}].address`, 'Copy address')}${kakaoBtn(`lists.food[${i}].address`, f.loc==='Korea')}${gmapsBtn(`lists.food[${i}].address`, f.loc!=='Korea')}</div></div></div>
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" placeholder="Vegan-friendly, must-try dish..." oninput="autoGrow(this);lists.food[${i}].notes=this.value;listQ('food',lists.food)">${esc(f.notes)}</textarea></div></div>
       <div class="fg fg1"><div><label>Status</label><select onchange="lists.food[${i}].status=this.value;listQ('food',lists.food);renderFood()">${['Want to try','Visited ✓','Skip'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div></div>
       ${photoBlock('food',i)}
@@ -1151,7 +1162,7 @@ function renderPlaces() {
           <div><label>Location</label><select onchange="lists.places[${i}].loc=this.value;listQ('places',lists.places);renderPlaces()">${['Taiwan','Ishigaki','Nearby island','Korea'].map(o=>`<option${o===p.loc?' selected':''}>${o}</option>`).join('')}</select></div>
           <div><label>Category</label><select onchange="lists.places[${i}].cat=this.value;listQ('places',lists.places)">${['Cultural site','Nature / beach','Market','Temple / shrine','Night market','Viewpoint','Other'].map(o=>`<option${o===p.cat?' selected':''}>${o}</option>`).join('')}</select></div>
         </div>
-        <div class="fg fg1"><div><label>Address</label><div class="copy-row"><input type="text" value="${esc(p.address||'')}" placeholder="Street address" oninput="lists.places[${i}].address=this.value;listQ('places',lists.places)">${copyBtn(`lists.places[${i}].address`, 'Copy address')}${kakaoBtn(`lists.places[${i}].address`, p.loc==='Korea')}</div></div></div>
+        <div class="fg fg1"><div><label>Address</label><div class="copy-row"><input type="text" value="${esc(p.address||'')}" placeholder="Street address" oninput="lists.places[${i}].address=this.value;listQ('places',lists.places)">${copyBtn(`lists.places[${i}].address`, 'Copy address')}${kakaoBtn(`lists.places[${i}].address`, p.loc==='Korea')}${gmapsBtn(`lists.places[${i}].address`, p.loc!=='Korea')}</div></div></div>
         <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" placeholder="Hours, cost, how to get there..." oninput="autoGrow(this);lists.places[${i}].notes=this.value;listQ('places',lists.places)">${esc(p.notes)}</textarea></div></div>
         <div class="fg fg1"><div><label>Priority</label><select onchange="lists.places[${i}].priority=this.value;listQ('places',lists.places);renderPlaces()">${['Must do','Nice to have','If time permits','Done ✓'].map(o=>`<option${o===p.priority?' selected':''}>${o}</option>`).join('')}</select></div></div>
         ${photoBlock('places',i)}
