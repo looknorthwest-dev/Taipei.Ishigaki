@@ -79,5 +79,6 @@ function handlePhoto_(p) {
 
 // Run this once from the editor to grant Drive access, then deploy a new version.
 function authorizeDrive() {
-  DriveApp.getRootFolder();
+  // Touches the same Drive calls the uploader uses so the full Drive scope is granted
+  DriveApp.createFolder('authorize-test').setTrashed(true);
 }

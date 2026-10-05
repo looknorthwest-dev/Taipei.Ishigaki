@@ -539,7 +539,7 @@ async function addPhotos(listType, i, input){
   const label = input.parentNode;
   label.classList.add('busy');
   setSS('saving','Uploading photo...');
-  let failed = 0;
+  let failed = 0, added = 0, lastErr = '';
   for(const f of files){
     try {
       const data = await resizeImage(f);
@@ -547,13 +547,18 @@ async function addPhotos(listType, i, input){
       const r = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
         body: JSON.stringify({ action:'upload', name:(f.name||'photo').replace(/\.\w+$/,'')+'.jpg', mime:'image/jpeg', data }) });
       const j = await r.json();
-      if(!j.ok || !j.id) throw new Error(j.error||'upload failed');
+      if(!j.ok || !j.id) throw new Error(j.error || j.message || 'upload failed');
       (item.photos = item.photos||[]).push({id:j.id});
-    } catch(e) { failed++; }
+      added++;
+    } catch(e) { failed++; lastErr = e.message; }
   }
-  listQ(listType, lists[listType]);
+  if(added) listQ(listType, lists[listType]);
   renderers[listType]();
-  if(failed) setSS('err', failed+' photo(s) failed to upload — is the Apps Script updated?');
+  // set after listQ so the error isn't overwritten by the "Saved" status
+  if(failed){
+    setSS('err', 'Photo upload failed: ' + lastErr);
+    alert('Photo upload failed: ' + lastErr);
+  }
 }
 function removePhoto(listType, i, id){
   const item = lists[listType][i];
