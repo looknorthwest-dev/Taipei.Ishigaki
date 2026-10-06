@@ -12,7 +12,7 @@ There is no test suite, linter, or build command. "Running" the app means openin
 
 - `index.html` — the actual planner app (single file, ~1200 lines: CSS in `<style>`, all logic in one `<script>` at the bottom).
 - `export-to-claude.html` — standalone utility page that pulls all sheets from the same Google Sheet and formats them as text to paste into a Claude chat. Self-contained, not linked from `index.html`.
-- `index1.0.html`, `index2.html`, `index3.html`, `current index file/index.html` — older/backup snapshots of the planner, not wired into the site and not under active development. Don't edit these when asked to change "the planner" — that means `index.html`.
+- `apps-script-photos.gs` — source of the Google Apps Script Web App behind `SCRIPT_URL` (sheet writes plus Drive photo upload/delete). It is deployed from the Apps Script editor, not from this repo, so edits here must be re-pasted/redeployed there to take effect.
 - No other source directories.
 
 ## Architecture (index.html)
