@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A single-page trip planner (Taipei/Ishigaki/Korea trip) built as one static HTML file with inline CSS/JS — no build step, no package.json, no framework. `index.html` is the live app, served via GitHub Pages (`.nojekyll` present, repo root is the publish source).
+A single-page trip planner (Taipei/Ishigaki/Korea trip) built as one static HTML file with inline CSS/JS — no build step, no package.json, no framework. `index.html` is the live app, served via GitHub Pages (`.nojekyll` present, repo root is the publish source) at the custom domain `planner.frelica.online` (DNS CNAME record at Namecheap → `looknorthwest-dev.github.io`). The `CNAME` file in the repo root is what tells GitHub Pages about the domain — don't delete it.
 
 There is no test suite, linter, or build command. "Running" the app means opening `index.html` in a browser or serving the directory with any static file server (e.g. `python3 -m http.server`). To sanity-check JS after an edit without a browser, extract the `<script>` body and run it through `node -e "new Function(...)"` — there's no formal syntax-check command configured.
 
