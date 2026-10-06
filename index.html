@@ -55,6 +55,9 @@
   .photo-thumb button{position:absolute;top:2px;right:2px;width:20px;height:20px;line-height:18px;padding:0;border:none;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:13px;cursor:pointer;}
   .photo-add{display:inline-flex;align-items:center;justify-content:center;min-height:84px;padding:0 14px;border:1px dashed var(--coral);border-radius:4px;color:var(--coral);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
   .photo-add.busy{opacity:.5;pointer-events:none;}
+  .photo-hint{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:#6E8296;}
+  .photo-row.drop-target{outline:2px dashed var(--coral);outline-offset:4px;border-radius:4px;background:rgba(255,255,255,.04);}
+  .photo-row.drop-target .photo-hint{color:var(--coral);}
   .copy-row{display:flex;gap:6px;} .copy-row input{flex:1;min-width:0;}
   .copy-btn{flex-shrink:0;width:40px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid #475569;border-radius:4px;color:var(--muted);cursor:pointer;}
   .copy-btn:hover{border-color:var(--ocean);color:var(--reef);}
@@ -514,7 +517,7 @@ function photoBlock(listType, i){
       <a href="https://drive.google.com/thumbnail?id=${esc(ph.id)}&sz=w2000" target="_blank" rel="noopener"><img loading="lazy" src="https://drive.google.com/thumbnail?id=${esc(ph.id)}&sz=w300" alt="Photo"></a>
       <button type="button" title="Remove photo" aria-label="Remove photo" onclick="removePhoto('${listType}',${i},'${esc(ph.id)}')">×</button>
     </div>`).join('');
-  return `<div class="photo-row">${thumbs}<label class="photo-add">+ Add photo<input type="file" accept="image/*" multiple hidden onchange="addPhotos('${listType}',${i},this)"></label></div>`;
+  return `<div class="photo-row" ondragenter="photoDrag(event)" ondragover="photoDrag(event)" ondragleave="photoDragLeave(event)" ondrop="photoDrop(event,'${listType}',${i})">${thumbs}<label class="photo-add">+ Add photo<input type="file" accept="image/*" multiple hidden onchange="addPhotos('${listType}',${i},this)"></label><span class="photo-hint">or drop photos here</span></div>`;
 }
 function resizeImage(file, max=1600){
   return new Promise((res, rej) => {
@@ -532,12 +535,39 @@ function resizeImage(file, max=1600){
     img.src = url;
   });
 }
-async function addPhotos(listType, i, input){
+function addPhotos(listType, i, input){
   const files = [...input.files];
+  input.value = '';
+  return uploadPhotos(listType, i, files, input.closest('.photo-row'));
+}
+// Drag-and-drop of image files onto a card's photo row. These handlers stop
+// propagation so the card's own reorder handlers (dragOver/dragDrop) don't swallow the drop.
+function isFileDrag(e){ return e.dataTransfer && [...(e.dataTransfer.types||[])].includes('Files'); }
+function photoDrag(e){
+  if(!isFileDrag(e)) return;
+  e.preventDefault(); e.stopPropagation();
+  e.dataTransfer.dropEffect = 'copy';
+  e.currentTarget.classList.add('drop-target');
+}
+function photoDragLeave(e){
+  if(!e.currentTarget.contains(e.relatedTarget)) e.currentTarget.classList.remove('drop-target');
+}
+function photoDrop(e, listType, i){
+  if(!isFileDrag(e)) return;
+  e.preventDefault(); e.stopPropagation();
+  const row = e.currentTarget;
+  row.classList.remove('drop-target');
+  const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+  if(!files.length){ alert('Only image files can be dropped here.'); return; }
+  uploadPhotos(listType, i, files, row);
+}
+// Stray file drops elsewhere on the page would make the browser navigate to the image and lose the planner.
+['dragover','drop'].forEach(t => window.addEventListener(t, e => { if(isFileDrag(e)) e.preventDefault(); }));
+async function uploadPhotos(listType, i, files, row){
   const item = lists[listType][i];
   if(!files.length || !item) return;
-  const label = input.parentNode;
-  label.classList.add('busy');
+  const label = row && row.querySelector('.photo-add');
+  if(label) label.classList.add('busy');
   setSS('saving','Uploading photo...');
   let failed = 0, added = 0, lastErr = '';
   for(const f of files){
