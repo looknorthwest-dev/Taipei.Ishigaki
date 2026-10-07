@@ -92,6 +92,8 @@
   .drag-handle:active{cursor:grabbing;}
   .entry-chevron{display:inline-block;color:var(--reef);font-size:12px;flex-shrink:0;width:12px;transition:transform .15s;}
   .entry-card:not(.collapsed) .entry-chevron{transform:rotate(90deg);}
+  .flight-breakdown{font-family:var(--mono);font-size:12px;color:var(--muted);margin:-4px 0 10px;}
+  .flight-breakdown:empty{display:none;}
   .entry-title{font-size:15px;font-weight:600;color:var(--sand);min-width:0;padding-right:4px;}
   .entry-meta{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;justify-self:end;}
   .entry-controls{display:flex;gap:4px;margin-left:4px;}
@@ -760,7 +762,7 @@ const lists = { timeline:[], flights:[], accom:[], dive_shops:[], dive_sites:[],
 function defaultItem(type) {
   const d = {
     timeline:    {id:uid(), phase:'Transit', title:'', date:'', note:''},
-    flights:     {id:uid(), route:'',date:'',airline:'',flight_num:'',dep:'',arr:'',status:'To book',conf:'',cost:'',notes:''},
+    flights:     {id:uid(), route:'',date:'',airline:'',flight_num:'',dep:'',arr:'',conn:'',conn_arr:'',conn_dep:'',status:'To book',conf:'',cost:'',notes:''},
     accom:       {id:uid(), name:'',area:'',address:'',checkin:'',checkout:'',cost:'',platform:'',conf:'',notes:''},
     dive_shops:  {id:uid(), name:'',location:'',status:'Researching',phone:'',email:'',website:'',price:'',gear:'Unknown',english:'Unknown',notes:'',contacts:[]},
     dive_sites:  {id:uid(), name:'',date:'',type:'Fun dive',notes:''},
@@ -904,33 +906,66 @@ function airportCodes(route){
   const codes = ((route||'').match(/\b[A-Za-z]{3}\b/g)||[]).map(c=>c.toUpperCase()).filter(c=>AIRPORT_TZ[c]);
   return codes.length>=2 ? [codes[0], codes[codes.length-1]] : null;
 }
-// Returns total minutes in the air (arrival assumed within 24h of the next
-// matching clock time after departure), or null if anything is missing/unknown.
-function flightMinutes(f){
+const hm = m => Math.floor(m/60)+'h'+(m%60?' '+String(m%60).padStart(2,'0')+'m':'');
+// First instant after `afterMs` at which the wall clock in `tz` reads `clockMin` (minutes since midnight).
+function nextClockAfter(tz, afterMs, clockMin){
+  const o = new Date(afterMs + tzOffsetMin(tz, afterMs)*60000);   // shifted so UTC getters read local time
+  const y=o.getUTCFullYear(), mo=o.getUTCMonth()+1, d=o.getUTCDate();
+  for(let k=0; k<4; k++){
+    const t = zonedToUtcMs(tz, y,mo,d+k, Math.floor(clockMin/60), clockMin%60);
+    if(t>afterMs) return t;
+  }
+  return null;
+}
+// Works out the trip leg by leg. Each time is "the next time that clock reading occurs after the
+// previous event", so only the departure date is needed. With a layover (conn + conn_arr + conn_dep)
+// returns two legs; otherwise one. Returns null if anything is missing/unknown.
+function flightTrip(f){
   const codes = airportCodes(f.route), dm = parseClock(f.dep), am = parseClock(f.arr);
   const dt = /^(\d{4})-(\d{2})-(\d{2})$/.exec(f.date||'');
   if(!codes || dm===null || am===null || !dt) return null;
-  const [y,mo,d] = [+dt[1],+dt[2],+dt[3]];
-  const dep = zonedToUtcMs(AIRPORT_TZ[codes[0]], y,mo,d, Math.floor(dm/60), dm%60);
-  // Try the arrival wall-clock on the departure day, then each following day, until it lands after departure.
-  let arr = dep;
-  for(let k=0; k<3 && arr<=dep; k++) arr = zonedToUtcMs(AIRPORT_TZ[codes[1]], y,mo,d+k, Math.floor(am/60), am%60);
-  return Math.round((arr-dep)/60000);
+  const tzO = AIRPORT_TZ[codes[0]], tzD = AIRPORT_TZ[codes[1]];
+  const t0 = zonedToUtcMs(tzO, +dt[1],+dt[2],+dt[3], Math.floor(dm/60), dm%60);
+  const conn = (f.conn||'').trim().toUpperCase(), ca = parseClock(f.conn_arr), cd = parseClock(f.conn_dep);
+  if(conn || f.conn_arr || f.conn_dep){
+    if(!AIRPORT_TZ[conn] || ca===null || cd===null) return null;   // half-filled layover: show nothing rather than wrong
+    const tzC = AIRPORT_TZ[conn];
+    const t1 = nextClockAfter(tzC, t0, ca);
+    const t2 = t1 && nextClockAfter(tzC, t1, cd);
+    const t3 = t2 && nextClockAfter(tzD, t2, am);
+    if(!t3) return null;
+    const m = ms => Math.round(ms/60000);
+    return {legs:[{from:codes[0],to:conn,min:m(t1-t0)},{from:conn,to:codes[1],min:m(t3-t2)}], layover:m(t2-t1), conn, total:m(t3-t0)};
+  }
+  const t3 = nextClockAfter(tzD, t0, am);
+  if(!t3) return null;
+  const min = Math.round((t3-t0)/60000);
+  return {legs:[{from:codes[0],to:codes[1],min}], layover:null, conn:'', total:min};
 }
 function flightDuration(f){
-  const m = flightMinutes(f);
-  if(m===null) return '';
-  return Math.floor(m/60)+'h'+(m%60?' '+String(m%60).padStart(2,'0')+'m':'');
+  const t = flightTrip(f);
+  if(!t) return '';
+  if(!t.conn) return hm(t.total);
+  return hm(t.total)+' total · flights '+t.legs.map(l=>hm(l.min)).join(' + ');
+}
+// Longer breakdown shown inside the expanded card, e.g. "PDX→SFO 1h 56m · 2h 20m layover · SFO→TPE 13h 20m"
+function flightBreakdown(f){
+  const t = flightTrip(f);
+  if(!t || !t.conn) return '';
+  return `${t.legs[0].from}→${t.legs[0].to} ${hm(t.legs[0].min)} · ${hm(t.layover)} layover in ${t.conn} · ${t.legs[1].from}→${t.legs[1].to} ${hm(t.legs[1].min)} · ${hm(t.total)} door to door`;
 }
 function flightTitle(f, i){
   const base = f.route ? (f.route + (f.flight_num ? ' ('+f.flight_num+')' : '')) : ('Flight '+(i+1));
   const dur = flightDuration(f);
   return dur ? base+' · '+dur : base;
 }
-// Live-update a flight card's title while typing, without re-rendering (which would drop input focus).
+// Live-update a flight card's title/breakdown while typing, without re-rendering (which would drop input focus).
 function updFlightTitle(i, el){
-  const t = el.closest('.entry-card').querySelector('.entry-title');
-  if(t) t.textContent = flightTitle(lists.flights[i], i);
+  const card = el.closest('.entry-card'), f = lists.flights[i];
+  const t = card.querySelector('.entry-title');
+  if(t) t.textContent = flightTitle(f, i);
+  const b = card.querySelector('.flight-breakdown');
+  if(b) b.textContent = flightBreakdown(f);
 }
 // ── RENDER: FLIGHTS ─────────────────────────────────────────────
 function renderFlights() {
@@ -947,6 +982,12 @@ function renderFlights() {
         <div><label>Departs</label><input type="text" value="${esc(f.dep)}" placeholder="HH:MM" oninput="lists.flights[${i}].dep=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
         <div><label>Arrives</label><input type="text" value="${esc(f.arr)}" placeholder="HH:MM" oninput="lists.flights[${i}].arr=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
       </div>
+      <div class="fg fg3">
+        <div><label>Layover airport (optional)</label><input type="text" value="${esc(f.conn||'')}" placeholder="SFO" oninput="lists.flights[${i}].conn=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
+        <div><label>Arrives at layover</label><input type="text" value="${esc(f.conn_arr||'')}" placeholder="HH:MM" oninput="lists.flights[${i}].conn_arr=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
+        <div><label>Departs layover</label><input type="text" value="${esc(f.conn_dep||'')}" placeholder="HH:MM" oninput="lists.flights[${i}].conn_dep=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
+      </div>
+      <div class="flight-breakdown">${esc(flightBreakdown(f))}</div>
       <div class="fg fg3">
         <div><label>Status</label><select onchange="lists.flights[${i}].status=this.value;listQ('flights',lists.flights);renderFlights()">${['To book','Booked','Confirmed'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
         <div><label>Confirmation #</label><input type="text" value="${esc(f.conf)}" oninput="lists.flights[${i}].conf=this.value;listQ('flights',lists.flights)"></div>
