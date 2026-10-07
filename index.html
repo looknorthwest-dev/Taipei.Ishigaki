@@ -785,7 +785,7 @@ function computeAutoTimelineItems(){
     if(!f.date) return;
     items.push({
       id:'auto_fl_'+f.id, phase:'Transit',
-      title:(f.route||'Flight')+(f.flight_num?' ('+f.flight_num+')':''),
+      title:(f.route||'Flight')+(f.flight_num?' ('+f.flight_num+')':'')+(flightDuration(f)?' · '+flightDuration(f):''),
       date:f.date,
       note:f.dep?('Departs '+f.dep+(f.arr?' · Arrives '+f.arr:'')):'',
       source:'Flights', tab:'flights'
@@ -860,20 +860,92 @@ function renderTimeline() {
   }).join('') || '<p class="ov-empty">No timeline events yet — add a milestone below, or add flights, accommodation, dive dates, or medical dates elsewhere in the planner and they will appear here automatically, in order.</p>';
   autoGrowAllIn('timeline-list');
 }
+// ── FLIGHT DURATION (time-zone aware) ──────────────────────────
+// Airport IATA code → IANA time zone. Add codes here as new routes come up.
+const AIRPORT_TZ = {
+  PDX:'America/Los_Angeles', SEA:'America/Los_Angeles', SFO:'America/Los_Angeles', LAX:'America/Los_Angeles',
+  SAN:'America/Los_Angeles', SJC:'America/Los_Angeles', LAS:'America/Los_Angeles', PHX:'America/Phoenix',
+  DEN:'America/Denver', SLC:'America/Denver', DFW:'America/Chicago', IAH:'America/Chicago', ORD:'America/Chicago',
+  ATL:'America/New_York', JFK:'America/New_York', EWR:'America/New_York', BOS:'America/New_York', IAD:'America/New_York',
+  YVR:'America/Vancouver', HNL:'Pacific/Honolulu', ANC:'America/Anchorage',
+  TPE:'Asia/Taipei', TSA:'Asia/Taipei', KHH:'Asia/Taipei', RMQ:'Asia/Taipei',
+  ISG:'Asia/Tokyo', OKA:'Asia/Tokyo', MMY:'Asia/Tokyo', NRT:'Asia/Tokyo', HND:'Asia/Tokyo', KIX:'Asia/Tokyo',
+  ITM:'Asia/Tokyo', NGO:'Asia/Tokyo', FUK:'Asia/Tokyo', CTS:'Asia/Tokyo',
+  ICN:'Asia/Seoul', GMP:'Asia/Seoul', PUS:'Asia/Seoul', CJU:'Asia/Seoul',
+  HKG:'Asia/Hong_Kong', MFM:'Asia/Macau', PVG:'Asia/Shanghai', PEK:'Asia/Shanghai', CAN:'Asia/Shanghai',
+  SIN:'Asia/Singapore', BKK:'Asia/Bangkok', MNL:'Asia/Manila', CGK:'Asia/Jakarta', KUL:'Asia/Kuala_Lumpur',
+  SGN:'Asia/Ho_Chi_Minh', HAN:'Asia/Ho_Chi_Minh', DEL:'Asia/Kolkata', DXB:'Asia/Dubai', DOH:'Asia/Qatar',
+  SYD:'Australia/Sydney', MEL:'Australia/Melbourne', AKL:'Pacific/Auckland', GUM:'Pacific/Guam',
+  LHR:'Europe/London', CDG:'Europe/Paris', FRA:'Europe/Berlin', AMS:'Europe/Amsterdam', IST:'Europe/Istanbul'
+};
+// Offset (minutes east of UTC) of a time zone at a given UTC instant.
+function tzOffsetMin(tz, utcMs){
+  const p = {};
+  new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric'})
+    .formatToParts(new Date(utcMs)).forEach(x=>{ p[x.type]=+x.value; });
+  return (Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second) - Math.floor(utcMs/1000)*1000) / 60000;
+}
+// Wall-clock time in a zone → UTC ms (two-pass so DST edges resolve correctly).
+function zonedToUtcMs(tz, y, mo, d, h, mi){
+  const guess = Date.UTC(y,mo-1,d,h,mi);
+  const first = guess - tzOffsetMin(tz, guess)*60000;
+  return guess - tzOffsetMin(tz, first)*60000;
+}
+// "14:35", "9:05", "9:05 PM" → minutes since midnight, or null
+function parseClock(s){
+  const m = /^\s*(\d{1,2}):(\d{2})\s*([ap]m?)?\s*$/i.exec(s||'');
+  if(!m) return null;
+  let h = +m[1]; const mi = +m[2], ap = m[3] && m[3][0].toLowerCase();
+  if(mi>59) return null;
+  if(ap){ if(h<1||h>12) return null; h = (h%12) + (ap==='p'?12:0); } else if(h>23) return null;
+  return h*60+mi;
+}
+function airportCodes(route){
+  const codes = ((route||'').match(/\b[A-Za-z]{3}\b/g)||[]).map(c=>c.toUpperCase()).filter(c=>AIRPORT_TZ[c]);
+  return codes.length>=2 ? [codes[0], codes[codes.length-1]] : null;
+}
+// Returns total minutes in the air (arrival assumed within 24h of the next
+// matching clock time after departure), or null if anything is missing/unknown.
+function flightMinutes(f){
+  const codes = airportCodes(f.route), dm = parseClock(f.dep), am = parseClock(f.arr);
+  const dt = /^(\d{4})-(\d{2})-(\d{2})$/.exec(f.date||'');
+  if(!codes || dm===null || am===null || !dt) return null;
+  const [y,mo,d] = [+dt[1],+dt[2],+dt[3]];
+  const dep = zonedToUtcMs(AIRPORT_TZ[codes[0]], y,mo,d, Math.floor(dm/60), dm%60);
+  // Try the arrival wall-clock on the departure day, then each following day, until it lands after departure.
+  let arr = dep;
+  for(let k=0; k<3 && arr<=dep; k++) arr = zonedToUtcMs(AIRPORT_TZ[codes[1]], y,mo,d+k, Math.floor(am/60), am%60);
+  return Math.round((arr-dep)/60000);
+}
+function flightDuration(f){
+  const m = flightMinutes(f);
+  if(m===null) return '';
+  return Math.floor(m/60)+'h'+(m%60?' '+String(m%60).padStart(2,'0')+'m':'');
+}
+function flightTitle(f, i){
+  const base = f.route ? (f.route + (f.flight_num ? ' ('+f.flight_num+')' : '')) : ('Flight '+(i+1));
+  const dur = flightDuration(f);
+  return dur ? base+' · '+dur : base;
+}
+// Live-update a flight card's title while typing, without re-rendering (which would drop input focus).
+function updFlightTitle(i, el){
+  const t = el.closest('.entry-card').querySelector('.entry-title');
+  if(t) t.textContent = flightTitle(lists.flights[i], i);
+}
 // ── RENDER: FLIGHTS ─────────────────────────────────────────────
 function renderFlights() {
   document.getElementById('flights-list').innerHTML = lists.flights.map((f,i) => {
     const meta = `${f.date?fmtDate(f.date)+' · ':''}${statusMeta(f.status)}`;
     const body = `
       <div class="fg fg3">
-        <div><label>Route</label><input type="text" value="${esc(f.route)}" placeholder="PDX → TPE" oninput="lists.flights[${i}].route=this.value;listQ('flights',lists.flights)"></div>
-        <div><label>Date</label><input type="date" value="${esc(f.date)}" oninput="lists.flights[${i}].date=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Route</label><input type="text" value="${esc(f.route)}" placeholder="PDX → TPE" oninput="lists.flights[${i}].route=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
+        <div><label>Date</label><input type="date" value="${esc(f.date)}" oninput="lists.flights[${i}].date=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
         <div><label>Airline</label><input type="text" value="${esc(f.airline)}" oninput="lists.flights[${i}].airline=this.value;listQ('flights',lists.flights)"></div>
       </div>
       <div class="fg fg3">
-        <div><label>Flight Number</label><input type="text" value="${esc(f.flight_num||'')}" placeholder="BR25" oninput="lists.flights[${i}].flight_num=this.value;listQ('flights',lists.flights)"></div>
-        <div><label>Departs</label><input type="text" value="${esc(f.dep)}" placeholder="HH:MM" oninput="lists.flights[${i}].dep=this.value;listQ('flights',lists.flights)"></div>
-        <div><label>Arrives</label><input type="text" value="${esc(f.arr)}" placeholder="HH:MM" oninput="lists.flights[${i}].arr=this.value;listQ('flights',lists.flights)"></div>
+        <div><label>Flight Number</label><input type="text" value="${esc(f.flight_num||'')}" placeholder="BR25" oninput="lists.flights[${i}].flight_num=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
+        <div><label>Departs</label><input type="text" value="${esc(f.dep)}" placeholder="HH:MM" oninput="lists.flights[${i}].dep=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
+        <div><label>Arrives</label><input type="text" value="${esc(f.arr)}" placeholder="HH:MM" oninput="lists.flights[${i}].arr=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
       </div>
       <div class="fg fg3">
         <div><label>Status</label><select onchange="lists.flights[${i}].status=this.value;listQ('flights',lists.flights);renderFlights()">${['To book','Booked','Confirmed'].map(o=>`<option${o===f.status?' selected':''}>${o}</option>`).join('')}</select></div>
@@ -883,7 +955,7 @@ function renderFlights() {
       <div class="fg fg1"><div><label>Notes</label><textarea class="notes-area" oninput="autoGrow(this);lists.flights[${i}].notes=this.value;listQ('flights',lists.flights)">${esc(f.notes)}</textarea></div></div>
       <button class="rm-btn" onclick="removeItem('flights',${i})">Remove</button>
     `;
-    return cardShell('flights', f, i, {title: f.route ? (f.route + (f.flight_num ? ' ('+f.flight_num+')' : '')) : ('Flight '+(i+1)), meta}, body);
+    return cardShell('flights', f, i, {title: flightTitle(f, i), meta}, body);
   }).join('') || '<p class="ov-empty">No flights added yet.</p>';
   autoGrowAllIn('flights-list');
 }
