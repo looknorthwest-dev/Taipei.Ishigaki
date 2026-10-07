@@ -983,7 +983,7 @@ function renderFlights() {
         <div><label>Arrives</label><input type="text" value="${esc(f.arr)}" placeholder="HH:MM" oninput="lists.flights[${i}].arr=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
       </div>
       <div class="fg fg3">
-        <div><label>Layover airport (optional)</label><input type="text" value="${esc(f.conn||'')}" placeholder="SFO" oninput="lists.flights[${i}].conn=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
+        <div><label>Layover airport (optional)</label><input type="text" value="${esc(f.conn||'')}" placeholder="e.g. SFO" oninput="lists.flights[${i}].conn=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
         <div><label>Arrives at layover</label><input type="text" value="${esc(f.conn_arr||'')}" placeholder="HH:MM" oninput="lists.flights[${i}].conn_arr=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
         <div><label>Departs layover</label><input type="text" value="${esc(f.conn_dep||'')}" placeholder="HH:MM" oninput="lists.flights[${i}].conn_dep=this.value;listQ('flights',lists.flights);updFlightTitle(${i},this)"></div>
       </div>
